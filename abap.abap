@@ -2872,46 +2872,93 @@ REPORT  zbm_test5 LINE-SIZE 255. "Self-explanatory, but this can, apparently, cu
 **       INCLUDE STRUCTURE zpokemon. "Field would be repeated because very_tab and zpokemon have similar ones, but that's just an example. It throws an error due to that repeat!
 *        DATA count TYPE i.
 *DATA END OF very_tab2.
+*
+*
+*
+*
+***FILLING AN INTERNAL TABLE WITH A WORK AREA----------------------------------------
+**The fundamental difference is that when selecting records from the table I am using a SEPARATE work area instead of the internal table's
+**OWN header line.
+*
+**Declaring a line type... I think this is basically the equivalent of a database table. Like having tables TYPE STANDARD TABLE OF mara.
+*TYPES: BEGIN OF line03_typ,
+*  surname LIKE zpokemon-surname,
+*  dob     LIKE zpokemon-dob,
+*END OF line03_typ.
+*
+**Declaring a 'table type' based on the 'line type'. (I think that this could be omitted and I could go straight to declaring the table itself.)
+*TYPES itab03_typ TYPE STANDARD TABLE OF line03_typ.
+*
+**Declaring the table itself based on the 'table type'. (I think I could just do a DATA itab03 TYPE STANDARD TABLE OF line03_typ. here.)
+*DATA itab03    TYPE itab03_typ.
+*DATA itab04    TYPE STANDARD TABLE OF line03_typ. "I think that's literally the same as above, but with fewer steps.
+*DATA wa_itab03 TYPE line03_typ.
+*
+**I CAN EITHER FILL MY INTERNAL TABLE VIA MY WORK AREA...
+**Works the same with both itab03 and itab04.
+*SELECT surname dob FROM zpokemon
+*  INTO wa_itab03.
+*  APPEND wa_itab03 TO itab03.
+*ENDSELECT.
+*
+**OR BY AN ARRAY FETCH...
+***An array fetch is possible with Work Areas too!... And it skips the Work Area just like before, with Header Lines, it skipped the Header Line.
+**SELECT * FROM zpokemon
+**  INTO CORRESPONDING FIELDS OF TABLE itab03.
+**
+**Confirming if records are indeed inserted into the table. It was declared with the Work Area, so I am moving records from itab to wa.
+*LOOP AT itab03 INTO wa_itab03.
+*  WRITE wa_itab03-surname.
+*ENDLOOP.
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-**FILLING AN INTERNAL TABLE WITH A WORK AREA----------------------------------------
-*The fundamental difference is that when selecting records from the table I am using a SEPARATE work area instead of the internal table's
-*OWN header line.
 
-*Declaring a line type... I think this is basically the equivalent of a database table. Like having tables TYPE STANDARD TABLE OF mara.
-TYPES: BEGIN OF line03_typ,
-  surname LIKE zpokemon-surname,
-  dob     LIKE zpokemon-dob,
-END OF line03_typ.
 
-*Declaring a 'table type' based on the 'line type'. (I think that this could be omitted and I could go straight to declaring the table itself.)
-TYPES itab03_typ TYPE STANDARD TABLE OF line03_typ.
 
-*Declaring the table itself based on the 'table type'. (I think I could just do a DATA itab03 TYPE STANDARD TABLE OF line03_typ. here.)
-DATA itab03    TYPE itab03_typ.
-DATA itab04    TYPE STANDARD TABLE OF line03_typ. "I think that's literally the same as above, but with fewer steps.
-DATA wa_itab03 TYPE line03_typ.
+*---------------------------------------------------------------------------------------------------------------------------------
+*UDEMY'S PROGRAM -> LOOPING THROUGH INTERNAL TABLES
+*---------------------------------------------------------------------------------------------------------------------------------
+*Reading through the records of an internal table line by line using a loop. Standard ABAP Dictionary Table's records are accessed
+*via SELECT and ENDLSELECT statements (unless it's an array fetch!) while internal table's records are accessed via LOOP and ENDLOOP
+*statements.
 
-*I CAN EITHER FILL MY INTERNAL TABLE VIA MY WORK AREA...
-*Works the same with both itab03 and itab04.
-SELECT surname dob FROM zpokemon
-  INTO wa_itab03.
-  APPEND wa_itab03 to itab03.
+*STEPS FOR THE TABLE WITH THE HEADER LINE:
+*Without declaring the Standard ABAP Dictionary Table here, it throws an error in the SELECT statement claiming that
+*the 'destination area' needs to be inserted directly by INTO clause or indirectly by TABLES instruction.
+*Which means that the Standard ABAP Dictionary Table from which I am extracting data is considered 'destination' here.
+TABLES: zpokemon.
+
+*1) This is my internal table.
+DATA: BEGIN OF very_tab OCCURS 0,
+  employee LIKE zpokemon-employee,
+  surname  LIKE zpokemon-surname,
+  forename LIKE zpokemon-forename,
+  title    LIKE zpokemon-title,
+  dob      LIKE zpokemon-dob,
+  los      TYPE i VALUE 3, "Length of service.
+END OF very_tab.
+
+*2) This is how I access Standard ABAP Dictionary Table's records and put them within my internal table.
+SELECT * FROM zpokemon.
+  MOVE zpokemon-employee TO very_tab-employee.
+  MOVE zpokemon-surname  TO very_tab-surname.
+  MOVE zpokemon-forename TO very_tab-forename.
+  MOVE zpokemon-title    TO very_tab-title.
+  MOVE zpokemon-dob      TO very_tab-dob.
+  APPEND very_tab.
 ENDSELECT.
 
-*OR BY AN ARRAY FETCH...
-**An array fetch is possible with Work Areas too!... And it skips the Work Area just like before, with Header Lines, it skipped the Header Line.
-*SELECT * FROM zpokemon
-*  INTO CORRESPONDING FIELDS OF TABLE itab03.
-*
-*Confirming if records are indeed inserted into the table. It was declared with the Work Area, so I am moving records from itab to wa.
-  LOOP AT itab03 INTO wa_itab03.
-    WRITE wa_itab03-surname.
-  ENDLOOP.
-
-
+*3) Perform whatever I want to do with internal table's records within my loop. When I access records of an internal
+*table with a header line, each record gets transferred one record at a time from the body of the internal table to the
+*header line.
+LOOP AT very_tab.
+  WRITE: / very_tab-surname, very_tab-forename. "Underneath, the WRITE accessed the header line here.
+ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
