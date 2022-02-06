@@ -1,12 +1,4 @@
-*&---------------------------------------------------------------------*
-*& Report  ZBM_TEST5
-*&
-*&---------------------------------------------------------------------*
-*&
-*&
-*&---------------------------------------------------------------------*
-
-REPORT  zbm_test5 LINE-SIZE 255.
+REPORT  report_name LINE-SIZE 255.
 *Self-explanatory, but this can, apparently, cut the results of tables short. If the LINE-SIZE is set to a 
 *value lower than the number of characters required to display all the output, the content of the line is cut.
 
