@@ -2923,42 +2923,42 @@ REPORT  zbm_test5 LINE-SIZE 255. "Self-explanatory, but this can, apparently, cu
 *---------------------------------------------------------------------------------------------------------------------------------
 *UDEMY'S PROGRAM -> LOOPING THROUGH INTERNAL TABLES
 *---------------------------------------------------------------------------------------------------------------------------------
-*Reading through the records of an internal table line by line using a loop. Standard ABAP Dictionary Table's records are accessed
-*via SELECT and ENDLSELECT statements (unless it's an array fetch!) while internal table's records are accessed via LOOP and ENDLOOP
-*statements.
-
-*STEPS FOR THE TABLE WITH THE HEADER LINE:
-*Without declaring the Standard ABAP Dictionary Table here, it throws an error in the SELECT statement claiming that
-*the 'destination area' needs to be inserted directly by INTO clause or indirectly by TABLES instruction.
-*Which means that the Standard ABAP Dictionary Table from which I am extracting data is considered 'destination' here.
-TABLES: zpokemon.
-
-*1) This is my internal table.
-DATA: BEGIN OF very_tab OCCURS 0,
-  employee LIKE zpokemon-employee,
-  surname  LIKE zpokemon-surname,
-  forename LIKE zpokemon-forename,
-  title    LIKE zpokemon-title,
-  dob      LIKE zpokemon-dob,
-  los      TYPE i VALUE 3, "Length of service.
-END OF very_tab.
-
-*2) This is how I access Standard ABAP Dictionary Table's records and put them within my internal table.
-SELECT * FROM zpokemon.
-  MOVE zpokemon-employee TO very_tab-employee.
-  MOVE zpokemon-surname  TO very_tab-surname.
-  MOVE zpokemon-forename TO very_tab-forename.
-  MOVE zpokemon-title    TO very_tab-title.
-  MOVE zpokemon-dob      TO very_tab-dob.
-  APPEND very_tab.
-ENDSELECT.
-
-*3) Perform whatever I want to do with internal table's records within my loop. When I access records of an internal
-*table with a header line, each record gets transferred one record at a time from the body of the internal table to the
-*header line.
-LOOP AT very_tab.
-  WRITE: / very_tab-surname, very_tab-forename. "Underneath, the WRITE accessed the header line here.
-ENDLOOP.
+**Reading through the records of an internal table line by line using a loop. Standard ABAP Dictionary Table's records are accessed
+**via SELECT and ENDLSELECT statements (unless it's an array fetch!) while internal table's records are accessed via LOOP and ENDLOOP
+**statements.
+*
+**STEPS FOR THE TABLE WITH THE HEADER LINE:
+**Without declaring the Standard ABAP Dictionary Table here, it throws an error in the SELECT statement claiming that
+**the 'destination area' needs to be inserted directly by INTO clause or indirectly by TABLES instruction.
+**Which means that the Standard ABAP Dictionary Table from which I am extracting data is considered 'destination' here.
+*TABLES: zpokemon.
+*
+**1) This is my internal table.
+*DATA: BEGIN OF very_tab OCCURS 0,
+*  employee LIKE zpokemon-employee,
+*  surname  LIKE zpokemon-surname,
+*  forename LIKE zpokemon-forename,
+*  title    LIKE zpokemon-title,
+*  dob      LIKE zpokemon-dob,
+*  los      TYPE i VALUE 3, "Length of service.
+*END OF very_tab.
+*
+**2) This is how I access Standard ABAP Dictionary Table's records and put them within my internal table.
+*SELECT * FROM zpokemon.
+*  MOVE zpokemon-employee TO very_tab-employee.
+*  MOVE zpokemon-surname  TO very_tab-surname.
+*  MOVE zpokemon-forename TO very_tab-forename.
+*  MOVE zpokemon-title    TO very_tab-title.
+*  MOVE zpokemon-dob      TO very_tab-dob.
+*  APPEND very_tab.
+*ENDSELECT.
+*
+**3) Perform whatever I want to do with internal table's records within my loop. When I access records of an internal
+**table with a header line, each record gets transferred one record at a time from the body of the internal table to the
+**header line.
+*LOOP AT very_tab.
+*  WRITE: / very_tab-surname, very_tab-forename. "Underneath, the WRITE accessed the header line here.
+*ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
