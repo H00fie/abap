@@ -8,17 +8,17 @@ REPORT  report_name LINE-SIZE 255.
 *My first program written with Udemy course.
 *---------------------------------------------------------------------------------------------------------------------------------
 
-*DATA d_times TYPE i VALUE 4.
-**I can add colon to WRITE and make it a 'statement chain' -> instead of writing WRITE every new line.
-*WRITE: '--------------------------'.
-*WRITE / '| Invoice number. | Date.|'.
-*WRITE / '--------------------------'.
-*
-*DO 20 TIMES.
-*  WRITE / d_times.
-*  d_times = d_times + 1.
-*  WRITE 15 '3'. "15 means the value will be pushed 15 characters to the right.
-*ENDDO.
+DATA d_times TYPE i VALUE 4.
+*I can add colon to WRITE and make it a 'statement chain' -> instead of writing WRITE every new line.
+WRITE: '--------------------------'.
+WRITE / '| Invoice number. | Date.|'.
+WRITE / '--------------------------'.
+
+DO 20 TIMES.
+  WRITE / d_times.
+  d_times = d_times + 1.
+  WRITE 15 '3'. "15 means the value will be pushed 15 characters to the right.
+ENDDO.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
