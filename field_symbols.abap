@@ -48,7 +48,7 @@ ENDIF.
 *-----CALLING THE FUNCTION-----
 CALL FUNCTION 'SRTT_TABLE_DISPLAY' "I am calling this function to be able to WRITE the content of the table to a screen!
   EXPORTING
-    table               = 'MARA'"I think that's the table we're basing our internal table on.
+    table               = 'MARA'
 *   IV_TITLE            =
   tables
     table_content       = it_mara. "This is what we want written. The content of what we want displayed.
@@ -72,10 +72,10 @@ ENDIF.
 *----------------------------
 DATA var TYPE i VALUE 2.
 FIELD-SYMBOLS: <fs_num> TYPE i. "My field-symbol assumes a certain type of data.
-ASSIGN var TO <fs_num>. "My field-symbol assumes the concrete value of the variable var.
-WRITE: / <fs_num>. "My field-symbol has now the value of 2, because it was assigned the value of var which initially had 2 as its value.
+ASSIGN var TO <fs_num>.         "My field-symbol assumes the concrete value of the variable var.
+WRITE: / <fs_num>.              "My field-symbol has now the value of 2, because it was assigned the value of var which initially had 2 as its value.
 <fs_num> = 4.
-WRITE: / var. "var now has the value of 4 because my field-symbol is a placeholder for it, a representation of it. If my field-symbols chagnes so does the value it points at.
+WRITE: / var.                   "var now has the value of 4 because my field-symbol is a placeholder for it, a representation of it. If my field-symbols chagnes so does the value it points at.
 
 *Typed field-symbols can only point to the data object of a specified type. Changes done to the field-symbol will be also done to the variable which was ASSIGNed to my field-symbol.
 *----------------------------
@@ -84,7 +84,7 @@ WRITE: / var. "var now has the value of 4 because my field-symbol is a placehold
 *Dynamic programming is usually implemented using generic field-symbols. The most commonly used generic types are
 *TYPE ANY and TYPE ANY TABLE.
 
-FIELD-SYMBOLS: <fs_str> TYPE any.
+FIELD-SYMBOLS: <fs_str>  TYPE any.
 FIELD-SYMBOLS: <fs_data> TYPE any.
 
 *I can assign any data object to the TYPE ANY and any internal table to TYPE TABLE ANY.
@@ -97,11 +97,11 @@ IF <fs_str> IS ASSIGNED.
 *I cannot directy access the field <fs_str>-matnr... It's declared at runtime!
 *By doing it that way, I am creating an abstraction, a workaround - I am assigning a component named MATNR of <fs_str> (which is basically
 *lw_mara which is like mara) to <fs_data> and then, below, I am giving the value of MAT001 to <fs_data>... so to a field named MATNR in
-*<fs_str> because field-symbols are references! I am thus assigning a value to a field that I cannot access yet because it's done decalred
+*<fs_str> because field-symbols are references! I am thus assigning a value to a field that I cannot access yet because it's not decalred
 *yet (will be at runtime)!
   IF <fs_data> IS ASSIGNED.
     <fs_data> = 'MAT001'.
-    UNASSIGN <fs_data>. "Also a supposedely regular thing to do. Clean code thing maybe?
+    UNASSIGN <fs_data>. "Also a supposedely regular thing to do. A Clean Code thing.
   ENDIF.
   UNASSIGN <fs_str>.
 ENDIF.
@@ -117,13 +117,13 @@ ENDIF.
 *----------------------------
 *I can assign any internal table to such a symbol.
 
-FIELD-SYMBOLS: <fs_tab> TYPE ANY TABLE. "Remember, field-symbols are references to data objects.
-FIELD-SYMBOLS: <fs_str> TYPE any.
+FIELD-SYMBOLS: <fs_tab>  TYPE ANY TABLE. "Remember, field-symbols are references to data objects.
+FIELD-SYMBOLS: <fs_str>  TYPE any.
 FIELD-SYMBOLS: <fs_data> TYPE any.
 
 DATA: lt_mara TYPE STANDARD TABLE OF mara. "Creating an internal table based on database table mara.
 
-SELECT * FROM mara INTO TABLE lt_mara UP TO 30 ROWS. "Populating the internal table with records from mara... which means that declaring lt_mara there makes the internal table look LIKE (structure) mara, not have the values.
+SELECT * FROM mara INTO TABLE lt_mara UP TO 30 ROWS. "Populating the internal table with records from mara... which means that declaring lt_mara above makes the internal table look LIKE (structure) mara, not have the values.
 ASSIGN lt_mara TO <fs_tab>. "Making <fs_tab> refer to lt_mara.
 
 LOOP AT <fs_tab> ASSIGNING <fs_str>."Looping through lt_mara (referenced by <fs_tab>!) ASSIGNing it's records (one record per iteration of the loop) to <fs_str>. Which means that <fs_str> is a reference to a single record.
