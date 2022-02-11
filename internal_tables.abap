@@ -127,3 +127,38 @@ ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES. JAPANESE MATERIAL STOCK -> JOINING THREE TABLES (INNER JOIN).
+*---------------------------------------------------------------------------------------------------------------------------------
+*As I am pulling in more tables into the pool included in my JOIN, the LEFT OUTER JOIN is not recommended as it pulls in more
+*rows than are needed.
+
+TYPES: BEGIN OF ty_mat,
+         matnr TYPE matnr, "This is the material number, my key-field.
+         matkl TYPE matkl, "The material group.
+         spras TYPE spras, "That's the language.
+         maktx TYPE maktx, "The description.
+         werks TYPE werks, "Currency?
+         labst TYPE labst, "The quantity!
+  END OF ty_mat.
+
+DATA: it_mat TYPE TABLE OF ty_mat,
+      wa_mat TYPE ty_mat.
+
+PARAMETERS: p_matnr TYPE matnr,
+            p_spras TYPE spras.
+
+SELECT mara~matnr mara~matkl makt~spras makt~maktx mard~werks mard~labst
+  FROM mara AS mara
+  INNER JOIN makt AS makt ON mara~matnr = makt~matnr
+  INNER JOIN mard AS mard ON mara~matnr = mard~matnr
+  INTO TABLE it_mat
+  WHERE mara~matnr = p_matnr
+  AND makt~spras = p_spras.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
