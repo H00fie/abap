@@ -89,3 +89,41 @@ ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES. MATERIAL STOCK -> JOINING TABLES (LEFT OUTER JOIN).
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*When I want to join two tables and one is missing a row for a particular plant (because MARD is designed in such a way that if there
+*is no stock for the plant, there's no row) -> I'd rather use OUTER JOIN, because INNER JOIN will drop everything it gathered so far
+*from table MARA if it couldn't find data in table MARD and there's no information at all.
+*OUTER JOIN will still return everything that was available and add a null or a zero for what was missing.
+
+TYPES: BEGIN OF ty_mara,
+          matnr TYPE matnr,
+          werks TYPE werks,
+          lgort TYPE lgort,
+          labst TYPE labst,
+  END OF ty_mara.
+
+DATA: it_mat TYPE TABLE OF ty_mara,
+      wa_mat TYPE ty_mara.
+
+PARAMETERS: p_matnr TYPE matnr.
+
+*Looks like SQL requires '~' instead of '-' when specifying the table~column relationship.
+SELECT mara~matnr mard~werks mard~lgort mard~labst
+  FROM mara AS mara LEFT OUTER JOIN mard AS mard
+  ON mara~matnr = mard~matnr
+  INTO TABLE it_mat
+  WHERE mara~matnr = p_matnr.
+
+LOOP AT it_mat INTO wa_mat.
+  WRITE: / wa_mat-matnr, wa_mat-werks, wa_mat-lgort, wa_mat-labst. "Everything taken from MARA and MARD has already been put into it_mat and then, with every loop, is handed to wa_mat. wa_mat holds every new row every loop.
+ENDLOOP.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
