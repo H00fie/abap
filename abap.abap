@@ -2960,6 +2960,8 @@ LOOP AT very_tab.
   WRITE: / very_tab-surname, very_tab-forename. "Underneath, the WRITE accessed the header line here.
 ENDLOOP.
 
+
+
 *MODIFY----------------------------------------
 *If the IF statement is true, then MODIFY will take the content of the header line that has just been updated and update
 *the record in the internal table that was originally read into the header record.
@@ -2978,6 +2980,25 @@ LOOP AT very_tab.
   ENDIF.
   WRITE very_tab-surname.
 ENDLOOP.
+
+
+
+*DESCRIBE----------------------------------------
+*Used to find out the content of the internal table - the number of records the table holds, the reserved memory space used and the
+*type of a table (standard, sorted, hash). Usually used just to check how many records are there within the internal table.
+*Below statement will return an integer value that represents the number of lines contained in my internal table. The value will be
+*stored in line_cnt.
+DATA line_cnt TYPE i.
+DESCRIBE TABLE very_tab LINES line_cnt.
+
+
+
+*INSERT----------------------------------------
+*While the APPEND statement adds lines to the end of the table, INSERT allows me to insert a record into any position I choose inside
+*my internal table by specifying the table's index number.
+*Due to DESCRIBE putting the number of records into line_cnt variable and INSERT inserting a value at that index, the new value will be
+*placed between the last record in the internal table and the one before it - shifting the previously last record forward index-wise.
+INSERT very_tab INDEX line_cnt.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
