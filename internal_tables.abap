@@ -162,3 +162,188 @@ SELECT mara~matnr mara~matkl makt~spras makt~maktx mard~werks mard~labst
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES. TYPES AND OPERATIONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*There are two methods of dealing with internal tables. The old way is HEADER LINE and the new way is WORK AREA.
+*Internal tables can be defined using any number of other defined structures. This allows me to have many normal table structures
+*grouped together and placed into a single internal table (something akin to a multidimensional array).
+*The basic form of an internal table consists of a table body (all the records within the table) and a header record OR a table
+*body and a separate work area.
+*A header line or a work area is used when I want to read a single record from my internal table. When I read a record from the
+*old style table, that record is placed into the header record and for the new style it is read into a work area (which is separate).
+*Similarly, when creating a new record, it is first placed in the header/work area and then transferred into the body of the internal
+*table.
+*The introduction of work area allowed us to create multi-dimensional tables - tables within tables.
+*The architecture of SAP limits the size of internal tables to around 2GB.
+
+*There are different kinds of internal tables:
+*1. Standard tables: give me an option to access the records via a table key or an index. When I access records using a key, the larger
+*                    table is, the longer it will take to read the records. This is why I can use an index.
+*                    Standard tables do not give me the option of defining a unique key, so I might have identical lines repeated. A
+*                    standard internal table can thus hold many identical records.
+*                    Accessing records using a table key may take a long time, but a standard table can also be filled with record very
+*                    quickly because the system doesn't have to check the table for any duplicate records.
+*2. Sorted tables:   a unique key can be defined and a duplication of records can be avoided. Records can be accessed using the table key
+*                    or the table index. A table key can also be used to find records. Much like with the standard tables, it's not the
+*                    fastest way possible, but a lot better for the sorted ones nonetheless.
+*                    The usage of a sorted table over a standard table is preferred due to the increased speed of accessing records and
+*                    because sorted tables sort my records into a specific sequence which gives me a performance increase when accessing
+*                    the data.
+*3. Hashed tables:   records are not accessed via an index. Only a unique key is to be used. Hashed tables are usually preferred when
+*                    it comes to speed. When I know my internal table is going to be huge, a hashed table might be my best bet.
+*                    Hash tables use a hash algorithm which makes them fast.
+
+*OCCURS 0 tells SAP we are declaring an internal table with no records initially (even if I use OCCURS 5, I can easily add more than just
+*5 records. OCCURS is basically obsolete). Using OCCURS automatically tells the system this is an internal table with a header record.
+DATA: BEGIN OF itab01 OCCURS 0,
+        surname LIKE zpokemon-surname,
+        dob     LIKE zpokemon-dob,
+      END OF itab01.
+
+*Below internal table should be used because it complies with ABAP objects!
+*I am just defining a LINE of an internal table here. No OCCURS also kind of means it's not yet a table. It's but a line of a table.
+TYPES: BEGIN OF line01_typ,
+        surname LIKE zpokemon-surname,
+        dob     LIKE zpokemon-dob,
+  END OF line01_typ.
+
+*Below I am defining the table type. This is going to be a standard table. So it can have multiple identical records so no unique key
+*needs to be included in the table type definition. There's no OCCURS here, but I can use INITIAL SIZE if I chose to, but it's optional.
+TYPES itab02_typ TYPE STANDARD TABLE OF line01_typ.
+
+*Below table is sorted and so it requires the information of what it's going to be sorted by. In this case - a surname.
+TYPES itab03_typ TYPE SORTED TABLE OF line01_typ WITH UNIQUE KEY surname.
+
+*The above are just blueprints. Now I declare an actual table based on the table type. Technically, I could add WITH HEADER LINE at the
+*end, but I should not as this would make the table unusable with ABAP objects.
+DATA itab02 TYPE itab02_typ.
+*And I need a WORK AREA! It will be used in conjunction with the table I just defined. WA is not part of the internal table. I move
+*data to my WA, I work with it and then I update my table from the WA. WA is a completely separate entity - if I have multiple
+*tables of the same structure, I can use a single work area to read and write data to and from them.
+DATA wa_itab02 TYPE line01_typ.
+
+*POPULATING AN INTERNAL TABLE WITH A HEADER LINE----------------------------------------
+*When I read or write data to or from an internal table that has a header line, said data is always moved through the header line itself.
+*When I read a record from the internal table, that record is moved to the header line and I access it there. When I want to add a record
+*to the internal table, I move it to the header line which then gets appended to the internal table.
+TABLES: zpokemon.
+*
+DATA: BEGIN OF very_tab OCCURS 0,
+  employee LIKE zpokemon-employee,
+  surname  LIKE zpokemon-surname,
+  forename LIKE zpokemon-forename,
+  title    LIKE zpokemon-title,
+  dob      LIKE zpokemon-dob,
+  los      TYPE i VALUE 3, "Length of service.
+END OF very_tab.
+
+*FIRST METHOD ---> ARRAY FETCH----------------------------------------
+
+*Below means the records from zpokemon will be moved to very_tab by matching them by their names.
+*It is called an 'array fetch' -> it picks up records and puts them in my table all at once. It is different than performing a SELECT
+*within a loop, because then it grabs every record one at a time. An 'array fetch' goes big and grabs them all at once. An 'array fetch'
+*does not have an ENDSELECT statement.
+*The extra field, 'los', will be added to every record and assigned the value of 3.
+*Using an array fetch I am not populating my table line by line and I am taking away the loop generated by the SELECT and ENDSELECT
+*statements. Only fields that correspond to those within the strucutre they are to move to are moved. This type of a SELECT statement is
+*much faster than using a loop.
+*Also no header record is being used here - I am using a block by block array fetch method to fill my table.
+SELECT * FROM zpokemon
+  INTO CORRESPONDING FIELDS OF TABLE very_tab.
+
+*In the debugger -  a hat symbol represents the header line. When I F5 this good boy, all records will be placed inside in one fell swoop,
+*because it's an array fetch!
+WRITE very_tab-surname.
+
+*SECOND METHOD ---> APPEND----------------------------------------
+
+*Append is another way of filling an internal table. Instead of doing an array fetch, this is a loop and I am grabbing every record one
+*at a time. Essentially, the first record will be selected and then I am performing individual MOVE statements to move the data, field by
+*field to the corresponding fields of very_tab. APPEND tells the system to take the values from the header record and add them to the body
+*of the internal table.
+*It is a good practice to clear the header record as soon as the data held within is appended to the body of the internal table. Otherwise
+*SAP will have to keep overwriting the data previously held within every field of the header record.
+*Every record, upon being appended to the table, will also be given a default value of 3 to 'los' field as per the definition of the table.
+*WITHOUT THE APPEND IT WILL JUST KEEP OVERWRITING THE CONTENT OF THE HEADER LINE BECAUSE THE DATA IS NOT BEING PASSED FURTHER ON TO
+*THE ACTUAL TABLE. In the debugger, if I F5 it, at the end of the loop (when all the fields are filled with MOVE statement), SAP will just
+*start overwriting the data already present within the header record.
+SELECT * FROM zpokemon.
+  MOVE zpokemon-employee TO very_tab-employee.
+  MOVE zpokemon-surname  TO very_tab-surname.
+  MOVE zpokemon-forename TO very_tab-forename.
+  MOVE zpokemon-title    TO very_tab-title.
+  MOVE zpokemon-dob      TO very_tab-dob.
+  APPEND very_tab.
+ENDSELECT.
+
+WRITE very_tab-surname.
+
+*THIRD METHOD ---> MOVE-CORRESPONDING----------------------------------------
+
+*Similar to the above, but way shorter. I also need to specify the name of the table again within the operation itself. This method matches up the
+*technical name of each field from the zpokemon with a matching field in very_tab - when such a match is found, contents are moved. With
+*this method I need to make sure the fields are named alike in both tables. Fields moved to and from also need to be of the same data type
+*and length.
+*Just for the record - this is NOT an array fetch. It grabs record by record, not all at once.
+SELECT * FROM zpokemon.
+  MOVE-CORRESPONDING zpokemon TO very_tab.
+  APPEND very_tab.
+ENDSELECT.
+
+WRITE very_tab-surname.
+
+*ANOTHER WAY OF CREATING AN INTERNAL TABLE ---> INCLUDE STRUCTURE.
+*A statement that I can use to add various structures that I've already defined or have already been defined to build up my own internal table.
+*Other data elements can also be added (e.g. count).
+DATA: BEGIN OF very_tab2 OCCURS 0.
+        INCLUDE STRUCTURE very_tab.
+*       INCLUDE STRUCTURE zpokemon. "Field would be repeated because very_tab and zpokemon have similar ones, but that's just an example. It throws an error due to that repeat!
+        DATA count TYPE i.
+DATA END OF very_tab2.
+
+
+
+
+*FILLING AN INTERNAL TABLE WITH A WORK AREA----------------------------------------
+*The fundamental difference is that when selecting records from the table I am using a SEPARATE work area instead of the internal table's
+*OWN header line.
+
+*Declaring a line type... I think this is basically the equivalent of a database table. Like having tables TYPE STANDARD TABLE OF mara.
+TYPES: BEGIN OF line03_typ,
+  surname LIKE zpokemon-surname,
+  dob     LIKE zpokemon-dob,
+END OF line03_typ.
+
+*Declaring a 'table type' based on the 'line type'. (I think that this could be omitted and I could go straight to declaring the table itself.)
+TYPES itab03_typ TYPE STANDARD TABLE OF line03_typ.
+
+*Declaring the table itself based on the 'table type'. (I think I could just do a DATA itab03 TYPE STANDARD TABLE OF line03_typ. here.)
+DATA itab03    TYPE itab03_typ.
+DATA itab04    TYPE STANDARD TABLE OF line03_typ. "I think that's literally the same as above, but with fewer steps.
+DATA wa_itab03 TYPE line03_typ.
+
+*I CAN EITHER FILL MY INTERNAL TABLE VIA MY WORK AREA...
+*Works the same with both itab03 and itab04.
+SELECT surname dob FROM zpokemon
+  INTO wa_itab03.
+  APPEND wa_itab03 TO itab03.
+ENDSELECT.
+
+*OR BY AN ARRAY FETCH...
+**An array fetch is possible with Work Areas too!... And it skips the Work Area just like before, with Header Lines, it skipped the Header Line.
+*SELECT * FROM zpokemon
+*  INTO CORRESPONDING FIELDS OF TABLE itab03.
+*
+*Confirming if records are indeed inserted into the table. It was declared with the Work Area, so I am moving records from itab to wa.
+LOOP AT itab03 INTO wa_itab03.
+  WRITE wa_itab03-surname.
+ENDLOOP.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
