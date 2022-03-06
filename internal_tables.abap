@@ -347,3 +347,88 @@ ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*LOOPING THROUGH INTERNAL TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+*Reading through the records of an internal table line by line using a loop. Standard ABAP Dictionary Table's records are accessed
+*via SELECT and ENDLSELECT statements (unless it's an array fetch!) while internal table's records are accessed via LOOP and ENDLOOP
+*statements.
+
+*STEPS FOR THE TABLE WITH THE HEADER LINE:
+*Without declaring the Standard ABAP Dictionary Table here, it throws an error in the SELECT statement claiming that
+*the 'destination area' needs to be inserted directly by INTO clause or indirectly by TABLES instruction.
+*Which means that the Standard ABAP Dictionary Table from which I am extracting data is considered 'destination' here.
+TABLES: zpokemon.
+
+*1) This is my internal table.
+DATA: BEGIN OF very_tab OCCURS 0,
+  employee LIKE zpokemon-employee,
+  surname  LIKE zpokemon-surname,
+  forename LIKE zpokemon-forename,
+  title    LIKE zpokemon-title,
+  dob      LIKE zpokemon-dob,
+  los      TYPE i VALUE 3, "Length of service.
+END OF very_tab.
+
+*2) This is how I access Standard ABAP Dictionary Table's records and put them within my internal table.
+SELECT * FROM zpokemon.
+  MOVE zpokemon-employee TO very_tab-employee.
+  MOVE zpokemon-surname  TO very_tab-surname.
+  MOVE zpokemon-forename TO very_tab-forename.
+  MOVE zpokemon-title    TO very_tab-title.
+  MOVE zpokemon-dob      TO very_tab-dob.
+  APPEND very_tab.
+ENDSELECT.
+
+*3) Perform whatever I want to do with internal table's records within my loop. When I access records of an internal
+*table with a header line, each record gets transferred one record at a time from the body of the internal table to the
+*header line.
+LOOP AT very_tab.
+  WRITE: / very_tab-surname, very_tab-forename. "Underneath, the WRITE accessed the header line here.
+ENDLOOP.
+
+
+
+*MODIFY----------------------------------------
+*If the IF statement is true, then MODIFY will take the content of the header line that has just been updated and update
+*the record in the internal table that was originally read into the header record.
+*Without the MODIFY, it will still WRITE the updated value, but, I believe, only the content of the header line is updated
+*this way and the internal table itself still holds the original value.
+*MODIFY, when used inside a loop of an internal table, has some specific features. It changes only the content of the existing
+*line in the internal table that I've read and does not create a new record. It is always the current line that is changed when
+*MODIFY is within a loop. It should not be used to modify the key fields that use a unique key.
+*If MODIFY is used outside of a loop - I must specify a record's index number that I want to modify. It's not required within
+*loops, because, while in a loop, the system monitors the index number automatically.
+*MODIFY can be used like that only with index tables and tables with header lines.
+LOOP AT very_tab.
+  IF very_tab-surname = 'TOHANA'.
+    very_tab-surname = 'Taehana'.
+*    MODIFY very_tab.
+  ENDIF.
+  WRITE very_tab-surname.
+ENDLOOP.
+
+
+
+*DESCRIBE----------------------------------------
+*Used to find out the content of the internal table - the number of records the table holds, the reserved memory space used and the
+*type of a table (standard, sorted, hash). Usually used just to check how many records are there within the internal table.
+*Below statement will return an integer value that represents the number of lines contained in my internal table. The value will be
+*stored in line_cnt.
+DATA line_cnt TYPE i.
+DESCRIBE TABLE very_tab LINES line_cnt.
+
+
+
+*INSERT----------------------------------------
+*While the APPEND statement adds lines to the end of the table, INSERT allows me to insert a record into any position I choose inside
+*my internal table by specifying the table's index number.
+*Due to DESCRIBE putting the number of records into line_cnt variable and INSERT inserting a value at that index, the new value will be
+*placed between the last record in the internal table and the one before it - shifting the previously last record forward index-wise.
+INSERT very_tab INDEX line_cnt.
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
