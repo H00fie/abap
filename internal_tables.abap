@@ -429,6 +429,30 @@ DESCRIBE TABLE very_tab LINES line_cnt.
 *Due to DESCRIBE putting the number of records into line_cnt variable and INSERT inserting a value at that index, the new value will be
 *placed between the last record in the internal table and the one before it - shifting the previously last record forward index-wise.
 INSERT very_tab INDEX line_cnt.
+
+
+
+*READ----------------------------------------
+*In order to access the records of an internal table, a READ statement can also be used. It allows me to specifically read individual
+*records from the table. Because I am using a header line, when I use READ, the record will be read into that header line.
+*When I use the READ statement, I need to be aware of how has my table been decalred - that will affect how I will be using my
+*READ (whether it's a standard, a sorted or a hash table).
+*The READ statement is the fastest way of accessing records of an internal table and using the index specifically is the fastest form
+*of READ itself. I is about three times faster than using the hash algorithm and up to 14 times faster than using a normal table key.
+*But, obviously, I do not always know the index number of the record that I want read - that's why usually table keys are used.
+
+*STANDARD TABLE WITH A NON-UNIQUE STANDARD KEY.
+READ TABLE very_tab INDEX 5. "I am reading the fifth record of my internal table into my header record.
+
+*WITH A TABLE KEY.
+*WITH KEY accepts unique table keys, but also other fields as well. But then it's difficult to know which record exactly
+*I will be reading. If I specify a surname and I have three records sharing it, no clue which one will be taken... Actually,
+*there is a clue, a certainty even - with a non-unique key, READ statement reads sequentially through the table and will take
+*the first record it encounters.
+*The READ statement can also be used for sorted and hash tables. When I specify the key fields to use in my search, the system
+*will run the binary search for sorted tables and use a hash algorithm for hash tables. If the fields used are not key fields,
+*the system will carry out a sequential search for both the sorted and hash tables.
+READ TABLE very_tab WITH KEY employee = 10000007.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
