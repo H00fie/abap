@@ -453,6 +453,25 @@ READ TABLE very_tab INDEX 5. "I am reading the fifth record of my internal table
 *will run the binary search for sorted tables and use a hash algorithm for hash tables. If the fields used are not key fields,
 *the system will carry out a sequential search for both the sorted and hash tables.
 READ TABLE very_tab WITH KEY employee = 10000007.
+
+
+
+*DELETE----------------------------------------
+*I can use it to delete individual records or groups of records from my internal table. The fastest way is by using the
+*table index, just like with READ. This only applies to standard tables and sorted tables, not hash tables, because
+*only these two have an index.
+*I make no use of the header line here.
+DELETE very_tab INDEX 5.
+
+*DELETE can also be used within a loop.
+LOOP AT very_tab.
+  IF very_tab-surname = 'Tohana'.
+    DELETE very_tab INDEX sy-index. "This variable gets updated automatically by the system, so always points at the index of the current record!
+  ENDIF.
+ENDLOOP.
+
+*DELETE should not be used without the index addition. If outside a loop - I will get a run time error. If I am within a loop,
+*I need to make sure the index addition is included in order to be compliant with the future releases of ABAP syntax.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
