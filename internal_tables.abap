@@ -472,6 +472,12 @@ ENDLOOP.
 
 *DELETE should not be used without the index addition. If outside a loop - I will get a run time error. If I am within a loop,
 *I need to make sure the index addition is included in order to be compliant with the future releases of ABAP syntax.
+
+*WHERE addition to DELETE statement.
+*I can use it when I don't know the exact index of the record I want to delete. I should always try to be as specific as possible
+*when trying to identify the records I want deleted.
+*Below ALL records with the surname 'Tohana' will be deleted.
+DELETE very_tab WHERE surname = 'Tohana'.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
