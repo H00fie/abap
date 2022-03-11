@@ -478,6 +478,29 @@ ENDLOOP.
 *when trying to identify the records I want deleted.
 *Below ALL records with the surname 'Tohana' will be deleted.
 DELETE very_tab WHERE surname = 'Tohana'.
+
+
+
+*SORT----------------------------------------
+*Below (no additions) means that the data will be sorted in an ascending order based on the defined table key. This works for
+*sorted tables and hash tables.
+SORT very_tab.
+
+*If I want to sort a standard internal table, then I need to use BY addition. Moreover, SAP caters to all sorts of languages
+*and this needs to be taken into account if I am working for a company whose systems are used throughout the world. In order to
+*make sure that the internal table is sorted according to language specific criteria, I use AS TEXT addition directly after the
+*name of my internal table.
+SORT very_tab AS TEXT BY surname.
+
+*I am not limited to using just one field while using SORT. I can use up to 250 fields. Below, AS TEXT will be applied to all
+*specified fields because of where the statement is placed.
+SORT very_tab AS TEXT BY surname forename.
+
+*If I want AS TEXT applied only to the forename.
+SORT very_tab BY surname AS TEXT forename.
+
+*The default way of sorting is the ascending one, but I can specify it.
+SORT very_tab DESCENDING AS TEXT BY surname forename.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
