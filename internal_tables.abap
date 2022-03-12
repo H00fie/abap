@@ -501,6 +501,28 @@ SORT very_tab BY surname AS TEXT forename.
 
 *The default way of sorting is the ascending one, but I can specify it.
 SORT very_tab DESCENDING AS TEXT BY surname forename.
+
+*WORK AREA------------------------------
+*An example table for work area's usage.
+TYPES: BEGIN OF line01_typ,
+  surname LIKE zemployees-surname,
+  dob     LIKE zemployees-dob,
+  END OF line01_typ.
+  
+TYPES itab02_typ TYPE STANDARD TABLE OF line01_typ.
+  
+DATA itab02 TYPE itab02_typ.
+  
+DATA wa_itab02 TYPE line01_typ.
+  
+SELECT * FROM zpokemon
+  INTO CORRESPONDING FIELDS OF TABLE itab02.
+
+*LOOP----------------------------------------
+*Looping through an internal table with work area.
+LOOP AT itab02 INTO wa_itab02.
+  WRITE wa_itab02-surname.
+ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
