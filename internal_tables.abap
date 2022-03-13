@@ -574,6 +574,7 @@ DELETE itab02 WHERE surname = 'Tohana'.
 *---------------------------------------------------------------------------------------------------------------------------------
 *DELETING INTERNAL TABLES.
 *---------------------------------------------------------------------------------------------------------------------------------
+
 *Sometimes I will seek to delete all records of an internal table in one fell swoop. For example, if I were to fill in an internal
 *table while I am inside a higher level loop, more often than not, I will need to make sure that the loop is empty at the start of
 *the loop so that when the next iteration of the loop comes around, I am not left with any records from the previous iteration.
@@ -609,6 +610,13 @@ CLEAR itab01.
 *the table's name. This will result in all the records from the body of the table to be deleted.
 CLEAR itab01[].
 
+
+
+*There is another way of clearing out the records of a table - by using a REFRESH statement.
+*By using the below statement, I delete all records in the table, but my header record still contains values - it is
+*unscathed as the REFRESH does not touch it.
+*So below is the alternative to CLEAR itab01[], but CLEAR itab01 should still be used beforehand.
+REFRESH itab01.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
