@@ -612,11 +612,23 @@ CLEAR itab01[].
 
 
 
+*REFRESH----------------------------------------
 *There is another way of clearing out the records of a table - by using a REFRESH statement.
 *By using the below statement, I delete all records in the table, but my header record still contains values - it is
 *unscathed as the REFRESH does not touch it.
 *So below is the alternative to CLEAR itab01[], but CLEAR itab01 should still be used beforehand.
 REFRESH itab01.
+
+
+
+*FREE----------------------------------------
+*The FREE statement -  not only does it empty the records out of my internal table, but also frees up the memory being
+*used by my program. My internal table still exists, but ut's been emptied out of memory - which means that, if I want
+*to fill my table with records again, I can do so. It's just when the program accesses that table again, it needs to
+*reserve the memory space again.
+*FREE itab01 does the same thing as CLEAR itab01[] and REFRESH itab01, but it has the added benefit of emptying out the
+*memory used from my program. It does not affect the header line either, so CLEAR itab01 is still required.
+FREE itab01.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
