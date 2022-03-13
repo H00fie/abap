@@ -537,6 +537,14 @@ LOOP AT itab02 INTO wa_itab02.
     MODIFY itab02 FROM wa_itab02.
   ENDIF.
 ENDLOOP.
+
+
+
+*INSERT----------------------------------------
+*Check how many records I have in itab02 and hold that value in line_cnt.
+DATA line_cnt TYPE i.
+DESCRIBE TABLE itab02 LINES line_cnt.
+INSERT wa_itab02 INTO itab02 INDEX line_cnt.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
