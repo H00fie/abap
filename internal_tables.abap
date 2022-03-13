@@ -556,6 +556,13 @@ READ TABLE itab02 INDEX 5 INTO wa_itab02.
 *Like before (with the header record), tables without unique keys can have multiple records that match
 *the criteria specified with the WITH KEY addition.
 READ TABLE itab02 INTO wa_itab02 WITH KEY surname = 'Tohana'.
+
+
+
+*DELETE----------------------------------------
+*Just like with the internal tables with the header record, with work area ones, I do not need to actually use
+*the work area, so the syntax is the same for both types of tables. 
+DELETE itab02 WHERE surname = 'Tohana'.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
