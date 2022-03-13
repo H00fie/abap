@@ -545,6 +545,17 @@ ENDLOOP.
 DATA line_cnt TYPE i.
 DESCRIBE TABLE itab02 LINES line_cnt.
 INSERT wa_itab02 INTO itab02 INDEX line_cnt.
+
+
+
+*READ----------------------------------------
+*If I know the index of the record I want read...
+READ TABLE itab02 INDEX 5 INTO wa_itab02.
+
+*If I do not know the index of the record I want read, I need to use the WITH KEY addition.
+*Like before (with the header record), tables without unique keys can have multiple records that match
+*the criteria specified with the WITH KEY addition.
+READ TABLE itab02 INTO wa_itab02 WITH KEY surname = 'Tohana'.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
