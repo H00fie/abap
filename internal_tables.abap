@@ -629,6 +629,19 @@ REFRESH itab01.
 *FREE itab01 does the same thing as CLEAR itab01[] and REFRESH itab01, but it has the added benefit of emptying out the
 *memory used from my program. It does not affect the header line either, so CLEAR itab01 is still required.
 FREE itab01.
+
+
+
+*WORK AREA TABLES-----------------------
+*Work areas are fundamentally different structures that I set up in my program. Thus, the code that I write that affects
+*my internal table, it will never affect my work area at the same time and the reverse is true.
+
+*CLEAR----------------------------------------
+*It will clear all the table contents. No square brackets are needed!
+CLEAR itab01. 
+
+*My work area is separate and I need to clear that out as well.
+CLEAR wa_itab01.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
