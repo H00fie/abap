@@ -353,6 +353,7 @@ ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *LOOPING THROUGH INTERNAL TABLES.
 *---------------------------------------------------------------------------------------------------------------------------------
+
 *Reading through the records of an internal table line by line using a loop. Standard ABAP Dictionary Table's records are accessed
 *via SELECT and ENDLSELECT statements (unless it's an array fetch!) while internal table's records are accessed via LOOP and ENDLOOP
 *statements.
@@ -563,6 +564,51 @@ READ TABLE itab02 INTO wa_itab02 WITH KEY surname = 'Tohana'.
 *Just like with the internal tables with the header record, with work area ones, I do not need to actually use
 *the work area, so the syntax is the same for both types of tables. 
 DELETE itab02 WHERE surname = 'Tohana'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*DELETING INTERNAL TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+*Sometimes I will seek to delete all records of an internal table in one fell swoop. For example, if I were to fill in an internal
+*table while I am inside a higher level loop, more often than not, I will need to make sure that the loop is empty at the start of
+*the loop so that when the next iteration of the loop comes around, I am not left with any records from the previous iteration.
+
+*HEADER LINE TABLES-----------------------
+*There is a certain sequence of tasks I need to adhere to when deleting the contents of the internal table with a header line.
+*I need to make sure I clear out the header line and then the body of the internal table.
+TABLES: zpokemon.
+
+DATA: BEGIN OF itab01 OCCURS 0,
+  employee LIKE zpokemon-employee,
+  surname  LIKE zpokemon-surname,
+  forename LIKE zpokemon-forename,
+  title    LIKE zpokemon-title,
+  dob      LIKE zpokemon-dob,
+  los      TYPE i VALUE 3,
+END OF itab01.
+
+SELECT * FROM zpokemon.
+  MOVE zpokemon-employee TO itab01-employee.
+  MOVE zpokemon-surname  TO itab01-surname.
+  MOVE zpokemon-forename TO itab01-forename.
+  MOVE zpokemon-title    TO itab01-title.
+  MOVE zpokemon-dob      TO itab01-dob.
+  APPEND itab01.
+ENDSELECT.
+
+*Clear out the header line. Below will clear out the header line ONLY!
+*The header line will be wiped clear, which means all fields will be set to their initial value.
+CLEAR itab01.
+
+*To deal with the table body that contains all the records, I need to place square brackets at the end of
+*the table's name. This will result in all the records from the body of the table to be deleted.
+CLEAR itab01[].
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
