@@ -357,7 +357,7 @@ ENDLOOP.
 *via SELECT and ENDLSELECT statements (unless it's an array fetch!) while internal table's records are accessed via LOOP and ENDLOOP
 *statements.
 
-*STEPS FOR THE TABLE WITH THE HEADER LINE:
+*FOR THE TABLE WITH THE HEADER RECORD:--------------------------------------------------------------------------------------------
 *Without declaring the Standard ABAP Dictionary Table here, it throws an error in the SELECT statement claiming that
 *the 'destination area' needs to be inserted directly by INTO clause or indirectly by TABLES instruction.
 *Which means that the Standard ABAP Dictionary Table from which I am extracting data is considered 'destination' here.
@@ -502,7 +502,9 @@ SORT very_tab BY surname AS TEXT forename.
 *The default way of sorting is the ascending one, but I can specify it.
 SORT very_tab DESCENDING AS TEXT BY surname forename.
 
-*WORK AREA------------------------------
+
+
+*FOR THE TABLE WITH THE WORK AREA:--------------------------------------------------------------------------------------------
 *An example table for work area's usage.
 TYPES: BEGIN OF line01_typ,
   surname LIKE zemployees-surname,
@@ -518,11 +520,15 @@ DATA wa_itab02 TYPE line01_typ.
 SELECT * FROM zpokemon
   INTO CORRESPONDING FIELDS OF TABLE itab02.
 
+
+
 *LOOP----------------------------------------
 *Looping through an internal table with work area.
 LOOP AT itab02 INTO wa_itab02.
   WRITE wa_itab02-surname.
 ENDLOOP.
+
+
 
 *MODIFY----------------------------------------
 LOOP AT itab02 INTO wa_itab02.
