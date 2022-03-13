@@ -523,6 +523,14 @@ SELECT * FROM zpokemon
 LOOP AT itab02 INTO wa_itab02.
   WRITE wa_itab02-surname.
 ENDLOOP.
+
+*MODIFY----------------------------------------
+LOOP AT itab02 INTO wa_itab02.
+  IF wa_itab02-surname = 'Tohana'.
+    wa_itab02-surname = 'Taehna'.
+    MODIFY itab02 FROM wa_itab02.
+  ENDIF.
+ENDLOOP.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
