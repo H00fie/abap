@@ -2999,6 +2999,141 @@ DESCRIBE TABLE very_tab LINES line_cnt.
 *Due to DESCRIBE putting the number of records into line_cnt variable and INSERT inserting a value at that index, the new value will be
 *placed between the last record in the internal table and the one before it - shifting the previously last record forward index-wise.
 INSERT very_tab INDEX line_cnt.
+
+
+
+*READ----------------------------------------
+*In order to access the records of an internal table, a READ statement can also be used. It allows me to specifically read individual
+*records from the table. Because I am using a header line, when I use READ, the record will be read into that header line.
+*When I use the READ statement, I need to be aware of how has my table been decalred - that will affect how I will be using my
+*READ (whether it's a standard, a sorted or a hash table).
+*The READ statement is the fastest way of accessing records of an internal table and using the index specifically is the fastest form
+*of READ itself. I is about three times faster than using the hash algorithm and up to 14 times faster than using a normal table key.
+*But, obviously, I do not always know the index number of the record that I want read - that's why usually table keys are used.
+
+*STANDARD TABLE WITH A NON-UNIQUE STANDARD KEY.
+READ TABLE very_tab INDEX 5. "I am reading the fifth record of my internal table into my header record.
+
+*WITH A TABLE KEY.
+*WITH KEY accepts unique table keys, but also other fields as well. But then it's difficult to know which record exactly
+*I will be reading. If I specify a surname and I have three records sharing it, no clue which one will be taken... Actually,
+*there is a clue, a certainty even - with a non-unique key, READ statement reads sequentially through the table and will take
+*the first record it encounters.
+*The READ statement can also be used for sorted and hash tables. When I specify the key fields to use in my search, the system
+*will run the binary search for sorted tables and use a hash algorithm for hash tables. If the fields used are not key fields,
+*the system will carry out a sequential search for both the sorted and hash tables.
+READ TABLE very_tab WITH KEY employee = 10000007.
+
+
+
+*DELETE----------------------------------------
+*I can use it to delete individual records or groups of records from my internal table. The fastest way is by using the
+*table index, just like with READ. This only applies to standard tables and sorted tables, not hash tables, because
+*only these two have an index.
+*I make no use of the header line here.
+DELETE very_tab INDEX 5.
+
+*DELETE can also be used within a loop.
+LOOP AT very_tab.
+  IF very_tab-surname = 'Tohana'.
+    DELETE very_tab INDEX sy-index. "This variable gets updated automatically by the system, so always points at the index of the current record!
+  ENDIF.
+ENDLOOP.
+
+*DELETE should not be used without the index addition. If outside a loop - I will get a run time error. If I am within a loop,
+*I need to make sure the index addition is included in order to be compliant with the future releases of ABAP syntax.
+
+*WHERE addition to DELETE statement.
+*I can use it when I don't know the exact index of the record I want to delete. I should always try to be as specific as possible
+*when trying to identify the records I want deleted.
+*Below ALL records with the surname 'Tohana' will be deleted.
+DELETE very_tab WHERE surname = 'Tohana'.
+
+
+
+*SORT----------------------------------------
+*Below (no additions) means that the data will be sorted in an ascending order based on the defined table key. This works for
+*sorted tables and hash tables.
+SORT very_tab.
+
+*If I want to sort a standard internal table, then I need to use BY addition. Moreover, SAP caters to all sorts of languages
+*and this needs to be taken into account if I am working for a company whose systems are used throughout the world. In order to
+*make sure that the internal table is sorted according to language specific criteria, I use AS TEXT addition directly after the
+*name of my internal table.
+SORT very_tab AS TEXT BY surname.
+
+*I am not limited to using just one field while using SORT. I can use up to 250 fields. Below, AS TEXT will be applied to all
+*specified fields because of where the statement is placed.
+SORT very_tab AS TEXT BY surname forename.
+
+*If I want AS TEXT applied only to the forename.
+SORT very_tab BY surname AS TEXT forename.
+
+*The default way of sorting is the ascending one, but I can specify it.
+SORT very_tab DESCENDING AS TEXT BY surname forename.
+
+
+
+*FOR THE TABLE WITH THE WORK AREA:--------------------------------------------------------------------------------------------
+*An example table for work area's usage.
+TYPES: BEGIN OF line01_typ,
+  surname LIKE zemployees-surname,
+  dob     LIKE zemployees-dob,
+  END OF line01_typ.
+  
+TYPES itab02_typ TYPE STANDARD TABLE OF line01_typ.
+  
+DATA itab02 TYPE itab02_typ.
+  
+DATA wa_itab02 TYPE line01_typ.
+  
+SELECT * FROM zpokemon
+  INTO CORRESPONDING FIELDS OF TABLE itab02.
+
+
+
+*LOOP----------------------------------------
+*Looping through an internal table with work area.
+LOOP AT itab02 INTO wa_itab02.
+  WRITE wa_itab02-surname.
+ENDLOOP.
+
+
+
+*MODIFY----------------------------------------
+LOOP AT itab02 INTO wa_itab02.
+  IF wa_itab02-surname = 'Tohana'.
+    wa_itab02-surname = 'Taehna'.
+    MODIFY itab02 FROM wa_itab02.
+  ENDIF.
+ENDLOOP.
+
+
+
+*INSERT----------------------------------------
+*Check how many records I have in itab02 and hold that value in line_cnt.
+DATA line_cnt TYPE i.
+DESCRIBE TABLE itab02 LINES line_cnt.
+INSERT wa_itab02 INTO itab02 INDEX line_cnt.
+
+
+
+*READ----------------------------------------
+*If I know the index of the record I want read...
+READ TABLE itab02 INDEX 5 INTO wa_itab02.
+
+*If I do not know the index of the record I want read, I need to use the WITH KEY addition.
+*Like before (with the header record), tables without unique keys can have multiple records that match
+*the criteria specified with the WITH KEY addition.
+READ TABLE itab02 INTO wa_itab02 WITH KEY surname = 'Tohana'.
+
+
+
+*DELETE----------------------------------------
+*Just like with the internal tables with the header record, with work area ones, I do not need to actually use
+*the work area, so the syntax is the same for both types of tables. 
+DELETE itab02 WHERE surname = 'Tohana'.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
