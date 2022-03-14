@@ -3137,3 +3137,92 @@ DELETE itab02 WHERE surname = 'Tohana'.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*UDEMY'S PROGRAM -> DELETING INTERNAL TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Sometimes I will seek to delete all records of an internal table in one fell swoop. For example, if I were to fill in an internal
+*table while I am inside a higher level loop, more often than not, I will need to make sure that the loop is empty at the start of
+*the loop so that when the next iteration of the loop comes around, I am not left with any records from the previous iteration.
+
+*HEADER LINE TABLES-----------------------
+*There is a certain sequence of tasks I need to adhere to when deleting the contents of the internal table with a header line.
+*I need to make sure I clear out the header line and then the body of the internal table.
+TABLES: zpokemon.
+
+DATA: BEGIN OF itab01 OCCURS 0,
+  employee LIKE zpokemon-employee,
+  surname  LIKE zpokemon-surname,
+  forename LIKE zpokemon-forename,
+  title    LIKE zpokemon-title,
+  dob      LIKE zpokemon-dob,
+  los      TYPE i VALUE 3,
+END OF itab01.
+
+SELECT * FROM zpokemon.
+  MOVE zpokemon-employee TO itab01-employee.
+  MOVE zpokemon-surname  TO itab01-surname.
+  MOVE zpokemon-forename TO itab01-forename.
+  MOVE zpokemon-title    TO itab01-title.
+  MOVE zpokemon-dob      TO itab01-dob.
+  APPEND itab01.
+ENDSELECT.
+
+*Clear out the header line. Below will clear out the header line ONLY!
+*The header line will be wiped clear, which means all fields will be set to their initial value.
+CLEAR itab01.
+
+*To deal with the table body that contains all the records, I need to place square brackets at the end of
+*the table's name. This will result in all the records from the body of the table to be deleted.
+CLEAR itab01[].
+
+
+
+*REFRESH----------------------------------------
+*There is another way of clearing out the records of a table - by using a REFRESH statement.
+*By using the below statement, I delete all records in the table, but my header record still contains values - it is
+*unscathed as the REFRESH does not touch it.
+*So below is the alternative to CLEAR itab01[], but CLEAR itab01 should still be used beforehand.
+REFRESH itab01.
+
+
+
+*FREE----------------------------------------
+*The FREE statement -  not only does it empty the records out of my internal table, but also frees up the memory being
+*used by my program. My internal table still exists, but ut's been emptied out of memory - which means that, if I want
+*to fill my table with records again, I can do so. It's just when the program accesses that table again, it needs to
+*reserve the memory space again.
+*FREE itab01 does the same thing as CLEAR itab01[] and REFRESH itab01, but it has the added benefit of emptying out the
+*memory used from my program. It does not affect the header line either, so CLEAR itab01 is still required.
+FREE itab01.
+
+
+
+*WORK AREA TABLES-----------------------
+*Work areas are fundamentally different structures that I set up in my program. Thus, the code that I write that affects
+*my internal table, it will never affect my work area at the same time and the reverse is true.
+
+*CLEAR----------------------------------------
+*It will clear all the table contents. No square brackets are needed!
+CLEAR itab01. 
+
+*My work area is separate and I need to clear that out as well.
+CLEAR wa_itab01.
+
+
+
+*REFRESH----------------------------------------
+REFRESH itab01.
+CLEAR wa_itab01.
+
+
+
+*FREE----------------------------------------
+FREE itab01.
+CLEAR wa_itab01.
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
