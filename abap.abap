@@ -1,12 +1,12 @@
 *&---------------------------------------------------------------------*
-*& Report  ZBM_TEST5
+*& Report  Learning_field
 *&
 *&---------------------------------------------------------------------*
 *&
 *&
 *&---------------------------------------------------------------------*
 
-REPORT  zbm_test5 LINE-SIZE 255. "Self-explanatory, but this can, apparently, cut the results of tables short. See 1565.
+REPORT  Learning_field LINE-SIZE 255. "Self-explanatory, but this can, apparently, cut the results of tables short. See 1565.
 
 *Comments are fine to explain stuff.
 
