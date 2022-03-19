@@ -74,6 +74,40 @@ WRITE / p_zforename.
 p_zsurname = 'Toka'. "This will change the value of the corresponding variable in the main program!
 
 ENDFORM.                    " TEST_SUBROUTINE_TWO
+
+*Internal tables as well as a combination of individual fields can also be passed into subroutines.
+*The sequence of the passed fields and tables has to be the same as in the main program because it's
+*the sequence of the fields when I create my perform statement that determines which field is passed to
+*the interface variable of my form.
+DATA modu_tab TYPE zpokemon.
+PERFORM test_subroutine_three TABLES modu_tab.
+
+*USING is here replaced with TABLES. When the program is executed, the perform makes sure that contents
+*of my internal table are transferred to the subroutine and stored within p_modu_tab.
+*One the processing reaches the end of the form, the contents of the local internal table are then passed
+*back to the global internal table. This is so for the tables without a header line. If I was using a table
+*with a header line, my perform would only pass the header line into the subroutine.
+*If I am using an internal table with a header line, I need to add square brackets to the table's name.
+
+*When the internal table is passed into the subroutine, this local internal table is ALWAYS declared with a
+*header line!
+*I can declare a local Work Area and still loop at the local internal table into it in order to bypass the
+*fact that the local internal table is with a header line.
+*&---------------------------------------------------------------------*
+*&      Form  TEST_SUBROUTINE_THREE
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->P_MODU_TAB  text
+*----------------------------------------------------------------------*
+FORM TEST_SUBROUTINE_THREE  TABLES   p_modu_tab STRUCTURE .
+*Test structures for "bypassing" the header line.  
+*  DATA wa_tmp TYPE some_table.
+*  LOOP AT p_modu_tab INTO wa_tmp.
+*    WRITE wa_tmp-some_value.
+*  ENDLOOP.
+endform.                    " TEST_SUBROUTINE_THREE
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
