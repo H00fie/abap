@@ -2,15 +2,15 @@
 *MODULARIZING PROGRAMS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
+*WARNING! -> a PERFORM will not work correctly if declared beneath another PERFORM's FORM.
+
 *EVENT BLOCKS are a modularization technique as well.
-
-
 
 *INCLUDE----------------------------------------
 *They are made available globally within a SAP system. Their sole purpose is to modularize code. They accept no parameters. An include
 *file/program is a separate file in SAP system and can be included in any other program.
 *A syntax check within my main program, it is also carried out automatically in my includes. They work in tandem.
-
+*INCLUDE some_include.
 
 
 *PROCEDURES----------------------------------------
@@ -35,6 +35,9 @@ z_field1 = 'Ayen'. "Making sure the passed fields have an actual value.
 z_field2 = 'Tranok'.
 PERFORM test_subroutine_two USING z_field1 z_field2.
 WRITE / z_field1. "This will NOT be 'Ayen' - see the subroutine's interface.
+
+DATA modu_tab TYPE STANDARD TABLE OF zpokemon.
+PERFORM test_subroutine_three TABLES modu_tab.
 
 *Below is my subroutine created automatically by the forward navigation. It is not considered a part of the actual report, the report
 *itself is finishing upon the calling of the perform (because there's nothing else afterwards).
@@ -79,7 +82,7 @@ ENDFORM.                    " TEST_SUBROUTINE_TWO
 *The sequence of the passed fields and tables has to be the same as in the main program because it's
 *the sequence of the fields when I create my perform statement that determines which field is passed to
 *the interface variable of my form.
-DATA modu_tab TYPE zpokemon.
+DATA modu_tab TYPE STANDARD TABLE OF zpokemon.
 PERFORM test_subroutine_three TABLES modu_tab.
 
 *USING is here replaced with TABLES. When the program is executed, the perform makes sure that contents
@@ -100,13 +103,31 @@ PERFORM test_subroutine_three TABLES modu_tab.
 *----------------------------------------------------------------------*
 *      -->P_MODU_TAB  text
 *----------------------------------------------------------------------*
-FORM TEST_SUBROUTINE_THREE  TABLES   p_modu_tab STRUCTURE .
-*Test structures for "bypassing" the header line.  
+FORM TEST_SUBROUTINE_THREE  TABLES   p_modu_tab.
+*Test structures for "bypassing" the header line.
 *  DATA wa_tmp TYPE some_table.
 *  LOOP AT p_modu_tab INTO wa_tmp.
 *    WRITE wa_tmp-some_value.
 *  ENDLOOP.
 endform.                    " TEST_SUBROUTINE_THREE
+
+*The combination of fields and tables can also be passed into subroutines at the same time.
+PERFORM test_subroutine_four TABLES modu_tab USING z_field1 z_field2.
+
+*&---------------------------------------------------------------------*
+*&      Form  TEST_SUBROUTINE_FOUR
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->P_MODU_TAB  text
+*      -->P_Z_FIELD1  text
+*      -->P_Z_FIELD2  text
+*----------------------------------------------------------------------*
+FORM TEST_SUBROUTINE_FOUR  TABLES   p_modu_tab
+                           using    p_z_field1
+                                    p_z_field2.
+
+ENDFORM.                    " TEST_SUBROUTINE_FOUR
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
