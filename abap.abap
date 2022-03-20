@@ -3230,7 +3230,7 @@ CLEAR wa_itab01.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*UDEMY'S PROGRAM -> MODULARIZING PROGRAMS.
+*UDEMY'S PROGRAM -> SUBROUTINES.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *WARNING! -> a PERFORM will not work correctly if declared beneath another PERFORM's FORM.
@@ -3371,6 +3371,80 @@ PERFORM external_sub IN PROGRAM external_program USING z_field1 z_field2.
 
 *SECOND WAY - UNAVAILABLE IN THE CONTEXT OF ABAP OBJECTS
 *PERFORM external_sub (external_program) USING z_field1 z_field2. <--- the first bracker is red anyway.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*UDEMY'S PROGRAM -> FUNCTION MODULES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A Function Module is a specific procedure that are defined within function groups and can be called from any other ABAP program.
+*A function group acts like a container for all the function modules that logically belong together.
+
+*Attributes tab.
+*Here I can see the function group my function module belongs to and its descriptions. The processing type section defines the
+*actual type of function module, e.g. Remote-enabled module mean it can get triggered from an external system.
+*Import tab.
+*Lists the individual fields I will use as my data interface for data I pass into the function module. This is the information
+*that my function module will be importing in order to process it. Fields can be set as optional. The pass by value means (if checked)
+*that I will be passing the actual value into the function module.
+*Export tab.
+*Once the function module does its work, the fields defined in the export tab constitues what is being sent back to the calling program.
+*Changing tab.
+*Lists fields that would be changed by the function module. Import is what is being received, export what is being returned and changing
+*what is being received, changed and sent back.
+*Tables tab.
+*Internal tables, as they also can be passed, are set up here.
+*Exceptions tab.
+*All function modules have the ability to pass back exception information to indicate whether the function module was executed successfully
+*or not. Specific error messages can also be determined here.
+*Source code.
+*This is where ABAP is!
+
+*Because function modules are created separate to normal programs, there are various tools to test out them without having to write the
+*code to call them.
+*If I have the function module open (or am in SE37), I can just press F8. The initial screen will look a little bit different for every
+*function module, because it is dependant on import, changing and tables parameters.
+
+*Coding example.
+SELECTION-SCREEN BEGIN OF LINE.
+SELECTION-SCREEN COMMENT 1(15) text-003. "Start at the first position and have 15 characters' length.
+PARAMETER my_num TYPE i.
+SELECTION-SCREEN END OF LINE.
+
+*When I call a function module, all its optional fields are automatically commented out. The finishing dot is placed in its own line
+*because all other lines might be commented out to begin with and that last dot is, obviously, required.
+*I am coding the actions of the module upon its execution myself in the IF section. Firstly, what's it supposed to do if there's an
+*error and what to do ELSE, if everything went fine.
+
+*I need to create a variable to hold the result. I will add it to IMPORTING part (in Function Module editor it's actually in export tab!
+*It's a matter of perspective. I am calling this FM, so I am importing a result from it, but the FM is exporting it to me).
+*I learn how to declare my result variables by checking FM editor, the export tab - there I can find what the FM is supposed to return.
+*SPELL is a structure, so my WRITE statement cannot convert it just like that to text. I can check what's the result of the FM made of by testing
+*the FM in its editor and I can check which field of SPELL I need to focus on by checking the structure of SPELL.
+DATA result LIKE spell.
+CALL FUNCTION 'SPELL_AMOUNT'
+ EXPORTING
+   AMOUNT          = my_num
+*   CURRENCY        = ' '
+*   FILLER          = ' '
+*   LANGUAGE        = SY-LANGU
+ IMPORTING
+   IN_WORDS        = result
+* EXCEPTIONS
+*   NOT_FOUND       = 1
+*   TOO_LARGE       = 2
+*   OTHERS          = 3
+          .
+IF sy-subrc <> 0.
+  WRITE: 'The function module returned a value of ', sy-subrc.
+ELSE.
+  WRITE: 'The amount in words is ', result-word.
+ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
