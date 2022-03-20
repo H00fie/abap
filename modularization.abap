@@ -129,6 +129,18 @@ FORM TEST_SUBROUTINE_FOUR  TABLES   p_modu_tab
 
 ENDFORM.                    " TEST_SUBROUTINE_FOUR
 
+*Subroutines were desgined for modularizing and structurizing programs, but they can be extended in such a way, that they can
+*be called externally from other programs.
+*If my goal is to make my function available throughout SAP system, I should rather use Function Modules though.
+*There are two ways in which I can call a subroutine over an external program, but the first one is preferable, because it's
+*required when using ABAP objects!
+
+*FIRST WAY
+PERFORM external_sub IN PROGRAM external_program USING z_field1 z_field2.
+
+*SECOND WAY - UNAVAILABLE IN THE CONTEXT OF ABAP OBJECTS
+*PERFORM external_sub (external_program) USING z_field1 z_field2. <--- the first bracker is red anyway.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
