@@ -3455,6 +3455,11 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *EXERCISE PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+*A variable to keep the result.
+DATA: v_z TYPE i,
+      v_e TYPE string. "To hold the message.
+
+SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
 SELECTION-SCREEN BEGIN OF LINE.
 *My label (lbl1) should start at the position of 8 and I want 20 spaces reserved for it.
   SELECTION-SCREEN COMMENT 8(20) lb1.
@@ -3466,29 +3471,51 @@ SELECTION-SCREEN BEGIN OF LINE.
   SELECTION-SCREEN COMMENT 8(20) lb2.
   PARAMETERS p_y TYPE i DEFAULT 15 OBLIGATORY.
 SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK bk1.
 
 *All radiobuttons belong to the same group. Their names are specified at Goto -> Text Elements -> Selection Text. In a group of
 *radiobuttons, by default - the first one will be checked to begin with.
 *A radiobutton can contain either an 'X' or a space. If I want a specific radiobutton within a group to be the default one, I need
 *to add "DEFAULT = 'X'" to it.
-*I can enclose sections of the screen in my Selection Screen with Blocks. The title's name (t1) is specified within the Initialization
+*I can enclose sections of the screen in my Selection Screen with Blocks. The title's name (t2) is specified within the Initialization
 *section.
-SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
+SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
 PARAMETERS: p_r1 RADIOBUTTON GROUP grp1,
             p_r2 RADIOBUTTON GROUP grp1,
             p_r3 RADIOBUTTON GROUP grp1,
             p_r4 RADIOBUTTON GROUP grp1,
             p_r5 RADIOBUTTON GROUP grp1 DEFAULT 'X'.
-SELECTION-SCREEN END OF BLOCK bk1.
+SELECTION-SCREEN END OF BLOCK bk2.
 
 *Evenets can be handled at the end of the program. I think like that they'd work like methods. I am deciding what happens when away
 *from the place where it actually happens. When the program is executed, SAP will check whether the Initialization has been handled.
-*If it has - it will be processed first.
+*If it has - it will be processed first. The the AT-SELECTION-SCREEN event is triggered and only then the actual Selection Screen is
+*displayed...
 INITIALIZATION.
   lb1 = 'Enter the 1st number'.
   lb2 = 'Enter the 2nd number'.
-  t1 = 'Arithmetic operations'.
+  t1 = 'Numbers for the calculations'.
+  t2 = 'Arithmetic operations'.
 
+*START-OF-SELECTION is triggered by SAP after the program has been executed in the Selection Screen.
+  START-OF-SELECTION.
+*Checking which radiobutton has been checked.
+  IF p_r1 = 'X'.
+    v_z  = p_x + p_y.
+    v_e  = 'The sum is: '.
+  ELSEIF p_r2 = 'X'.
+    v_z  = p_x - p_y.
+    v_e  = 'The difference is: '.
+  ELSEIF p_r3 = 'X'.
+    v_z  = p_x * p_y.
+    v_e  = 'The product is: '.
+  ELSEIF p_r4 = 'X'.
+    v_z  = p_x / p_y.
+    v_e  = 'The division is: '.
+  ELSE.
+    v_e = 'No radiobutton has been checked, so the result is '.
+  ENDIF.
+  WRITE: / v_e, v_z.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
