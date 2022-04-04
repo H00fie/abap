@@ -3471,11 +3471,15 @@ SELECTION-SCREEN END OF LINE.
 *radiobuttons, by default - the first one will be checked to begin with.
 *A radiobutton can contain either an 'X' or a space. If I want a specific radiobutton within a group to be the default one, I need
 *to add "DEFAULT = 'X'" to it.
+*I can enclose sections of the screen in my Selection Screen with Blocks. The title's name (t1) is specified within the Initialization
+*section.
+SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
 PARAMETERS: p_r1 RADIOBUTTON GROUP grp1,
             p_r2 RADIOBUTTON GROUP grp1,
             p_r3 RADIOBUTTON GROUP grp1,
             p_r4 RADIOBUTTON GROUP grp1,
             p_r5 RADIOBUTTON GROUP grp1 DEFAULT 'X'.
+SELECTION-SCREEN END OF BLOCK bk1.
 
 *Evenets can be handled at the end of the program. I think like that they'd work like methods. I am deciding what happens when away
 *from the place where it actually happens. When the program is executed, SAP will check whether the Initialization has been handled.
@@ -3483,6 +3487,7 @@ PARAMETERS: p_r1 RADIOBUTTON GROUP grp1,
 INITIALIZATION.
   lb1 = 'Enter the 1st number'.
   lb2 = 'Enter the 2nd number'.
+  t1 = 'Arithmetic operations'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
