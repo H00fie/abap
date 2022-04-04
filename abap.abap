@@ -3521,7 +3521,10 @@ INITIALIZATION.
     v_z  = p_x / p_y.
     WRITE: / 'The division is: ', v_z.
   ELSE.
-    WRITE: / 'No radiobutton has been checked, so the result is '.
+*WRITE statement makes the result be displayed on the List Processing Screen. I can use MESSAGE instead
+*for the NONE option and have it function as a pop-up instead. There are various TYPEs of MESSAGEs I can
+*display - 'I' is a pop-up, 'S' is a status bar
+    MESSAGE 'No radiobutton has been checked.' TYPE 'I'.
   ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
