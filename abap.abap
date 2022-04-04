@@ -3449,3 +3449,31 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*EXERCISE PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+SELECTION-SCREEN BEGIN OF LINE.
+*My label (lbl1) should start at the position of 8 and I want 20 spaces reserved for it.
+  SELECTION-SCREEN COMMENT 8(20) lb1.
+*In the same line...
+  PARAMETERS p_x TYPE i DEFAULT 20.
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN BEGIN OF LINE.
+  SELECTION-SCREEN COMMENT 8(20) lb2.
+  PARAMETERS p_y TYPE i DEFAULT 15.
+SELECTION-SCREEN END OF LINE.
+
+*Evenets can be handled at the end of the program. I think like that they'd work like methods. I am deciding what happens when away
+*from the place where it actually happens. When the program is executed, SAP will check whether the Initialization has been handled.
+*If it has - it will be processed first.
+INITIALIZATION.
+  lb1 = 'Enter the 1st number'.
+  lb2 = 'Enter the 2nd number'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
