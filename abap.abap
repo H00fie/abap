@@ -3458,14 +3458,24 @@ ENDIF.
 SELECTION-SCREEN BEGIN OF LINE.
 *My label (lbl1) should start at the position of 8 and I want 20 spaces reserved for it.
   SELECTION-SCREEN COMMENT 8(20) lb1.
-*In the same line...
-  PARAMETERS p_x TYPE i DEFAULT 20.
+*In the same line... Obligatory is one of the possible Additions to the keywords.
+  PARAMETERS p_x TYPE i DEFAULT 20 OBLIGATORY.
 SELECTION-SCREEN END OF LINE.
 
 SELECTION-SCREEN BEGIN OF LINE.
   SELECTION-SCREEN COMMENT 8(20) lb2.
-  PARAMETERS p_y TYPE i DEFAULT 15.
+  PARAMETERS p_y TYPE i DEFAULT 15 OBLIGATORY.
 SELECTION-SCREEN END OF LINE.
+
+*All radiobuttons belong to the same group. Their names are specified at Goto -> Text Elements -> Selection Text. In a group of
+*radiobuttons, by default - the first one will be checked to begin with.
+*A radiobutton can contain either an 'X' or a space. If I want a specific radiobutton within a group to be the default one, I need
+*to add "DEFAULT = 'X'" to it.
+PARAMETERS: p_r1 RADIOBUTTON GROUP grp1,
+            p_r2 RADIOBUTTON GROUP grp1,
+            p_r3 RADIOBUTTON GROUP grp1,
+            p_r4 RADIOBUTTON GROUP grp1,
+            p_r5 RADIOBUTTON GROUP grp1 DEFAULT 'X'.
 
 *Evenets can be handled at the end of the program. I think like that they'd work like methods. I am deciding what happens when away
 *from the place where it actually happens. When the program is executed, SAP will check whether the Initialization has been handled.
