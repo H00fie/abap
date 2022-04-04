@@ -3456,8 +3456,7 @@ ENDIF.
 *EXERCISE PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
 *A variable to keep the result.
-DATA: v_z TYPE i,
-      v_e TYPE string. "To hold the message.
+DATA: v_z TYPE i.
 
 SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
 SELECTION-SCREEN BEGIN OF LINE.
@@ -3502,20 +3501,29 @@ INITIALIZATION.
 *Checking which radiobutton has been checked.
   IF p_r1 = 'X'.
     v_z  = p_x + p_y.
-    v_e  = 'The sum is: '.
+    WRITE: / 'The sum is: ', v_z.
   ELSEIF p_r2 = 'X'.
     v_z  = p_x - p_y.
-    v_e  = 'The difference is: '.
+*If the result is below 0, SAP will display it as e.g. '3-'. If I want to display the minus sign in
+*front of the result, I can do it as shown below.
+*NO-GAP is added so there's no gap between the minus and the actual value. LEFT-JUSTIFIED is used so
+*there's no huge gap between the result and the string literal as, by default, all numeric variables
+*are right-justified.
+      IF v_z >= 0.
+        WRITE: / 'The difference is: ', v_z.
+      ELSE.
+        WRITE: / 'The difference is: -' NO-GAP, v_z NO-SIGN LEFT-JUSTIFIED.
+      ENDIF.
   ELSEIF p_r3 = 'X'.
     v_z  = p_x * p_y.
-    v_e  = 'The product is: '.
+    WRITE: / 'The product is: ', v_z.
   ELSEIF p_r4 = 'X'.
     v_z  = p_x / p_y.
-    v_e  = 'The division is: '.
+    WRITE: / 'The division is: ', v_z.
   ELSE.
-    v_e = 'No radiobutton has been checked, so the result is '.
+    WRITE: / 'No radiobutton has been checked, so the result is '.
   ENDIF.
-  WRITE: / v_e, v_z.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
