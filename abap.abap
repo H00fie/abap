@@ -3516,10 +3516,14 @@ INITIALIZATION.
       ENDIF.
   ELSEIF p_r3 = 'X'.
     v_z  = p_x * p_y.
-    WRITE: / 'The product is: ', v_z.
+*COLOR allows me to set a color for what's being displayed, each element separately.
+    WRITE: / 'The product is: ' COLOR 1, v_z COLOR 5.
   ELSEIF p_r4 = 'X'.
     v_z  = p_x / p_y.
+*Below allows me to colour the entire sections of what's being displayed.
+    FORMAT COLOR 7.
     WRITE: / 'The division is: ', v_z.
+    FORMAT COLOR OFF.
   ELSE.
 *WRITE statement makes the result be displayed on the List Processing Screen. I can use MESSAGE instead
 *for the NONE option and have it function as a pop-up instead. There are various TYPEs of MESSAGEs I can
