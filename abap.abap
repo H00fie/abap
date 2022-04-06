@@ -3534,3 +3534,92 @@ INITIALIZATION.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*BASIC ARITHMETICS WITH AT SELECTION SCREEN FUNCTION CALLS ON RADIOBUTTONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A variable to keep the result of the calculations.
+DATA: v_z TYPE i.
+*Variables for the MESSAGE output.
+DATA: v_str1 TYPE string,
+      v_str2 TYPE string,
+      v_msg  TYPE string.
+*A variable to hold the length of the result string in case the result is negative and the trailing '-' needs removal.
+DATA: v_len  TYPE i.
+
+SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
+SELECTION-SCREEN BEGIN OF LINE.
+  SELECTION-SCREEN COMMENT 8(20) lb1.
+  PARAMETERS p_x TYPE i DEFAULT 20 OBLIGATORY.
+SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN BEGIN OF LINE.
+  SELECTION-SCREEN COMMENT 8(20) lb2.
+  PARAMETERS p_y TYPE i DEFAULT 15 OBLIGATORY.
+SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK bk1.
+SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
+*In runtime, If I want elements to be interactive - they need to have their unique identity (a name) and have a function call assigned to them.
+*When a user clicks a push-button, SAP will trigger the AT-SELECTION-SCREEN event. In order to identify which button has been pushed, a system
+*variable can be used.
+*sy-ucomm <--- is a variable that contains the function call of a button which the user interacted with.
+*The function call can be assigned to the Radiobutton Group by using USER-COMMAND next to the first member of the group. If I tried to specify
+*a different USER-COMMAND for another radiobutton within the same group, I would receive an error.
+PARAMETERS: p_r1 RADIOBUTTON GROUP grp1 USER-COMMAND fc1,
+            p_r2 RADIOBUTTON GROUP grp1,
+            p_r3 RADIOBUTTON GROUP grp1,
+            p_r4 RADIOBUTTON GROUP grp1,
+            p_r5 RADIOBUTTON GROUP grp1 DEFAULT 'X'.
+SELECTION-SCREEN END OF BLOCK bk2.
+
+INITIALIZATION.
+  lb1 = 'Enter the 1st number'.
+  lb2 = 'Enter the 2nd number'.
+  t1  = 'Numbers for the calculations'.
+  t2  = 'Arithmetic operations'.
+
+*Below is a definition of the event to manage the function call assigned to 'grp1' radiobutton group.
+AT SELECTION-SCREEN ON RADIOBUTTON GROUP grp1.
+*A system variable that holds the name of the function call being called. The function calls' names are always captured in an upper case.
+*In this case, I do not want the results displayed in the List Processing Screen and that's where WRITE statement will take me. Thus, I
+*am using a MESSAGE statement instead.
+*MESSAGE needs to contain both the message and the value. MESSAGE accepts only strings, so my integer value needs to be converted into
+*a string. Becuse I am reusing the same variables, it is prudent to CLEAR them before assigning any new value.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      IF p_r1 = 'X'.
+        v_z  = p_x + p_y.
+        v_str1 = 'The sum of the numbers is '.
+      ELSEIF p_r2 = 'X'.
+        v_z  = p_x - p_y.
+         IF v_z >= 0.
+           v_str1 = 'The difference of the numbers is '.
+         ELSE.
+           v_str1 = 'The difference of the numbers is -'.
+         ENDIF.
+      ELSEIF p_r3 = 'X'.
+        v_z  = p_x * p_y.
+        v_str1 = 'The product of the numbers is '.
+      ELSEIF p_r4 = 'X'.
+        v_z  = p_x / p_y.
+        v_str1 = 'The divisiob of the numbers is '.
+      ELSE.
+        v_str1 = 'No radiobutton has been selected!'.
+      ENDIF.
+        v_str2 = v_z.
+*Below logic exists to remove the trailing '-' that is concatenated by SAP by deault to negative numbers.
+        IF v_z < 0.
+          v_len = strlen( v_str2 ) - 1.
+          v_str2 = v_str2+0(v_len).
+        ENDIF.
+        CONCATENATE v_str1 v_str2 INTO v_msg SEPARATED BY space.
+        MESSAGE v_msg TYPE 'I'.
+        CLEAR v_z.
+  ENDCASE.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
