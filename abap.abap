@@ -3667,3 +3667,74 @@ START-OF-SELECTION.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*BASIC ARITHMETICS WITH AT SELECTION SCREEN FUNCTION CALLS ON CHECKBOXES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Checkboxes do not belong to any group, so each checkbox needs to have its own function call assigned to it unlike radiobuttons
+*that shared a function call, if within a radiobutton group.
+PARAMETERS: p_x TYPE i DEFAULT 10 OBLIGATORY,
+            p_y TYPE i DEFAULT 20 OBLIGATORY.
+
+DATA: v_z    TYPE i,
+      v_str1 TYPE string, "To convert the integer result into a string.
+      v_str2 TYPE string, "To display the proper message based on the type of arithmetic operation.
+      v_msg  TYPE string.
+
+PARAMETERS: p_c1 AS CHECKBOX USER-COMMAND fc1,
+            p_c2 AS CHECKBOX USER-COMMAND fc2,
+            p_c3 AS CHECKBOX USER-COMMAND fc3,
+            p_c4 AS CHECKBOX USER-COMMAND fc4.
+
+AT SELECTION-SCREEN.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+
+      IF p_c1 = 'X'.
+        v_z = p_x + p_y.
+        v_str1 = v_z.
+        v_str2 = 'The addition checkbox selected. The result is'.
+        CONCATENATE v_str2 v_str1 INTO v_msg SEPARATED BY space.
+        MESSAGE v_msg TYPE 'I'.
+      ELSE.
+        MESSAGE 'The addition checkbox deselected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC2'.
+      IF p_c2 = 'X'.
+        v_z = p_x - p_y.
+        v_str1 = v_z.
+        v_str2 = 'The substraction checkbox selected. The result is'.
+        CONCATENATE v_str2 v_str1 INTO v_msg SEPARATED BY space.
+        MESSAGE v_msg TYPE 'I'.
+      ELSE.
+        MESSAGE 'The substraction checkbox deselected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC3'.
+      IF p_c3 = 'X'.
+        v_z = p_x * p_y.
+        v_str1 = v_z.
+        v_str2 = 'The multiplication checkbox selected. The result is'.
+        CONCATENATE v_str2 v_str1 INTO v_msg SEPARATED BY space.
+        MESSAGE v_msg TYPE 'I'.
+      ELSE.
+        MESSAGE 'The multiplication checkbox deselected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC4'.
+      IF p_c4 = 'X'.
+        v_z = p_x / p_y.
+        v_str1 = v_z.
+        v_str2 = 'The division checkbox selected. The result is'.
+        CONCATENATE v_str2 v_str1 INTO v_msg SEPARATED BY space.
+        MESSAGE v_msg TYPE 'I'.
+      ELSE.
+        MESSAGE 'The division checkbox deselected.' TYPE 'I'.
+      ENDIF.
+
+  ENDCASE.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
