@@ -3623,3 +3623,47 @@ AT SELECTION-SCREEN ON RADIOBUTTON GROUP grp1.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*BASIC ARITHMETICS WITH CHECKBOXES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*The difference between radiobuttons and checkboxes is that a user can select any number of checkboxes.
+PARAMETERS: p_x TYPE i DEFAULT 10 OBLIGATORY,
+            p_y TYPE i DEFAULT 20 OBLIGATORY.
+
+DATA v_z TYPE i.
+
+*In case of the checkboxes, there is no concept of a group (like radiobutton group).
+PARAMETERS: p_c1 AS CHECKBOX DEFAULT 'X',
+            p_c2 AS CHECKBOX,
+            p_c3 AS CHECKBOX DEFAULT 'X',
+            p_c4 AS CHECKBOX.
+
+*When the program is executed, START-OF-SELECTION is triggered.
+*In the case of radiobuttons, I was using ELSEIF because only one radiobutton can be checked at a time. With
+*checkboxes - any number can be checked at the same time, so "else" would not do. Every checkbox needs to be
+*validated separately.
+START-OF-SELECTION.
+  IF p_c1 = 'X'.
+      v_z = p_x + p_y.
+      WRITE: / 'The sum is ', v_z.
+  ENDIF.
+  IF p_c2 = 'X'.
+      v_z = p_x - p_y.
+      WRITE: / 'The difference is ', v_z.
+  ENDIF.
+  IF p_c3 = 'X'.
+      v_z = p_x * p_y.
+      WRITE: / 'The product is ', v_z.
+  ENDIF.
+  IF p_c4 = 'X'.
+      v_z = p_x / p_y.
+      WRITE: / 'The division is ', v_z.
+  ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
