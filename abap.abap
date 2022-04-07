@@ -3565,7 +3565,7 @@ SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
 *In runtime, If I want elements to be interactive - they need to have their unique identity (a name) and have a function call assigned to them.
 *When a user clicks a push-button, SAP will trigger the AT-SELECTION-SCREEN event. In order to identify which button has been pushed, a system
 *variable can be used.
-*sy-ucomm <--- is a variable that contains the function call of a button which the user interacted with.
+*sy-ucomm <--- is a variable that contains the function call of a button which the user interacted with. It's always in the upper case.
 *The function call can be assigned to the Radiobutton Group by using USER-COMMAND next to the first member of the group. If I tried to specify
 *a different USER-COMMAND for another radiobutton within the same group, I would receive an error.
 PARAMETERS: p_r1 RADIOBUTTON GROUP grp1 USER-COMMAND fc1,
