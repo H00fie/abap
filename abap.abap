@@ -3738,3 +3738,47 @@ AT SELECTION-SCREEN.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*BASIC ARITHMETICS WITH AT SELECTION SCREEN FUNCTION CALLS ON PUSHBUTTONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+PARAMETERS: p_x TYPE i DEFAULT 20 OBLIGATORY,
+            p_y TYPE i DEFAULT 10 OBLIGATORY,
+            p_z TYPE i.
+
+*SELECTION-SCREEN SKIP <number_of_lines> or the slash after the 'PUSHBUTTON' is necessary, because, without one of them, I am getting an activation
+*error due to elements of my Selection Screen overlapping. That is because SAP tries to place the pushbutton in the place already
+*occupied by 'p_z' variable. By adding the slash/skip I am requesting that the pushbutton is placed in the new line.
+SELECTION-SCREEN SKIP 2.
+SELECTION-SCREEN PUSHBUTTON 6(12) b1 USER-COMMAND fc1.
+SELECTION-SCREEN PUSHBUTTON 20(12) b2 USER-COMMAND fc2.
+SELECTION-SCREEN SKIP 2.
+SELECTION-SCREEN PUSHBUTTON 13(12) b3 USER-COMMAND fc3.
+
+INITIALIZATION.
+b1 = 'Addition'.
+b2 = 'Clear'.
+b3 = 'Exit'.
+
+*When any of the pushbuttons is clicked, AT-SELECTION-SCREEN event is triggered, just like with checkboxes and radiobuttons. Again as well - the
+*function call is captured by the system field, sy-ucomm.
+AT SELECTION-SCREEN.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      p_z = p_x + p_y.
+    WHEN 'FC2'.
+      CLEAR: p_x,
+             p_y,
+             p_z.
+    WHEN 'FC3'.
+*A graceful exit! It will not work if the parameter fields are cleared, because they are mandatory and the program cannot proceed with to the next
+*step - in this case, an exit, without obligatory parameters provided at this step.
+      LEAVE PROGRAM.
+  ENDCASE.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
