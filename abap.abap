@@ -3804,6 +3804,33 @@ WHILE v_y <= 10.
   v_y = v_y + 1.
 ENDWHILE.
 
+ULINE.
+
+*Utilising CONTINUE keyword.
+*Below code will not work properly, because whenever the CONTINUE statement is executed inside a loop, the statements after the CONTINUE
+*will be bypassed and the control jumps to the next condition check. Thus everything after ENDIF is ignored and control is passed to
+*'WHILE v_y <= 10' again. Thus, v_y is never incremented and the WHILE loop can never end.
+WHILE v_y <= 10.
+  IF v_y EQ 5.
+    CONTINUE.
+  ENDIF.
+  v_res = p_x * v_y.
+  WRITE: / p_x, ' * ', v_y,' = ', v_res.
+  v_y = v_y + 1.
+ENDWHILE.
+
+*Below will work properly, because, if v_y is equal to 5, then, first thing, the variable will increment anyway and only then the
+*CONTINUE will jump back to the condition check, bypassing the logic for newly acquired value of 5 by the variable v_y.
+WHILE v_y <= 10.
+  IF v_y EQ 5.
+    v_y = v_y + 1.
+    CONTINUE.
+  ENDIF.
+  v_res = p_x * v_y.
+  WRITE: / p_x, ' * ', v_y,' = ', v_res.
+  v_y = v_y + 1.
+ENDWHILE.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
