@@ -3891,3 +3891,62 @@ WRITE: / 'End of the program...'.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*SUBMIT - CALCULATIONS PERFORMED BY TWO PROGRAMS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*The concept is to have one program accept the input from the user and display the result while the second program performs all
+*the calculations. So the first program does only I/O operations (read the input, generate the output) and the second the business
+*logic.
+*Below variables should be possible to be used in the second program. By default, variables decalred in a program are local and
+*only during that program's execution can they be used...
+PARAMETERS: p_var1 TYPE i DEFAULT 10 OBLIGATORY,
+            p_var2 TYPE i DEFAULT 20 OBLIGATORY.
+
+*...Below is a remedy to that.
+*Whenever a program is executed, 'ABAP Memory' is available for that program for the length of the program's execution. EXPORT
+*pushes my variables into ABAP Memory as 'A1' and 'A2'.
+EXPORT p_var1 TO MEMORY ID 'A1'.
+EXPORT p_var2 TO MEMORY ID 'A2'.
+
+*Now, that the variables were pushed into memory, I need to shift control to the program that will process them.
+SUBMIT ZBM_SUBMIT_TEST AND RETURN.
+
+*Now I declare the variable of the same name as the one that stores the result in the called program (even though it's good
+*practice to have all variables declared in the same place).
+DATA: v_result TYPE i.
+
+*Import the actual value from the ABAP Memory, where it's been pushed by the called program.
+IMPORT v_result FROM MEMORY ID 'A3'.
+
+WRITE: / 'The sum of the numbers is ', v_result.
+
+********************************************
+*BELOW IS WHAT THE CALLED PROGRAM LOOKS LIKE.
+********************************************
+
+*REPORT  ZBM_SUBMIT_TEST.
+*
+**I need to delcare the variables first and they need to have the same names as those that have been
+**pushed to ABAP Memory from the calling program.
+*DATA: p_var1   TYPE i,
+*      p_var2   TYPE i,
+*      v_result TYPE i.
+*
+**Now, they need to be imported much like the calling program has EXPORTed them.
+*IMPORT p_var1 FROM MEMORY ID 'A1'.
+*IMPORT p_var2 FROM MEMORY ID 'A2'.
+*
+**Calculations are performed.
+*v_result = p_var1 + p_var2.
+*
+**Now, the result needs to be returned to the calling program. Hence, the result is EXPORTed to ABAP
+**Memory.
+*EXPORT v_result TO MEMORY ID 'A3'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
