@@ -3862,3 +3862,32 @@ ENDDO.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*SUBMIT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*SUBMIT is a keyword used for calling one program from another program.
+*In the below case -  the SUBMIT left just at 'SUBMIT ZBM_TEST3', I would just receive the List Processing Screen of the called
+*program as my only result (assuming the called program only prints a WRITE) - I will not have either of the below two WRITEs.
+*When SUBMIT is reached, the control is shifted to ZBM_TEST3 which generates output into its own List Processing Screen. Once
+*the execution in the called program is finished, the control remains there and will not be returned to the calling program.
+*Each program has its own output screen, the outputs of two programs cannot be merged - every program has its own LPS.
+*The 'Start of the program...' WRITE statement below has also been executed internally, in the background, but it cannot be
+*seen, because only the latest output generated will be displayed (in this case - of the called program).
+*WRITE: / 'Start of the program...'.
+*SUBMIT ZBM_TEST3.
+*WRITE: / 'End of the program...'.
+
+*To make the program work the way it should, I need to add 'AND RETURN'.
+*In the below case - the program will generate the first statement (in the background so far), the control shall be shifted to
+*the called program, its LPS shall be displayed and (upon hitting F3), the LPS of the calling program will be shown.
+WRITE: / 'Start of the program...'.
+SUBMIT ZBM_TEST3 AND RETURN.
+WRITE: / 'End of the program...'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
