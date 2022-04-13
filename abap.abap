@@ -4025,6 +4025,68 @@ WRITE:/ 'EMP2 values after "MOVE-CORRESPONDING... TO..." from EMP: '.
 WRITE:/ emp2-empno, emp2-ename, emp2-empdesign.
 ULINE.
 
+*Another structure to present the differences between MOVE and MOVE-CORRESPONDING.
+DATA: BEGIN OF dept,
+        deptno TYPE i,
+        dname(10) TYPE c,
+      END OF dept.
+
+WRITE:/ 'DEPT default structure:'.
+WRITE:/ dept-deptno, dept-dname.
+ULINE.
+
+*The assignment operator will make some of the fields copied despite names being different. The assignment operator
+*does not check if the number of fields of two structures match nor if the fields' names do. It only checks if the
+*corresponding data types are the same.
+*If the corresponding data types are the same, I can use the assignment operator.
+dept = emp.
+WRITE:/ 'DEPT values after "=" from EMP: '.
+WRITE:/ dept-deptno, dept-dname.
+ULINE.
+
+CLEAR dept.
+
+*MOVE works just like "=". I can use it when the corresponding data types are the same.
+MOVE emp TO dept.
+WRITE:/ 'DEPT values after "MOVE... TO..." from EMP: '.
+WRITE:/ dept-deptno, dept-dname.
+ULINE.
+
+CLEAR dept.
+
+*MOVE-CORRESPONDING will not copy the data because it tries to copy the data based on matching names of fields irrespective
+*of the sequence.
+MOVE-CORRESPONDING emp TO dept.
+WRITE:/ 'DEPT values after "MOVE-CORRESPONDING... TO..." from EMP: '.
+WRITE:/ dept-deptno, dept-dname.
+ULINE.
+
+*Another structure to present how various ways of copying data behave when fields of the two structures are different.
+DATA: BEGIN OF dept2,
+        loc(15) TYPE c,
+        empno   TYPE i,
+        deptno  TYPE i,
+      END OF dept2.
+
+*The corresponding data types do not match here, because dept2's a character and emp's an integer. It throws a syntax error.
+*dept2 = emp.
+*The same goes for MOVE...TO... as it works in the same way as the assignment operator and checks the corresponding data types.
+*MOVE emp TO dept2.
+
+*MOVE-CORRESPONDING doesn't care about the corresponding data types or the number of fields or the sequence of fields. It checks
+*if there are any fields' names that match.
+*In the below example, dept2-empno will have the copied value because it's the only field that has a match in emp.
+MOVE-CORRESPONDING emp TO dept2.
+WRITE:/ 'DEPT2 values after "MOVE-CORRESPONDING... TO..." from EMP: '.
+WRITE:/ dept2-loc, dept2-empno, dept2-deptno.
+ULINE.
+
+*Using MOVE-CORRESPONDING frequently is discouraged as it degrades the performance. In order to perform its task - finding matching
+*names, it needs to take every single field separately and compare it all all fields in the second structure. It is a time consuming
+*process.
+*MOVE-CORRESPONDING can also lead to a runtime error. If there are fields' names matching but their data types do not, MOVE-CORRESPONDING
+*will attempt to move the value, because it only checks the names.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
