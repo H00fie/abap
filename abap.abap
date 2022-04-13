@@ -3950,3 +3950,43 @@ WRITE: / 'The sum of the numbers is ', v_result.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*STRUCTURES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A structure is a user-defined data type which is a collection of different types of fields. Structures should be used when I want
+*to store interrelated data one after the other.
+*While in C language, the creation of the structure allocates no memory and the allocation takes place only when a variable of the
+*structure is created, in ABAP the below already means the allocation.
+*The amount of memory allocated depends on the structures' variables. All the fields of a structure are stored one after the other.
+*empno will be initialized to 0 (default for numeric data types), ename and empdesign will be intialized to a space (character data
+*types' default value is a space).
+*If the starting address location for empno is 100, then it stretches to 104 because an integer in ABAP takes up 4 bytes. ename will
+*take 15 bytes (119) and empdesign will take 20 bytes (139). All fields are one after the other if they are a part of the structure
+*and the access is thus faster. If the fields were declared outside of the structure, there is no guarantee if they're going to be
+*stored next to one another.
+DATA: BEGIN OF emp,
+        empno         TYPE i,
+        ename(15)     TYPE c,
+        empdesign(20) TYPE c,
+      END OF emp.
+
+WRITE:/ 'EMP default values: '.
+WRITE:/ emp-empno, emp-ename, emp-empdesign.
+
+*In ABAP, the fields can now be accessed directly.
+emp-empno     = 3.
+emp-ename     = 'Tier'.
+emp-empdesign = 'Vastolorde'.
+
+*At any point in time, every structure's variable can contain only a single value. So a structure can contain only a single record at
+*a time. So, in the below case, values of emp will be now updated.
+WRITE:/ 'EMP default values: '.
+WRITE:/ emp-empno, emp-ename, emp-empdesign.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
