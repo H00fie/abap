@@ -3968,6 +3968,8 @@ WRITE: / 'The sum of the numbers is ', v_result.
 *take 15 bytes (119) and empdesign will take 20 bytes (139). All fields are one after the other if they are a part of the structure
 *and the access is thus faster. If the fields were declared outside of the structure, there is no guarantee if they're going to be
 *stored next to one another.
+
+*SYNTAX 1 FOR DECLARING STRUCTURES.
 DATA: BEGIN OF emp,
         empno         TYPE i,
         ename(15)     TYPE c,
@@ -3984,8 +3986,44 @@ emp-empdesign = 'Vastolorde'.
 
 *At any point in time, every structure's variable can contain only a single value. So a structure can contain only a single record at
 *a time. So, in the below case, values of emp will be now updated.
-WRITE:/ 'EMP default values: '.
+WRITE:/ 'EMP values: '.
 WRITE:/ emp-empno, emp-ename, emp-empdesign.
+ULINE.
+
+*SYNTAX 2 FOR DECLARING STRUCTURES.
+*If I want to declare a structure based on existing structure, I can use LIKE. All the fields - their structure, of emp will be assigned
+*to emp2, but not their values.
+*There are three different ways to copy the data from one structure to another - an assignment operator, MOVE statement and MOVE-CORRESPONDING.
+DATA emp2 LIKE emp.
+
+*Fields will have default values.
+WRITE:/ 'EMP2 default values: '.
+WRITE:/ emp2-empno, emp2-ename, emp2-empdesign.
+ULINE.
+
+*Below assignment operator will copy the values from emp's to emp2's fields. It is possible for data exchange between similar structures
+*(the same number of fields, the names of the fields, their data types).
+emp2 = emp.
+WRITE:/ 'EMP2 values after "=" from EMP: '.
+WRITE:/ emp2-empno, emp2-ename, emp2-empdesign.
+ULINE.
+
+*Reverts all the fields' values to their default state.
+CLEAR emp2.
+
+*Another way of copying data from one structure to another.
+MOVE emp TO emp2.
+WRITE:/ 'EMP2 values after "MOVE... TO..." from EMP: '.
+WRITE:/ emp2-empno, emp2-ename, emp2-empdesign.
+ULINE.
+
+CLEAR emp2.
+
+*Yet another way of copying data from one structure to another.
+MOVE-CORRESPONDING emp TO emp2.
+WRITE:/ 'EMP2 values after "MOVE-CORRESPONDING... TO..." from EMP: '.
+WRITE:/ emp2-empno, emp2-ename, emp2-empdesign.
+ULINE.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
