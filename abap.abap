@@ -4127,3 +4127,46 @@ WRITE:/'Employee no     : ', emp-empno,
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INCLUDING STRUCTURES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+DATA: BEGIN OF dept,
+        deptno     TYPE i,
+        dname(20)  TYPE c,
+      END OF dept.
+
+*If I want emp to have the same fields as dept, I can just declare them yet again or I can use INCLUDING STRUCTURE.
+*INCLUDING STRUCTURE is a new statement, which means that before I can declare it, I need to close the previous statement. So the
+*field above it needs to be followed by a dot. Then, if I want more fields to be declared within emp, I need to start them with
+*the DATA keyword again. END OF emp comes last still.
+*In the below case I am including a local structure (present in the same program). Whenever I use the statement INCLUDING STRUCTURE,
+*SAP will check if the structure is available in the local program. If it is not - it will check if it's available in the database.
+*If it's there - it's included. If it's not in a database, an error will be thrown.
+*Thus, by using INCLUDE STRUCTURE, both local and global structures can be included.
+DATA: BEGIN OF emp,
+        empno        TYPE i,
+        ename(20)    TYPE c.
+        INCLUDE STRUCTURE dept.
+DATA:   empdesig(25) TYPE c,
+      END OF emp.
+
+*Fields of the included structure can now be accessed as if they were regular fields of the structure in which their actual structure
+*is included.
+emp-dname    = 'IT'.
+emp-deptno   = '3'.
+emp-empno    = '2'.
+emp-ename    = 'Halasibel'.
+emp-empdesig = 'Developer'.
+WRITE:/ emp-empno,
+      / emp-ename,
+      / emp-deptno,
+      / emp-dname,
+      / emp-empdesig.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
