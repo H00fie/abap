@@ -4170,3 +4170,53 @@ WRITE:/ emp-empno,
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*TYPES STRUCTURES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*This is a recommended way of declaring a structure. If I used DATA keyword, the memory would be allocated and all the structure's
+*fields would be stored one after another.
+*The TYPES keyword does not allocate any memory. It just creates a user-defined data type. Just like integers, strings, characters,
+*etc are standard data types, so TYPES create my own (user-defined) data types.
+*The TYPES keyword only provides the template, a blueprint.
+TYPES: BEGIN OF t_emp,
+        empno        TYPE i,
+        ename(20)    TYPE c,
+        empdesig(15) TYPE c,
+       END OF t_emp.
+
+*Since no memory is allocated for the TYPES alone, it's not possible to assign any values to the fields so far.
+* t_emp-emname = 'Ere_we_go'.
+
+*In order to utilize the structure declared as TYPES, I need to create a variable based on it - an instance of the template.
+*Generally, a structure is a work area - which name starts either with 'wa_' or 'ls_' (local structure) or 'gs_' (global structure).
+*In the below case, the memory is allocated because of the usage of the keyword DATA. The amount of data allocated depends on the
+*fields declared in the TYPES declaration.
+DATA: wa_emp1 TYPE t_emp.
+wa_emp1-empno    = 3.
+wa_emp1-ename    = 'Tahaka'.
+wa_emp1-empdesig = 'Developer'.
+
+WRITE:/ 'WA_EMP1 structure: ',
+      / wa_emp1-empno,
+      / wa_emp1-ename,
+      / wa_emp1-empdesig.
+ULINE.
+
+*I can declare any number of structures based on the same TYPES.
+DATA: wa_emp2 TYPE t_emp.
+wa_emp2-empno    = 4.
+wa_emp2-ename    = 'Oozua'.
+wa_emp2-empdesig = 'Tester'.
+
+WRITE:/ 'WA_EMP2 structure: ',
+      / wa_emp2-empno,
+      / wa_emp2-ename,
+      / wa_emp2-empdesig.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
