@@ -4220,3 +4220,62 @@ WRITE:/ 'WA_EMP2 structure: ',
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*FIELD SYMBOLS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A FIELD-SYMBOL is a special data structure/variable that is capable of storing any kind of data. Without any initialization, it will
+*have no value at all (not a 0, not a space).
+DATA v_x TYPE i VALUE 10.
+FIELD-SYMBOLS <abc>.
+
+*<abc> will have no value.
+WRITE:/ 'Variables upon their initialization:'.
+WRITE:/ 'v_x is: ', v_x,
+      / '<abc> is: ', <abc>.
+ULINE.
+
+*If I try to assign a value to a field-symbol like below, I will get an assignment error.
+*<abc> = v_x.
+
+*In order to properly assign a value to a field-symbol, I need to use the ASSIGN keyword. Once a variable is assigned to a field-symbol, that
+*variable is known as a reference variable.
+ASSIGN v_x TO <abc>.
+*<abc> will have the same value as v_x..
+WRITE:/ 'Variables upon the assignment of v_x to <abc>:'.
+WRITE:/ 'v_x is: ', v_x,
+      / '<abc> is: ', <abc>.
+ULINE.
+
+*Once the assignment has been performed, a link will be established between the reference variable and the field-symbol variable. Any change
+*made to the data of one of the variables will automatically be also applied to the other one.
+*Below only v_x is being changed, but <abc> will also have its value updated.
+v_x = 3.
+WRITE:/ 'Variables upon modifying the value of v_x alone:'.
+WRITE:/ 'v_x is: ', v_x,
+      / '<abc> is: ', <abc>.
+ULINE.
+
+*Likewise, a change made to the field-symbol will affect the reference variable.
+<abc> = 7.
+WRITE:/ 'Variables upon modifying the value of <abc> alone:'.
+WRITE:/ 'v_x is: ', v_x,
+      / '<abc> is: ', <abc>.
+ULINE.
+
+*I can assign any kind of a variable to a field-symbol. Previously, it held an integer value of v_x, but now I am assigning a string value of
+*v_y to it. Upon doing that, the link between <abc> and v_x is broken and a new link, between <abc> and v_y is established.
+DATA: v_y TYPE string VALUE 'Cubone is the best pokemon!'.
+ASSIGN v_y TO <abc>.
+WRITE:/ 'Variables upon assigning the value of v_y to <abc>:'.
+WRITE:/ 'v_x is ', v_x,
+      / 'v_y is: ', v_y,
+      / '<abc> is: ', <abc>.
+ULINE.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
