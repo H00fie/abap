@@ -4090,3 +4090,40 @@ ULINE.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*NESTED STRUCTURES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*NESTED STRUCTURES are structures within structures.
+DATA: BEGIN OF emp,
+        empno        TYPE i,
+        ename(20)    TYPE c,
+          BEGIN OF dept,
+            deptno     TYPE i,
+            dname(20) TYPE c,
+          END OF dept,
+        empdesig(20) TYPE c,
+      END OF emp.
+
+*I can access the fields of the outerstructure.
+emp-empno  = 1.
+emp-ename  = 'Dazikiri'.
+*But trying to access a field of the inner structure will cause an error.
+*emp-deptno = 10.
+*In order to access a field of an inner structure...
+emp-dept-deptno = 10.
+emp-dept-dname  = 'IT'.
+emp-empdesig    = 'Developer'.
+
+WRITE:/'Employee no     : ', emp-empno,
+      /'Employee name   : ', emp-ename,
+      /'Department no   : ', emp-dept-deptno,
+      /'Department name : ', emp-dept-dname,
+      /'Designation     : ', emp-empdesig.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
