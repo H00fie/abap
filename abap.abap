@@ -4279,3 +4279,98 @@ ULINE.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*TABBED BLOCKS AND SUBSCREENS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*SELECTION-SCREEN TABBED BLOCK is a collection of tab buttons. They allow my screen to be divided into many subscreens (sheets that
+*can be switched between). Tabbed Blocks are to be used when I don't want to place all the elements in a single screen and want them
+*logically separated.
+*LINES keyword refers to the number of lines in every subscreen. In this case, every subscreen will be of the height of 5 lines.
+*Whenever I load a screen which contains a tabbed block, I need to make one of the tabs the active one.
+*If left like below, that's a tabbed block without any tab buttons and so it's not clear which tab has to be activated by default,
+*which subscreen should be associated with the particular tab and in which program the particular subscreen is available. That's
+*why a runetime error will occur.
+*----------
+*SELECTION-SCREEN BEGIN OF TABBED BLOCK tb1 FOR 5 LINES.
+*SELECTION-SCREEN END OF BLOCK tb1.
+*----------
+*Whenever I try to load a screen containing a tabbed block, one of the tabs should be made active, it should be associated with a
+*subscreen and that subscreen needs to be designed either in the same program or in an external one.
+*A tab button is similar to a pushbutton, but is always a part of a tabbed block while a pushbutton is there on the screen.
+SELECTION-SCREEN BEGIN OF TABBED BLOCK tb1 FOR 5 LINES.
+
+*Every tab button requires a function call associated with it.
+  SELECTION-SCREEN TAB (15) t1 USER-COMMAND fc1.
+  SELECTION-SCREEN TAB (15) t2 USER-COMMAND fc2.
+
+SELECTION-SCREEN END OF BLOCK tb1.
+
+*Every tab button requires its own subscreen designed. Every screen (including subscreens) requires a number. Whenever a parameter
+*statement is used, SAP will generate the Selection Screen which will always have the number of 1000.
+*Below, the number provided refers to the number of the screen (subscreen) which can be any number from the range of from 1 to 9999
+*with the exception of 1000 which is reserved for the Selection Screen.
+SELECTION-SCREEN BEGIN OF SCREEN 100 AS SUBSCREEN.
+
+*Everything that's supposed to be available in the subscreen should be included here, be it checkboxes, radiobuttons,
+*input screen or anything else. Here, I am creating a comment/label. *A static message within the subscreen starting from the 8th
+*position with 30 following spaces reserved for it.
+  SELECTION-SCREEN COMMENT 8(30) lb1.
+
+SELECTION-SCREEN END OF SCREEN 100.
+
+SELECTION-SCREEN BEGIN OF SCREEN 200 AS SUBSCREEN.
+
+  SELECTION-SCREEN COMMENT 8(30) lb2.
+
+SELECTION-SCREEN END OF SCREEN 200.
+
+*----------
+*BELOW, AT THE END OF THE PROGRAM, WHICH IS A CUSTOM, ARE DEFINED ALL ACTIONS ASSOCIATED WITH PARTICULAR EVENTS.
+*----------
+
+*On the stage of the INITIALIZATION, if I need to perform any default activities, I must perform them. It's here that I am setting
+*one of the tabs of my tabbed block as active.
+INITIALIZATION.
+*tb1 is a name of my tabbed block and it has properties. 'activetab' is one of them and thus, as it's a property, I am referring to it
+*by a hyphen. The value I am assigning is the name of the function call associated with the proper tab.
+tb1-activetab = 'FC2'.
+*I also need to create a link between the active tab and a subscreen. The property of 'dynnr' holds the number of the screen.
+tb1-dynnr = '200'.
+*I also need to tell SAP in which program that particular subscreen (200) is designed. sy-repid is a system variable that holds the
+*name of the current program.
+tb1-prog = sy-repid.
+
+*Setting the names of the tabs.
+t1 = 'Ishgard'.
+t2 = 'Gridania'.
+
+*Setting the values of the comments in the subscreens.
+lb1 = 'Welcome to Ishgard!'.
+lb2 = 'Welcome to Gridania!'.
+
+*The INITIALIZATION holds the information about the default behaviours of my program. What's set there is what the program does upon
+*its execution. If I want to handle the backend logic of any actions that happen in the Selection Screen after it's been displayed,
+*then I need to specify it all in the AT-SELECTION-SCREEN event.
+*My tabs have function calls associated with them, so if I want to decide what happens when a particular tab is selected, I need to
+*specify the actions based on the current value of 'sy-ucomm' which holds the name of the chosen function call.
+*Whenever a user clicks on a tab button, AT-SELECTION-SCREEN event is triggered and the function call of the button that's been
+*clicked, will be captured in the sy-ucomm.  
+AT SELECTION-SCREEN.
+  CASE sy-ucomm.
+    WHEN 'FC1'. "When the user pushes the t1 tab button...
+      tb1-activetab = 'FC1'.    "tb1's active tab is the one that has the function call 'FC1'.
+      tb1-dynnr    = '100'.    "The subscreen to be displayed is the one of the number of '100'.
+      tb1-prog     = sy-repid. "The subscreen in question is available in the current program.
+    WHEN 'FC2'. "When the user pushes the t2 tab button...
+      tb1-activetab = 'FC2'.
+      tb1-dynnr    = '200'.
+      tb1-prog     = sy-repid.
+  ENDCASE.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
