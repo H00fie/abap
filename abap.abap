@@ -4374,3 +4374,110 @@ AT SELECTION-SCREEN.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Data is SAP is held within a database. Within a database there are tables whose purpose is to store data permanently.
+*Internal tables are created in runtime in the Application Server, which means they are temporary - they exist only as long as
+*the program runs.
+*An example of the flow of a program with internal tables:
+*--------------------------------------------------------------------*
+*If my program contains internal tables, they are created in the Application Server upon the execution of the program. The Application
+*Server is where the actual calculations take place, the entire business logic is executed here. Then a request to the Database Server
+*is being sent and the data is being sent into the internal table. Here, it will be processed (e.g. delete unnecessary, modify some,
+*insert new, perform calculations, sort) and sent back to the database or displayed on the output screen for the user to read.
+*Upon the program's execution is finished, the memory allocated for the internal table is destroyed.
+*--------------------------------------------------------------------*
+*Internal tables can be standard (indexed), sorted (indexed) or hashed (non-indexed). By default, if not specified by the programmer,
+*SAP considers tables standard. The index of an internal table always starts with 1.
+
+TYPES: BEGIN OF t_emp,
+         empno        TYPE i,
+         ename(15)    TYPE c,
+         empdesig(25) TYPE c,
+       END OF t_emp.
+
+*An internal table with a header.
+*TYPE TABLE OF creates an internal table. Just TYPE would create a Work Area able to hold just a single record at a time.
+*The type of the table is not specified so it's standard by default.
+DATA: it_emp1 TYPE TABLE OF t_emp WITH HEADER LINE.
+
+*Below CLEAR refers to the header line.
+CLEAR it_emp1.
+
+*Filling ing the header line.
+it_emp1-empno = 3.
+it_emp1-ename = 'Dazikiri'.
+it_emp1-empdesig = 'Developer'.
+
+*APPEND statement copies the data from the header line to the end of the internal table.
+APPEND it_emp1.
+
+CLEAR it_emp1.
+it_emp1-empno = 6.
+it_emp1-ename = 'Halasibel'.
+it_emp1-empdesig = 'Developer'.
+APPEND it_emp1.
+
+CLEAR it_emp1.
+it_emp1-empno = 9.
+it_emp1-ename = 'Seinn'.
+it_emp1-empdesig = 'Senior Developer'.
+APPEND it_emp1.
+
+CLEAR it_emp1.
+it_emp1-empno = 12.
+it_emp1-ename = 'Justinia'.
+it_emp1-empdesig = 'Senior Developer'.
+APPEND it_emp1.
+
+*Below will print the data about Justinia because WRITE refers to the header record.
+WRITE: / it_emp1-empno, it_emp1-ename, it_emp1-empdesig.
+ULINE.
+
+*In order to print all the data from the body of the internal table, I need to copy each record from the body to
+*the header line, one by one.
+*For this purpose, a LOOP is used. Below, due to the usage of the loop, the seemingly same operation as attempted
+*above, will now print all the records of the internal table. The concept of a loop is to keep executing what's
+*defined within until the condition is met. The cursor goes automatically from the previous record to the next.
+*sy-tabix is a system variable that refers to the internal table's index for the current loop.
+WRITE: / 'Data in the internal tables body: '.
+LOOP AT it_emp1.
+  WRITE: / it_emp1-empno, it_emp1-ename, it_emp1-empdesig, sy-tabix..
+ENDLOOP.
+ULINE.
+
+*In the below case, I am telling SAP ("FROM 2 TO 4") what is the range of indexes it should take into considertaion
+*within the loop.
+WRITE: / 'Data in the internal tables body up to index 3: '.
+LOOP AT it_emp1 FROM 2 TO 4.
+  WRITE: / it_emp1-empno, it_emp1-ename, it_emp1-empdesig, sy-tabix..
+ENDLOOP.
+ULINE.
+
+*WHERE clause in action. Data is case-sensitive. It will not display a record if it has 'senior developer' for instance.
+WRITE: / 'Data in the internal tables body where "Senior Developer" is specified: '.
+LOOP AT it_emp1 WHERE empdesig = 'Senior Developer'.
+  WRITE: / it_emp1-empno, it_emp1-ename, it_emp1-empdesig, sy-tabix.
+ENDLOOP.
+ULINE.
+
+*In order to count the number of records within an internal table, I can use DESCRIBE TABLE. The DESCRIBE statement will
+*store the value in the system variable, sy-tfill.
+DESCRIBE TABLE it_emp1.
+WRITE: / 'The number of records within the internal table is ', sy-tfill.
+ULINE.
+
+*If I want to clear the body of an internal table with a header line, I need to add sqaure brackers after the name.
+*'CLEAR it_emp1' clears just the header record.
+CLEAR it_emp1[].
+DESCRIBE TABLE it_emp1.
+WRITE: / 'The number of records within the internal table atfer the clear is ', sy-tfill.
+ULINE.
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
