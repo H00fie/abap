@@ -4378,7 +4378,7 @@ AT SELECTION-SCREEN.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*INTERNAL TABLES.
+*INTERNAL TABLES. APPEND LINES OF, ASSIGNMENT OPERATOR, CLEAR, REFRESH, FREE.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *Data is SAP is held within a database. Within a database there are tables whose purpose is to store data permanently.
@@ -4469,15 +4469,84 @@ ULINE.
 *In order to count the number of records within an internal table, I can use DESCRIBE TABLE. The DESCRIBE statement will
 *store the value in the system variable, sy-tfill.
 DESCRIBE TABLE it_emp1.
-WRITE: / 'The number of records within the internal table is ', sy-tfill.
+WRITE: / 'The number of records within the internal table initially: ', sy-tfill.
 ULINE.
 
-*If I want to clear the body of an internal table with a header line, I need to add sqaure brackers after the name.
+*If I want to clear the body of an internal table with a header line, I need to add sqaure brackets after the name.
 *'CLEAR it_emp1' clears just the header record.
 CLEAR it_emp1[].
 DESCRIBE TABLE it_emp1.
 WRITE: / 'The number of records within the internal table atfer the clear is ', sy-tfill.
 ULINE.
+
+*The second internal table - this time without a header line. So I need to declare a work area for it.
+DATA it_emp2 TYPE TABLE OF t_emp.
+DESCRIBE TABLE it_emp2.
+WRITE: / 'The number of records within the second internal table initially: ', sy-tfill.
+ULINE.
+
+*Refilling the first internal table a bit so I have data to copy to the second one.
+it_emp1-empno = 6.
+it_emp1-ename = 'Halasibel'.
+it_emp1-empdesig = 'Developer'.
+APPEND it_emp1.
+CLEAR it_emp1.
+it_emp1-empno = 9.
+it_emp1-ename = 'Seinn'.
+it_emp1-empdesig = 'Senior Developer'.
+APPEND it_emp1.
+CLEAR it_emp1.
+it_emp1-empno = 12.
+it_emp1-ename = 'Justinia'.
+it_emp1-empdesig = 'Senior Developer'.
+APPEND it_emp1.
+DESCRIBE TABLE it_emp1.
+WRITE: / 'The number of records within the first internal table after a refill: ', sy-tfill.
+ULINE.
+
+*Now I would like to copy the data from it_emp1 to it_emp2. There are multiple ways of doing that. Some of thme are:
+*1. APPEND LINES OF... TO...
+*2. The assignment operator.
+*Below is the first method - APPEND LINES OF... TO...
+*Copying data from a table with a header line to a table without a header line with both having the same internal structure.
+APPEND LINES OF it_emp1 TO it_emp2.
+DESCRIBE TABLE it_emp2.
+WRITE: / 'The number of records within the second internal table after copying the data from the first: ', sy-tfill.
+ULINE.
+
+*The third internal table.
+DATA it_emp3 TYPE TABLE OF t_emp.
+DESCRIBE TABLE it_emp3.
+WRITE: / 'The number of records within the third internal table initially: ', sy-tfill.
+ULINE.
+
+*Below is the second method - the assignment operator.
+it_emp3 = it_emp2.
+DESCRIBE TABLE it_emp3.
+WRITE: / 'The number of records within the third internal table after copying data from the second: ', sy-tfill.
+ULINE.
+
+*REFRESH is an alternative to CLEAR. REFRESH always refers to the body and does not require the usage of the square brackets
+*like CLEAR which, without the brackets, will CLEAR only the header line (interms of the internal tables with a header record).
+REFRESH it_emp2.
+DESCRIBE TABLE it_emp2.
+WRITE: / 'The number of records within the second internal table after REFRESHing: ', sy-tfill.
+ULINE.
+
+*FREE is also an alternative to CLEAR... and REFRESH. FREE always refers to the body and does not require the usage of the square
+*brackets like CLEAR which, without the brackets, will CLEAR only the header line (interms of the internal tables with a header record).
+FREE it_emp3.
+DESCRIBE TABLE it_emp3.
+WRITE: / 'The number of records within the third internal table after FREEing: ', sy-tfill.
+ULINE.
+
+*Three ways of clearing the data:
+*1. CLEAR   -> can be used on regular variavles, work areas and internal tables (including their header lines).
+*2. REFRESH -> can be used only on the body of the internal table.
+*3. FREE    -> can be used only on the body of the internal table. The difference is that REFRESH will clear the data, but not deallocate
+*              the memory whereas FREE clears the data, deallocates the memory and gets the internal table back to its initial state.
+*              FREE is recommended due to the fact it also clears the memory.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
