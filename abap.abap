@@ -4550,3 +4550,131 @@ ULINE.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES. WORK AREAS, APPEND, INSERT, SORT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*The standard way of declaring an internal table.
+TYPES: BEGIN OF t_emp,
+        empno        TYPE i,
+        ename(20)    TYPE c,
+        empdesig(25) TYPE c,
+       END OF t_emp.
+
+*An internal table without a default header line. Also, there's no work area specified.
+DATA: t_emp1 TYPE TABLE OF t_emp.
+
+*Below cannot be done, because 't_emp1' has just a body and no header line. The assignment operator attempts to assign the data of
+*'5' to the default header line... which is not there.
+*t_emp1-empno = 5.
+
+*Below is a work area, to allow me to operate on internal tables without a header line.
+*A declaration such as this, bereft of the 'TABLE' after the 'TYPE' means it's a work area being created. It is basically a
+*separate header.
+DATA: wa_emp TYPE t_emp.
+
+*It is good practice to clear the work area before assigning any new data.
+CLEAR wa_emp.
+wa_emp-empno    = 3.
+wa_emp-ename    = 'Dazikiri'.
+wa_emp-empdesig = 'Developer'.
+*In case of the internal tables with a header line, it'd just be 'APPEND t_emp1' because of the internal table itself and its
+*header line are called the same. APPENDING in such a scenario can only mean one thing.
+*Since work areas are separate and can handle multiple internal tables, I need to proclaim to what table exactly I am appending
+*the current content of the work area. APPEND always appends the new record at the end of the internal table.
+APPEND wa_emp TO t_emp1.
+
+*More records for the internal table.
+CLEAR wa_emp.
+wa_emp-empno    = 4.
+wa_emp-ename    = 'Asibal'.
+wa_emp-empdesig = 'Junior Developer'.
+APPEND wa_emp TO t_emp1.
+CLEAR wa_emp.
+wa_emp-empno    = 5.
+wa_emp-ename    = 'Sasha'.
+wa_emp-empdesig = 'Senior Developer'.
+APPEND wa_emp TO t_emp1.
+
+*If I want to reach multiple records within an internal table without a header line - I need to loop through the table with
+*'INTO' clause and thus, transfer every record into the work area first.
+FORMAT COLOR 3.
+WRITE:/ 'Data in t_emp1 initially: '.
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+FORMAT COLOR OFF.
+
+*INSERT statement.
+*INSERT works just like APPEND but additionally gives me an option to specify an index at which I want a
+*record to be placed - as long as that internal table is a standard one.
+*A simple INSERT.
+CLEAR wa_emp.
+wa_emp-empno    = 9.
+wa_emp-ename    = 'Marchosias'.
+wa_emp-empdesig = 'Senior Developer'.
+INSERT wa_emp INTO TABLE t_emp1.
+*An INSERT with an INDEX.
+CLEAR wa_emp.
+wa_emp-empno    = 5.
+wa_emp-ename    = 'Vargothan'.
+wa_emp-empdesig = 'Junior Developer'.
+INSERT wa_emp INTO t_emp1 INDEX 3.
+
+FORMAT COLOR 3.
+WRITE:/ 'Data in t_emp1 after INSERTing a record: '.
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+FORMAT COLOR OFF.
+
+*When declaring the internal tables, the key field can be specified. That key can be either unique or non-unique.
+*The unique one does not accept duplicate values within the internal table whereas the non-unique allows duplicates.
+*Unique keys can only be used with SORTED and HASHED internal tables. A STANDARD table can only accept non-unique keys.
+*For a STANDARD internal table, the key's specification is not mandatory, it can go well without it.
+DATA: t_emp2 TYPE TABLE OF t_emp WITH NON-UNIQUE KEY empno.
+
+*To copy the data from 't_emp1' to 't_emp2'.
+APPEND LINES OF t_emp1 TO t_emp2.
+FORMAT COLOR 7.
+WRITE:/ 'Data in t_emp2 after copying it from t_emp1: '.
+LOOP AT t_emp2 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+FORMAT COLOR OFF.
+
+*SORT is used for arranging data in a specifc order.
+*If I do not specify by which column the sorting should take place, SAP will do it by 'ename'. That's because SAP,
+*if there's a default SORT, will check if the internal table contains any key field. If there are no key fields, then
+*SAP will go and find the first character field in the internal table and sort it by it. If there isn't any character
+*field in the internal table, SAP will perform the SORT on the first field of the internal table.
+FORMAT COLOR 3.
+SORT t_emp1.
+WRITE:/ 'Data in t_emp1 after a default SORT: '.
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+FORMAT COLOR OFF.
+
+*Again, a default SORT, but on a table with a key field specified.
+*The column by which the sorting should take place is also not specified, but 't_emp2' is a table declared with a key
+*field, so that's what the SORT is going to use.
+FORMAT COLOR 7.
+SORT t_emp2.
+WRITE:/ 'Data in t_emp2 after a default SORT: '.
+LOOP AT t_emp2 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+FORMAT COLOR OFF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
