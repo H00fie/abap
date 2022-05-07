@@ -4678,3 +4678,37 @@ FORMAT COLOR OFF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*THE GLOBAL CLASS.
+*---------------------------------------------------------------------------------------------------------------------------------
+*SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
+*local program. The class has a single attribute of 'count' which is a private field. It has the 'Associated Type' of 'INT_5' as this
+*is one of the predefined data types available. It translates to 'number field, 5 positions'.
+*The class has three methods: set, increment, get (all public). Upon having selected one of the methods, Parameter button can be
+*pushed to define the method's parameters. Set method has the parameter of 'set_value' as an importing one of the 'Associated Type'
+*of 'INT_5'. Get method has the 'get_value' of the same 'Associated Type' but as an exporting one instead.
+*All three methods has a line of code written for them (upon dobule-clicking the name an ABAP editor fires up).
+
+*'number' refers to the data type used within my class. 'cnt' is the object of my global class.
+DATA: number TYPE int_5 VALUE 3,
+      cnt    TYPE REF TO ZCL_BM_TEST_COUNTER.
+
+START-OF-SELECTION.
+CREATE OBJECT cnt.
+
+CALL METHOD cnt->set EXPORTING set_value = number.
+
+DO 3 TIMES.
+  CALL METHOD cnt->increment.
+ENDDO.
+
+CALL METHOD cnt->get IMPORTING get_value = number.
+
+WRITE number.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
