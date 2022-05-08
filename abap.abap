@@ -4746,3 +4746,126 @@ cl_abap_browser=>show_xml( xml_xstring = developer_xml_xstr ).
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*UPLOADING DATA FROM A TEXT FILE INTO A SAP DATABASE.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*BDC -> Batch Data Communication. It is used for migrating the data from non-SAP systems (legacy systems) to a SAP system. The file
+*can be either on a local system or an application server. in both scenarios, data need to be migrated to an internal table from which
+*it will be moved to a database table.
+*There are many BDC techniques.
+
+*DIRECT INPUT METHOD.
+*With this method I am reading the data from the legacy system into my internal table and then straightforward into SAP sysem without
+*any validation on the way. I need to understand what data I am going to migrate and what are the corresponding tables I will use.
+*If I am going to migrate customer master data, KNA1 it is. KNA1 has 215 fields, but the data to be migrated has only 3 per record. I
+*need to realize what fields I will populate.
+*In order to read data from a local text file, SAP has provided a function module 'GUI_UPLOAD' - it is used to read data from a local
+*text file to an internal table.
+
+*I want a user to provide me the filename in runtime.
+PARAMETERS p_fname TYPE string.
+
+*SAP has provided a function module - 'F4_FILENAME', that can be used to display the open dialogue box from which the user can pick
+*the correct file.
+*'v_path' is a varialbe of the same data type as the path to the file selected by the user in the open dialogue box.
+DATA: v_path TYPE IBIPPARMS-PATH.
+
+*The data will require reading from the selected file and placed within an internal table. A function module of 'GUI_UPLOAD' will be
+*used for that. Below are data structures for it.
+*I am migrating records with three fields each - customer number, country and name. They make a single string.
+TYPES: BEGIN OF t_temp,
+  str TYPE string,
+END OF t_temp.
+
+DATA: it_temp TYPE TABLE OF t_temp,
+      wa_temp TYPE t_temp.
+
+*The intermediate structure for the transfer of the data from the internal table into which the data was initially uploaded into
+*the SAP database.
+TYPES: BEGIN OF t_final,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kan1-land1,
+  name1 TYPE kna1-name1,
+END OF t_final.
+
+DATA: it_final TYPE TABLE OF t_final,
+      wa_final TYPE t_final.
+
+*Upon pressing F4 I want a dialogue box open. AT SELECTION-SCREEN ON VALUE-REQUEST FOR... is an event triggered upon pressing F4.
+*F4 is responsible for opening the "available options' list" (a button with two white sheets next to a parameter field).
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fname.
+CALL FUNCTION 'F4_FILENAME'
+ IMPORTING
+   FILE_NAME = v_path.
+
+*If the reading was successful and my variable is not empty - then the parameter variable assumes the value of it and thus is the
+*parameter provided with a value (that's basically just an alternative to providing the input manually).
+IF v_path IS NOT INITIAL.
+  p_fname = v_path.
+ENDIF.
+
+*START-OF-SELECTION is triggered when I click the execute button. The AT SELECTION-SCREEN ON VALUE REQUEST FOR... was used for the
+*choosing of the file (fires up when F4 is pressed). When I have my file prepared (input provided), then I am executing the program
+*to actually read the data and so it is defined within the START-OF-SELECTION.
+*Previously, I had data structures defined for 'GUI_UPLOAD' just above the comments here and SAP was, rightly so, saying it sees no
+*'it_temp' declared... because above there there's AT SELECTION-SCREEN ON VALUE-REQUEST FOR... event present and it fires up only
+*when F4 is pressed on the selection screen. So 'it_temp' would appear only after doing so.
+START-OF-SELECTION.
+IF p_fname IS NOT INITIAL.
+  CALL FUNCTION 'GUI_UPLOAD'
+    EXPORTING
+      filename                      = p_fname
+    TABLES
+      data_tab                      = it_temp.
+*ELSE will be triggered if there's no file chosen (if p_fname IS initial).
+ELSE.
+  MESSAGE 'Please, choose a file.' TYPE 'I'.
+ENDIF.
+
+*The data from the file should now be present within 'it_temp' and need to be moved into SAP's database. In order to modify the
+*database table with the data provided by the internal table, I can use the MODIFY keyword. The INSERT could also be used, but if
+*there are any duplicates within my internal table, I will get a runtime error.
+*A simple 'MODIFY kna1 FROM TABLE it_temp.' will not be enough, because these tables are not compatible. KNA1 has 215 fields, but
+*my internal table has only a single field.
+*'it_temp' is a table without a header line, so I loop the data into the Working Area and then split every string (for now,
+*all records are in the form of a single string) into the proper fields of the internal table that's compatible with the KNA1
+*database table. Then, I am appending the final work area's content (a row at a time) to the final internal table.
+IF it_temp IS NOT INITIAL.
+  LOOP AT it_temp INTO wa_temp.
+    CLEAR wa_final.
+    SPLIT wa_temp-str AT ',' INTO
+                               wa_final-kunnr
+                               wa_final-land1
+                               wa_final-name1.
+    APPEND wa_final TO it_final.
+    
+*Still, I cannot do a simple 'MODFIY kna1 FROM TABLE it_final' due to the discrepancy in the number of fields. Thus, if the final
+*internal table is filled with values, I am declaring yet another internal table, this time of the same type as the database table
+*I want the data inserted into.
+    IF it_final IS NOT INITIAL.
+      DATA: gt_final TYPE TABLE OF kna1,
+            gs_final TYPE kna1.
+*To move the data from the final internal table to the one of the same structure as KNA1.
+      LOOP AT it_final INTO wa_final.
+        CLEAR gs_final.
+        gs_final-kunnr = wa_final-kunnr.
+        gs_final-land1 = wa_final-land1.
+        gs_final-name1 = wa_final-name1.
+        APPEND gs_final TO gt_final.
+    ENDIF.
+
+*If the table of the KNA1's structure has values, then I am moving the data into KNA1. 'sy-dbcnt' contains the number of records
+*that were affected by my meddling.
+    IF gt_final IS NOT INITIAL.
+      MODIFY kna1 FROM TABLE gt_final.
+      WRITE: 'The number of records inserted is: ', sy-dbcnt.
+    ENDIF.
+ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
