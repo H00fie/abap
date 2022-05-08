@@ -4814,6 +4814,10 @@ ENDIF.
 *Previously, I had data structures defined for 'GUI_UPLOAD' just above the comments here and SAP was, rightly so, saying it sees no
 *'it_temp' declared... because above there there's AT SELECTION-SCREEN ON VALUE-REQUEST FOR... event present and it fires up only
 *when F4 is pressed on the selection screen. So 'it_temp' would appear only after doing so.
+*If the records within the text file were not separated by a comma (as is the case with the sample file being used here), but by
+*a tab, I could forego the temporary internal table of 'it_temp' that takes in the records as strings in order to split them within
+*my program's logic, and just use one of the components of the EXPORTING section of 'GUI_UPLOAD' - that is the
+*'HAS_FIELD_SEPARATOR = 'X''. With it, the file is expected to have the records divided into 'fields' by a tab already.
 START-OF-SELECTION.
 IF p_fname IS NOT INITIAL.
   CALL FUNCTION 'GUI_UPLOAD'
