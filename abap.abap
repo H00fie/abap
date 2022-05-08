@@ -4712,3 +4712,37 @@ WRITE number.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*CREATING AN XML -> TRANSFORMATION.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*'CALL TRANSFORMATION' allows me to create an XML out of the provided input and saves it on my machine.
+
+DATA: dev_name    TYPE c LENGTH 22,
+      dev_surname TYPE c LENGTH 22,
+      dev_age     TYPE i,
+      dev_job     TYPE c LENGTH 44.
+
+DATA: developer_xml_xstr TYPE xstring.
+
+START-OF-SELECTION.
+dev_name    = 'Dazikiri'.
+dev_surname = 'Anikar'.
+dev_age     = 33.
+dev_job     = 'SAP/ABAP Developer'.
+
+CALL TRANSFORMATION ID
+     SOURCE name    = dev_name
+            surname = dev_surname
+            age     = dev_age
+            job     = dev_job
+     RESULT XML developer_xml_xstr.
+
+cl_abap_browser=>show_xml( xml_xstring = developer_xml_xstr ).
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
