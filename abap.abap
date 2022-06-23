@@ -4675,6 +4675,16 @@ ENDLOOP.
 ULINE.
 FORMAT COLOR OFF.
 
+*It is also possible to use SORT to sort the table by a particular field.
+FORMAT COLOR 2.
+SORT t_emp2 by ename.
+WRITE:/ 'Data in t_emp2 after a SORT BY ename: '.
+LOOP AT t_emp2 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+FORMAT COLOR OFF.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
