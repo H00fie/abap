@@ -4816,6 +4816,17 @@ ELSE.
 ENDIF.
 ULINE.
 
+*---------------------------------
+*----------BINARY SEARCH----------
+*---------------------------------
+*I can use the addition BINARY SEARCH to improve the performance of the READ. A standard linear search goes through all the records of the
+*table one by one. A binary search stars from the middle record, checks whether the value there is what it's looking for and, if not - checks
+*if the value there is lower or higher than the one it's looking for. If higher - discards all the lower values. If lower, discards all the
+*higher values. The process continues until the correct record is found and the number of records that needs to be checked is divided by two
+*with every loop. The binary search requires the table to be sorted beforehand.
+*E.g.
+*READ TABLE t_emp1 INTO wa_emp WITH KEY empno = 3 BINARY SEARCH.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
