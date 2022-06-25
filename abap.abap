@@ -4827,6 +4827,23 @@ ULINE.
 *E.g.
 *READ TABLE t_emp1 INTO wa_emp WITH KEY empno = 3 BINARY SEARCH.
 
+*------------------------------------------
+*----------TRANSPORTING NO FIELDS----------
+*------------------------------------------
+*TRANSPORTING NO FIELDS is telling SAP to move no data from the table to the work area whatsoever. It is used just to check the existance of
+*the particular record.
+*In the below example, 'INTO wa_emp' actually makes no sense and is reduntant, because 'TRANSPORTING NO FIELDS' will never... transport any
+*fields.
+CLEAR wa_emp.
+READ TABLE t_emp1 INTO wa_emp WITH KEY empno = 8 TRANSPORTING NO FIELDS.
+IF sy-subrc = 0.
+  WRITE: / 'The employee of number 8:'.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ELSE.
+  WRITE: / 'The employee of number 8 is not there.'.
+ENDIF.
+ULINE.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
