@@ -4700,6 +4700,68 @@ FORMAT COLOR OFF.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 
+*---------------------------------------------------------------------------------------------------------------------------------
+*PROUDLY ABAPER - INTERNAL TABLES. READ, SY-SUBRC, INDEX.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A typical internal table's declaration.
+TYPES: BEGIN OF t_emp,
+        empno        TYPE i,
+        ename(20)    TYPE c,
+        empdesig(25) TYPE c,
+       END OF t_emp.
+
+*An internal table without a default header line with a non-unique key.
+DATA: t_emp1 TYPE TABLE OF t_emp WITH NON-UNIQUE KEY empno.
+
+*An explicit work area is required for a table without a header.
+DATA: wa_emp TYPE t_emp.
+
+*APPENDing some data.
+CLEAR wa_emp.
+wa_emp-empno    = 3.
+wa_emp-ename    = 'Dazikiri'.
+wa_emp-empdesig = 'Developer'.
+APPEND wa_emp TO t_emp1.
+
+CLEAR wa_emp.
+wa_emp-empno    = 4.
+wa_emp-ename    = 'Heskit'.
+wa_emp-empdesig = 'Junior Developer'.
+APPEND wa_emp TO t_emp1.
+
+CLEAR wa_emp.
+wa_emp-empno    = 5.
+wa_emp-ename    = 'Halasibel'.
+wa_emp-empdesig = 'Senior Developer'.
+APPEND wa_emp TO t_emp1.
+
+*The initial data within the internal table.
+WRITE: 'The initial records of the internal table:'.
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+
+ULINE.
+
+*Adding an additional record to the table of the same empno (the table's key field!) as that which one of the records of the table
+*already has. It's possible because the table has been declared with the 'empno' as the NON-UNIQUE key.
+CLEAR wa_emp.
+wa_emp-empno    = 3.
+wa_emp-ename    = 'Seinn'.
+wa_emp-empdesig = 'Developer'.
+APPEND wa_emp TO t_emp1.
+
+WRITE: / 'After having added a record with a duplicate key field:'.
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
