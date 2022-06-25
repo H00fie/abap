@@ -4582,7 +4582,7 @@ wa_emp-empno    = 3.
 wa_emp-ename    = 'Dazikiri'.
 wa_emp-empdesig = 'Developer'.
 *In case of the internal tables with a header line, it'd just be 'APPEND t_emp1' because of the internal table itself and its
-*header line are called the same. APPENDING in such a scenario can only mean one thing.
+*header line being called the same. APPENDING in such a scenario can only mean one thing.
 *Since work areas are separate and can handle multiple internal tables, I need to proclaim to what table exactly I am appending
 *the current content of the work area. APPEND always appends the new record at the end of the internal table.
 APPEND wa_emp TO t_emp1.
@@ -4601,7 +4601,7 @@ APPEND wa_emp TO t_emp1.
 
 *If I want to reach multiple records within an internal table without a header line - I need to loop through the table with
 *'INTO' clause and thus, transfer every record into the work area first.
-FORMAT COLOR 3.
+FORMAT COLOR 2.
 WRITE:/ 'Data in t_emp1 initially: '.
 LOOP AT t_emp1 INTO wa_emp.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
@@ -4625,7 +4625,7 @@ wa_emp-ename    = 'Vargothan'.
 wa_emp-empdesig = 'Junior Developer'.
 INSERT wa_emp INTO t_emp1 INDEX 3.
 
-FORMAT COLOR 3.
+FORMAT COLOR 2.
 WRITE:/ 'Data in t_emp1 after INSERTing a record: '.
 LOOP AT t_emp1 INTO wa_emp.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
@@ -4641,7 +4641,7 @@ DATA: t_emp2 TYPE TABLE OF t_emp WITH NON-UNIQUE KEY empno.
 
 *To copy the data from 't_emp1' to 't_emp2'.
 APPEND LINES OF t_emp1 TO t_emp2.
-FORMAT COLOR 7.
+FORMAT COLOR 5.
 WRITE:/ 'Data in t_emp2 after copying it from t_emp1: '.
 LOOP AT t_emp2 INTO wa_emp.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
@@ -4654,7 +4654,7 @@ FORMAT COLOR OFF.
 *if there's a default SORT, will check if the internal table contains any key field. If there are no key fields, then
 *SAP will go and find the first character field in the internal table and sort it by it. If there isn't any character
 *field in the internal table, SAP will perform the SORT on the first field of the internal table.
-FORMAT COLOR 3.
+FORMAT COLOR 2.
 SORT t_emp1.
 WRITE:/ 'Data in t_emp1 after a default SORT: '.
 LOOP AT t_emp1 INTO wa_emp.
@@ -4666,7 +4666,7 @@ FORMAT COLOR OFF.
 *Again, a default SORT, but on a table with a key field specified.
 *The column by which the sorting should take place is also not specified, but 't_emp2' is a table declared with a key
 *field, so that's what the SORT is going to use.
-FORMAT COLOR 7.
+FORMAT COLOR 5.
 SORT t_emp2.
 WRITE:/ 'Data in t_emp2 after a default SORT: '.
 LOOP AT t_emp2 INTO wa_emp.
@@ -4685,7 +4685,7 @@ ENDLOOP.
 ULINE.
 FORMAT COLOR OFF.
 
-*SORTing can be set as descending or ascending.
+*SORTing can be set as descending or ascending. Ascending is the default setting.
 FORMAT COLOR 5.
 SORT t_emp2 by ename DESCENDING.
 WRITE:/ 'Data in t_emp2 after a SORT BY ename in a descending order: '.
