@@ -4757,6 +4757,26 @@ LOOP AT t_emp1 INTO wa_emp.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
 ENDLOOP.
 
+*------------------------
+*----------READ----------
+*------------------------
+*If I want to read a specific record of the internal table, I either need to know the position of the record or something else that
+*uniquely identifies that record.
+*To read a specific record, I can use READ statement.
+*Say, I know what I am looking for is at the third position.
+*READ will read the record from the body of the internal table and, if succesful - it will copy that record into the work area. Then
+*sy-subrc will be set to '0'. sy-subrc stores the execution status of ABAP statements. '0' means a success, '4' means a failure.
+CLEAR wa_emp.
+READ TABLE t_emp1 INTO wa_emp INDEX 3.
+*If the previous (read table) statement is successfully executed...
+IF sy-subrc = 0.
+  WRITE: / 'The third record of the internal table is:'.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ELSE.
+  WRITE: / 'The third record was not found.'.
+ENDIF.
+ULINE.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
