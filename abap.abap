@@ -4777,6 +4777,25 @@ ELSE.
 ENDIF.
 ULINE.
 
+*--------------------------------
+*----------TRANSPORTING----------
+*--------------------------------
+*I can also read only a part of the particular record instead of all of it.
+*The work area is not being cleared this time - the data of the third record is still present within.
+*TRANSPORTING means I am only 'transporting' the values mentioned afterwards. Basically - read 't_emp1' table into 'wa_emp' work area
+*from the index number three BUT TRANSPORT ONLY empno and ename.
+*Because the work area was not cleared and empdeisgn is not being transported - the previously inserted value will be present!
+*So I will have Seinn as a senior instead of a regular.
+*TRANSPORTING is good for the performance because I am taking only the data I actually need.
+READ TABLE t_emp1 INTO wa_emp INDEX 4 TRANSPORTING empno ename.
+IF sy-subrc = 0.
+  WRITE: / 'The fourth record of the internal table is:'.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ELSE.
+  WRITE: / 'The third record was not found.'.
+ENDIF.
+ULINE.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
