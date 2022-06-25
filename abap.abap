@@ -4792,7 +4792,27 @@ IF sy-subrc = 0.
   WRITE: / 'The fourth record of the internal table is:'.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
 ELSE.
-  WRITE: / 'The third record was not found.'.
+  WRITE: / 'The fourth record was not found.'.
+ENDIF.
+ULINE.
+
+*---------------------------------
+*----------READ WITH KEY----------
+*---------------------------------
+*I can READ a record based on a particular field whose value I know. For example, I might want a record where the employee number equals 3.
+*There are two of such, but I just want a single one. It is always recommended to sort the internal table based on the field I will be
+*looking up the record by before using the READ statement to increase performance.
+*Even if I did not specify by which field should the table be sorted, it would be sorted by 'empno' anyway, because the SORT will first check
+*if the table has any key fields and, if found, sort the table by them. And my table has 'empno' as the key field.
+SORT t_emp1 BY empno.
+CLEAR wa_emp.
+READ TABLE t_emp1 INTO wa_emp WITH KEY empno = 3.
+*Only a single record will be displayed because READ reaches only for one. The first record that meets the requirements will be fetched.
+IF sy-subrc = 0.
+  WRITE: / 'The employee of number 3:'.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ELSE.
+  WRITE: / 'The employee of number 3 is not there.'.
 ENDIF.
 ULINE.
 
