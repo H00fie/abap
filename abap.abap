@@ -4950,6 +4950,10 @@ ENDLOOP.
 *Explicit index operations:
 *- INSERT with INDEX. A regular INDEX  without specifying the index is not an explicit index operation!
 *- READ with INDEX.
+
+*Hashed tables irrespectively of the number of entries always take the constant amount of time to be searched. Tables with huge
+*amount of data will benefit from being hashed tables.
+
 TYPES: BEGIN OF ty_emp,
   empno        TYPE i,
   ename(20)    TYPE c,
@@ -4982,6 +4986,20 @@ LOOP AT t_emp1 INTO wa_emp.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
 ENDLOOP.
 ULINE.
+
+*--------------------------------
+*----------Searches--------------
+*--------------------------------
+*A linear/sequential search is possible, because I am not providing any index and searching based on the key. An indexed or binary
+*searches are not possible because they are explicitly and implicitly (respectively) providing an index.
+CLEAR wa_emp.
+READ TABLE t_emp1 INTO wa_emp WITH KEY empno = 3.
+IF sy-subrc = 0.
+  WRITE: / 'Employee number 3 found:'.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ELSE.
+  WRITE / 'Employee number 3 not found.'.
+ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
