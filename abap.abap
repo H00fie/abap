@@ -4844,6 +4844,17 @@ ELSE.
 ENDIF.
 ULINE.
 
+*------------------------------------------
+*----------SY-TABIX, SY-INDEX----------
+*------------------------------------------
+*sy-tabix contains the index' position within the internal table. It is used between LOOP and ENDLOOP statements.
+*sy-index on the other hand is used in DO and WHILE loops.
+*Below, 'sy-index' will increment but 'sy-tabix' will remain 0.
+DO 10 TIMES.
+  WRITE: / 'Hello!', sy-index, sy-tabix.
+ENDDO.
+ULINE.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
