@@ -4701,7 +4701,7 @@ FORMAT COLOR OFF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*PROUDLY ABAPER - INTERNAL TABLES. READ, SY-SUBRC, INDEX.
+*INTERNAL TABLES. READ, SY-SUBRC, INDEX.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *A typical internal table's declaration.
@@ -4855,6 +4855,57 @@ DO 10 TIMES.
 ENDDO.
 ULINE.
 
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES. SORTED TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+TYPES: BEGIN OF ty_emp,
+  empno        TYPE i,
+  ename(20)    TYPE c,
+  empdesig(25) TYPE c,
+       END OF ty_emp.
+
+*When I am declaring a standard table, I can decalre it with a key or without a key. If I define it with a key, it supports only
+*non-unique ones. A sorted table type requires me to specify a key. It is mandatory. Both non-unique and unique keys are supported.
+DATA: t_emp1 TYPE SORTED TABLE OF ty_emp WITH NON-UNIQUE KEY empno,
+      wa_emp TYPE ty_emp.
+
+*While adding the entries to the sorted internal table, it will automatically sort them based on it's designated key field.
+*When adding the work area to the internal table itself, standard internal tables allow APPEND and INSERT to be used. APPEND
+*will always add the data at the end of the internal table and INSERT allows for the adding of the record both at the end of
+*the itnernal table and at a particular position by specifying the index.
+*Sorted tables also allow for APPEND, but if I attempt to add a record with the key field of a lower value than of a record before,
+*it will throw an error instead of just placing it in the correct place of the sequence. That is because APPEND always tries to
+*place the record at the end of the internal table.
+CLEAR wa_emp.
+wa_emp-empno    = 3.
+wa_emp-ename    = 'Thanquol'.
+wa_emp-empdesig = 'Developer'.
+APPEND wa_emp TO t_emp1.
+
+CLEAR wa_emp.
+wa_emp-empno    = 5.
+wa_emp-ename    = 'Seleukos'.
+wa_emp-empdesig = 'Junior Developer'.
+APPEND wa_emp TO t_emp1.
+
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+
+*To try to perform the below creates a conflict - this is a sorted table, but APPEND will always place the record at the very end of
+*the table. Thus - a runtime error.
+CLEAR wa_emp.
+wa_emp-empno    = 2.
+wa_emp-ename    = 'Sati'.
+wa_emp-empdesig = 'Senior Developer'.
+APPEND wa_emp TO t_emp1.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
