@@ -4876,6 +4876,9 @@ TYPES: BEGIN OF ty_emp,
 DATA: t_emp1 TYPE SORTED TABLE OF ty_emp WITH NON-UNIQUE KEY empno,
       wa_emp TYPE ty_emp.
 
+*------------------------------
+*----------APPEND--------------
+*------------------------------
 *While adding the entries to the sorted internal table, it will automatically sort them based on it's designated key field.
 *When adding the work area to the internal table itself, standard internal tables allow APPEND and INSERT to be used. APPEND
 *will always add the data at the end of the internal table and INSERT allows for the adding of the record both at the end of
@@ -4883,6 +4886,7 @@ DATA: t_emp1 TYPE SORTED TABLE OF ty_emp WITH NON-UNIQUE KEY empno,
 *Sorted tables also allow for APPEND, but if I attempt to add a record with the key field of a lower value than of a record before,
 *it will throw an error instead of just placing it in the correct place of the sequence. That is because APPEND always tries to
 *place the record at the end of the internal table.
+*If I try to add a duplicate entry (the same key field) to the table with a UNIQUE KEY, the APPEND will cause an error (INSERT won't).
 CLEAR wa_emp.
 wa_emp-empno    = 3.
 wa_emp-ename    = 'Thanquol'.
@@ -4898,14 +4902,34 @@ APPEND wa_emp TO t_emp1.
 LOOP AT t_emp1 INTO wa_emp.
   WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
 ENDLOOP.
+ULINE.
 
 *To try to perform the below creates a conflict - this is a sorted table, but APPEND will always place the record at the very end of
 *the table. Thus - a runtime error.
+*CLEAR wa_emp.
+*wa_emp-empno    = 2.
+*wa_emp-ename    = 'Sati'.
+*wa_emp-empdesig = 'Senior Developer'.
+*APPEND wa_emp TO t_emp1.
+
+*------------------------------
+*----------INSERT--------------
+*------------------------------
+*In the below example, the record will be automatically placed in the correct place in the sequence, because INSERT isn't trying to
+*put the new record at the end of the table obligatorily.
+*INSERT statement is thus the recommended approach.
+*If I try to add a duplicate entry (the same key field) to the table with a UNIQUE KEY, the INSERT will ignore it, without throwing
+*an error (APPEND will).
 CLEAR wa_emp.
-wa_emp-empno    = 2.
+wa_emp-empno    = 4.
 wa_emp-ename    = 'Sati'.
 wa_emp-empdesig = 'Senior Developer'.
-APPEND wa_emp TO t_emp1.
+INSERT wa_emp INTO TABLE t_emp1.
+
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
