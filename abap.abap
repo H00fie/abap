@@ -4937,6 +4937,59 @@ ENDLOOP.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*INTERNAL TABLES. HASHED TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Hashed tables uses a hash algorithm. The algorithm allows for searching by the key field. Indexing is not possible. It is not
+*possible to perform explicit or implicit index operations.
+*Implicit index operations:
+*- APPEND which is telling SAP indirectly to place the record at the end of the internal table. This is indirectly (implicitly)
+*  pointing the specific placement (index).
+*- READ with BINARY SEARCH is indirectly telling to search for the record from the specific location (middle). This is implicitly
+*  pointing the specific location.
+*Explicit index operations:
+*- INSERT with INDEX. A regular INDEX  without specifying the index is not an explicit index operation!
+*- READ with INDEX.
+TYPES: BEGIN OF ty_emp,
+  empno        TYPE i,
+  ename(20)    TYPE c,
+  empdesig(25) TYPE c,
+       END OF ty_emp.
+
+*Hashed tables can only have unique keys.
+DATA: t_emp1 TYPE HASHED TABLE OF ty_emp WITH UNIQUE KEY empno,
+      wa_emp TYPE ty_emp.
+
+CLEAR wa_emp.
+wa_emp-empno    = 3.
+wa_emp-ename    = 'Nessa'.
+wa_emp-empdesig = 'Developer'.
+INSERT wa_emp INTO TABLE t_emp1.
+
+CLEAR wa_emp.
+wa_emp-empno    = 5.
+wa_emp-ename    = 'Fingolfin'.
+wa_emp-empdesig = 'Junior Developer'.
+INSERT wa_emp INTO TABLE t_emp1.
+
+CLEAR wa_emp.
+wa_emp-empno    = 2.
+wa_emp-ename    = 'Nikanor'.
+wa_emp-empdesig = 'Senior Developer'.
+INSERT wa_emp INTO TABLE t_emp1.
+
+LOOP AT t_emp1 INTO wa_emp.
+  WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+ENDLOOP.
+ULINE.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
