@@ -5017,10 +5017,35 @@ ENDIF.
 *Modularization increases reusability, decreases the cost of maintenance, increases readibility and provides efficient control over
 *programs' flow.
 
-*Subroutine's call to action! I can reuse once defined subroutine as many times as I want.
+*Variables to be used by the second subroutine.
+DATA: v_x TYPE i VALUE 20,
+      v_y TYPE i VALUE 10.
+*Variables to be used by the third subroutine.
+DATA: v_r1 TYPE i,
+      v_r2 TYPE i.
+
+*Subroutine's call to action! I can reuse once defined subroutine as many times as I want. This is an internal subroutine which means
+*it is defined and called within the same program. Subroutines can also be external when they are defined and called in different programs.
 PERFORM sub1.
 PERFORM sub1.
 PERFORM sub1.
+
+ULINE.
+
+*Subroutines can also have parameters. USING is to be used whenever I am dealing with standard data types as parameters. At the time of
+*the calling of the subroutine, I am USING the actual variables as parameters.
+PERFORM sub2 USING v_x v_y.
+
+ULINE.
+
+*Subroutines can also return values and any number of them. CHANGING means these values (declared above) will be assigned new values by
+*the subroutine.
+PERFORM sub3 USING v_x v_y CHANGING v_r1 v_r2.
+WRITE: 'The results from the sub3 are:'.
+WRITE: 'The sum is: ', v_r1.
+WRITE: 'The difference is: ', v_r2.
+
+ULINE.
 
 *&---------------------------------------------------------------------*
 *&      Form  sub1
@@ -5030,6 +5055,35 @@ PERFORM sub1.
 FORM sub1.
   WRITE: / 'Hello! This is a very long text that I did not want to have to repeat multiple times, so I made it into a subroutine instead.'.
 ENDFORM.                    "sub1
+
+*&---------------------------------------------------------------------*
+*&      Form  sub2
+*&---------------------------------------------------------------------*
+*       The names of the parameters can be the same as the actual parameters or they can be different. The moment the control comes out of
+*       the subroutine, the local variables and formal parameters ('p_x', 'p_y') are destroyed.
+*----------------------------------------------------------------------*
+FORM sub2 USING p_x p_y.
+  DATA: result TYPE i.
+  result = p_x + p_y.
+  WRITE: / 'The sum is: ', result.
+ENDFORM.                    "sub2
+
+*&---------------------------------------------------------------------*
+*&      Form  sub3
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*      -->K1         text
+*      -->K2         text
+*      <--M1         text
+*      <--M2         text
+*      k1 will become v_x, k2 will become v_y, m1 will become v_r1 and m2 will become v_r2. No 'return' is required. SAP understands
+*      on its own that 'changing' values are the ones being returned.
+*----------------------------------------------------------------------*
+FORM sub3 USING k1 k2 CHANGING m1 m2.
+  m1 = k1 + k2.
+  m2 = k1 - k2.
+ENDFORM.                    "sub3
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
