@@ -5008,6 +5008,22 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MODULARIZATION.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Modularization is a process of breaking a program into smaller individual blocks. A block is a set of statements which is defined
+*only once and can be called any number of times.
+*Modularization techniques are: subroutines, include programs, function modules, methods and macros.
+*Modularization increases reusability, decreases the cost of maintenance, increases readibility and provides efficient control over
+*programs' flow.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
