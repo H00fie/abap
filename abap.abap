@@ -5017,6 +5017,20 @@ ENDIF.
 *Modularization increases reusability, decreases the cost of maintenance, increases readibility and provides efficient control over
 *programs' flow.
 
+*Subroutine's call to action! I can reuse once defined subroutine as many times as I want.
+PERFORM sub1.
+PERFORM sub1.
+PERFORM sub1.
+
+*&---------------------------------------------------------------------*
+*&      Form  sub1
+*&---------------------------------------------------------------------*
+*       This is the definition of the subroutine.
+*----------------------------------------------------------------------*
+FORM sub1.
+  WRITE: / 'Hello! This is a very long text that I did not want to have to repeat multiple times, so I made it into a subroutine instead.'.
+ENDFORM.                    "sub1
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
