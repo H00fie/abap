@@ -5063,6 +5063,22 @@ PERFORM sub4 USING v_x v_y.
 *the formal parameters point to the actual parameters.
 WRITE: / 'v_x and v_y after the calling of the subroutine:', v_x, v_y.
 
+ULINE.
+
+*When passing by value, the signature of the subroutine is the same. The changes come in the definition. The keyword 'VALUE' used there
+*tells SAP to not take the address of the passed variable, but the value of the actual parameter. 'k1' and 'k2' will not be pointing to
+*the actual variables. They are just receiving the same values as the actual parameters.
+CLEAR: v_x, v_y.
+v_x = 10.
+v_y = 20.
+WRITE: / 'Pass by value:'.
+WRITE: / 'v_x and v_y before the calling of the subroutine:', v_x, v_y.
+PERFORM sub5 USING v_x v_y.
+*'v_x' and 'v_y' remain unchanged because the subroutine just copies their values and assigns them to its local variables of 'k1' and 'k2'.
+*Any operation performed on formal parameters within the subroutine will not be reflected in the actual variables, because there's no
+*connection between them.
+WRITE: / 'v_x and v_y after the calling of the subroutine:', v_x, v_y.
+
 *&---------------------------------------------------------------------*
 *&      Form  sub1
 *&---------------------------------------------------------------------*
@@ -5115,6 +5131,20 @@ FORM sub4 USING k1 k2.
   k1 = k2.
   k2 = k3.
 ENDFORM.                    "sub4
+
+*&---------------------------------------------------------------------*
+*&      Form  sub5
+*&---------------------------------------------------------------------*
+*       In order to have the variables passed by value, I need to utilize the VALUE keyword.
+*----------------------------------------------------------------------*
+*      -->VALUE      text
+*      -->(K1)       text
+*      -->VALUE      text
+*      -->(K2)       text
+*----------------------------------------------------------------------*
+FORM sub5 USING VALUE(k1) VALUE(k2).
+
+ENDFORM.                    "sub5
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
