@@ -5008,7 +5008,7 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*MODULARIZATION.
+*MODULARIZATION. INTERNAL SUBROUTINES, PASS BY VALUE, PASS BY REFERENCE.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *Modularization is a process of breaking a program into smaller individual blocks. A block is a set of statements which is defined
