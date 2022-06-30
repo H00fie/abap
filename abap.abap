@@ -5047,6 +5047,22 @@ WRITE: 'The difference is: ', v_r2.
 
 ULINE.
 
+*-----------------------------------------------------------
+*----------Pass by value and pass by reference--------------
+*-----------------------------------------------------------
+*Paramaters can be passed into subroutines in one of two ways - either pass by value or pass by reference. By default, they are passed
+*by reference. In the below example 'v_x' and 'v_y' are received by the FORM as 'k1' and 'k2' and it means that the ADDRESSES of ACTUAL
+*(former) parameters are copied to FORMAL (latter) parameters. Thus the formal parameters will point to the actual parameters. 'k1' and
+*'k2' will point to 'v_x' and 'v_y' respectively knowing just their address and not containing their values.
+v_x = 10.
+v_y = 20.
+WRITE: / 'Pass by reference:'.
+WRITE: / 'v_x and v_y before the calling of the subroutine:', v_x, v_y.
+PERFORM sub4 USING v_x v_y.
+*The values of the variables have been changed. The changes made to the formal parameters are reflected in the actual parameters, because
+*the formal parameters point to the actual parameters.
+WRITE: / 'v_x and v_y after the calling of the subroutine:', v_x, v_y.
+
 *&---------------------------------------------------------------------*
 *&      Form  sub1
 *&---------------------------------------------------------------------*
@@ -5084,6 +5100,21 @@ FORM sub3 USING k1 k2 CHANGING m1 m2.
   m1 = k1 + k2.
   m2 = k1 - k2.
 ENDFORM.                    "sub3
+
+*&---------------------------------------------------------------------*
+*&      Form  sub4
+*&---------------------------------------------------------------------*
+*       Below, not values but addresses are being copied!
+*----------------------------------------------------------------------*
+*      -->K1         text
+*      -->K2         text
+*----------------------------------------------------------------------*
+FORM sub4 USING k1 k2.
+  DATA k3 TYPE i.
+  k3 = k1.
+  k1 = k2.
+  k2 = k3.
+ENDFORM.                    "sub4
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
