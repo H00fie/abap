@@ -5183,6 +5183,13 @@ wa_emp-ename = 'Astrastvael'.
 wa_emp-empdesig = 'Senior Developer'.
 APPEND wa_emp TO it_emp.
 
+*Displays the internal table's contents.
+PERFORM sub2 TABLES it_emp.
+
+ULINE.
+
+*Deletes some of the internal table's contents.
+PERFORM sub3 TABLES it_emp.
 PERFORM sub2 TABLES it_emp.
 
 *A work area can be used anywhere in the program, including the FORMs. I am using it directly, because
@@ -5201,6 +5208,19 @@ ENDFORM.
 *    doing important stuff!!!
 *  ENDLOOP.
 *ENDFORM.
+
+*Wherever I am altering the data in the internal table in a subroutine (MODIFY or DELETE), I need to
+*specify the structure of the internal table by adding the keyword STRUCTURE and providing the work area
+*used. "Row type" is work area.
+*Without this addition (the example below) I will get an error:
+*"The row type of the table must be identifiable statically in "...WHERE..."".
+*FORM sub3 TABLES lt_emp.
+*  DELETE lt_emp WHERE empdesig = 'Senior Developer'.
+*ENDFORM.
+
+FORM sub3 TABLES lt_emp STRUCTURE wa_emp.
+  DELETE lt_emp WHERE empdesig = 'Senior Developer'.
+ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
