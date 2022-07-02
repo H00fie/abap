@@ -5153,6 +5153,62 @@ ENDFORM.                    "sub5
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MODULARIZATION. INTERNAL TABLES AS PARAMETERS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+TYPES: BEGIN OF t_emp,
+          empno        TYPE i,
+          ename(20)    TYPE c,
+          empdesig(25) TYPE c,
+       END OF t_emp.
+
+DATA: it_emp TYPE TABLE OF t_emp,
+      wa_emp TYPE t_emp.
+
+CLEAR wa_emp.
+wa_emp-empno = 3.
+wa_emp-ename = 'Dazikiri'.
+wa_emp-empdesig = 'Developer'.
+APPEND wa_emp TO it_emp.
+
+CLEAR wa_emp.
+wa_emp-empno = 1.
+wa_emp-ename = 'Attalos'.
+wa_emp-empdesig = 'Junior Developer'.
+APPEND wa_emp TO it_emp.
+
+CLEAR wa_emp.
+wa_emp-empno = 5.
+wa_emp-ename = 'Astrastvael'.
+wa_emp-empdesig = 'Senior Developer'.
+APPEND wa_emp TO it_emp.
+
+PERFORM sub2 TABLES it_emp.
+
+*A work area can be used anywhere in the program, including the FORMs. I am using it directly, because
+*the work area itself is but a 'tool' for passing data and can be used for multiple internal tables.
+FORM sub2 TABLES lt_emp.
+  LOOP AT lt_emp INTO wa_emp.
+    WRITE: / wa_emp-empno, wa_emp-ename, wa_emp-empdesig.
+  ENDLOOP.
+ENDFORM.
+
+*If I tried to do it as below with the USING keyword, SAP would throw an error saying 'lt_emp' is not
+*recognized as an internal table.
+*PERFORM sub1 USING it_temp.
+*FORM sub1 USING lt_emp.
+*  LOOP AT lt_emp INTO wa_emp.
+*    doing important stuff!!!
+*  ENDLOOP.
+*ENDFORM.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
