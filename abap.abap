@@ -5287,6 +5287,45 @@ ULINE.
 PERFORM sub2(ZBM_SUBROUTINE_POOL) USING 30 10.
 PERFORM sub3(ZBM_SUBROUTINE_POOL) USING 30 10.
 
+*********************************************
+*THE CODE WITHIN ZBM_TEST3.
+*********************************************
+*REPORT  ZBM_TEST3.
+*
+*FORM sub1.
+*  WRITE: / 'Inside the sub1 subroutine in ZBM_TEST3!'.
+*ENDFORM.
+*
+*FORM sub2 USING x y.
+*  WRITE: / 'Inside the sub2 subroutine in ZBM_TEST3!'.
+*  DATA z TYPE i.
+*  z = x + y.
+*  WRITE: / 'The sum is: ', z.
+*  WRITE: / 'The end of sub2!'.
+*ENDFORM.
+
+*********************************************
+*THE CODE WITHIN ZBM_SUBROUTINE_POOL.
+*********************************************
+*This is a subroutine pool and thus is not executable. Trying to do so will throw an error.
+*PROGRAM  ZBM_SUBROUTINE_POOL.
+*
+*DATA z TYPE i.
+*
+*FORM sub1.
+*  WRITE: / 'Inside sub1 of subroutine pool!'.
+*ENDFORM.
+*
+*FORM sub2 USING x y.
+*  z = x + y.
+*  WRITE: / 'The sum is: ', z.
+*ENDFORM.
+*
+*FORM sub3 USING x y.
+*  z = x - y.
+*  WRITE: / 'The difference is: ', z.
+*ENDFORM.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
