@@ -5254,6 +5254,32 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MODULARIZATION. EXTERNAL SUBROUTINES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*If I want the same functionality to be used across multiple programs, I should create an external subroutine. Below statement
+*will throw an error desptie 'sub1' being defined... because it's defined in another program (ZBM_TEST3). By default, subroutines
+*are considered internal.
+*PERFORM sub1.
+
+*I need to specify from what program I want to call the subroutine. Both of the below ways of calling an external subroutine are
+*correct.
+PERFORM sub1 IN PROGRAM ZBM_TEST3.
+PERFORM sub1(ZBM_TEST3).
+
+ULINE.
+
+*Calling an external subroutine with parameters.
+PERFORM sub2 IN PROGRAM ZBM_TEST3 USING 20 10.
+PERFORM sub2 IN PROGRAM ZBM_TEST3 USING 60 3.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
