@@ -5335,21 +5335,27 @@ PERFORM sub3(ZBM_SUBROUTINE_POOL) USING 30 10.
 *---------------------------------------------------------------------------------------------------------------------------------
 *INCLUDE PROGRAMS.
 *---------------------------------------------------------------------------------------------------------------------------------
+
 *Similar to Java's imports! An include is a reusable object which can contain global variables, subroutine definitions, module
 *definitions.
 *Variables are declared within the include. It is a good practice to include the INCLUDEs (hehe) at the beginning of the program.
 INCLUDE ZBM_INCLUDE_ONE.
-
+*INCLUDEs usually should be included at the very beginning of the program, but 'ZBM_INCLUDE_TWO' contains the definitions of
+*subroutines and modules which means I have e.g. FORMs included... at the beginning of the program. And they always have to
+*be at the very end of it. If I placed that INCLUDE below the 'PERFORM sub2', the program would compile.
+*Thus, INCLUDEs should be at the very top of the program and if these INCLUDEs contain any subroutines' or modules' definitions,
+*then I should add the event block START-OF-SELECTION after these INCLUDEs. This will tell SAP to not start the processing of
+*the program from the INCLUDEs, but from where START-OF-SELECTION is placed and the INCLUDEs still will declared where they
+*ought to be.
+INCLUDE ZBM_INCLUDE_TWO.
+START-OF-SELECTION.
 x = 5.
 y = 2.
 z = x + y.
 WRITE: / 'The sum is: ', z.
 
-*INCLUDEs usually should be included at the very beginning of the program, but 'ZBM_INCLUDE_TWO' contains the definitions of
-*subroutines and modules which means I have e.g. FORMs included... at the beginning of the program. And they always have to
-*be at the very end of it.
+*The definition is within 'ZBM_INCLUDE_TWO'.
 PERFORM sub2.
-INCLUDE ZBM_INCLUDE_TWO.
 
 *********************************************
 *THE CODE WITHIN ZBM_INCLUDE_ONE.
