@@ -5273,6 +5273,20 @@ ULINE.
 PERFORM sub2 IN PROGRAM ZBM_TEST3 USING 20 10.
 PERFORM sub2 IN PROGRAM ZBM_TEST3 USING 60 3.
 
+ULINE.
+
+*---------------------------------------
+*----------SUBROUTINE POOL--------------
+*---------------------------------------
+*In SE38, next to regular executable programs, I can create subroutine pools (ZBM_SUBROUTINE_POOL).
+PERFORM sub1 IN PROGRAM ZBM_SUBROUTINE_POOL.
+PERFORM sub1(ZBM_SUBROUTINE_POOL).
+
+ULINE.
+
+PERFORM sub2(ZBM_SUBROUTINE_POOL) USING 30 10.
+PERFORM sub3(ZBM_SUBROUTINE_POOL) USING 30 10.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
