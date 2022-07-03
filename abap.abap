@@ -5153,7 +5153,7 @@ ENDFORM.                    "sub5
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*MODULARIZATION. INTERNAL TABLES AS PARAMETERS.
+*MODULARIZATION. INTERNAL TABLES AS PARAMETERS. DELETE, MODIFY.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 TYPES: BEGIN OF t_emp,
@@ -5192,6 +5192,12 @@ ULINE.
 PERFORM sub3 TABLES it_emp.
 PERFORM sub2 TABLES it_emp.
 
+ULINE.
+
+PERFORM sub4 TABLES it_emp.
+
+ULINE.
+
 *A work area can be used anywhere in the program, including the FORMs. I am using it directly, because
 *the work area itself is but a 'tool' for passing data and can be used for multiple internal tables.
 FORM sub2 TABLES lt_emp.
@@ -5209,6 +5215,9 @@ ENDFORM.
 *  ENDLOOP.
 *ENDFORM.
 
+*------------------------------
+*----------DELETE--------------
+*------------------------------
 *Wherever I am altering the data in the internal table in a subroutine (MODIFY or DELETE), I need to
 *specify the structure of the internal table by adding the keyword STRUCTURE and providing the work area
 *used. "Row type" is work area.
@@ -5218,8 +5227,24 @@ ENDFORM.
 *  DELETE lt_emp WHERE empdesig = 'Senior Developer'.
 *ENDFORM.
 
+*Changes done to the formal internal table will also affect the actual internal table which means it's
+*passed by reference by default.
 FORM sub3 TABLES lt_emp STRUCTURE wa_emp.
   DELETE lt_emp WHERE empdesig = 'Senior Developer'.
+ENDFORM.
+
+*------------------------------
+*----------MODIFY--------------
+*------------------------------
+*I cannot modify an internal table directly, first I need to assign the desired value to the work area
+*and then I can update the internal table via the work area.
+*"TRANSPORTING empdesig" means that only this field is to be taken into account. I could say instead:
+*"(...)TRANSPORTING ename WHERE empdesig = 'Developer'." if my work area contained the updated name
+*which I wanted to assign to all developers.
+FORM sub4 TABLES lt_emp STRUCTURE wa_emp.
+  CLEAR wa_emp.
+  wa_emp-empdesig = 'Senior Developer'.
+  MODIFY lt_emp FROM wa_emp TRANSPORTING empdesig WHERE empdesig = 'Developer'. 
 ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
