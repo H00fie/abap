@@ -5404,6 +5404,7 @@ PERFORM sub2.
 *---------------------------------------------------------------------------------------------------------------------------------
 *FUNCTION MODULES.
 *---------------------------------------------------------------------------------------------------------------------------------
+
 *Similar to subroutines, it is a set of statements that is defined once and can be called any number of times. The difference is that
 *subroutines are created as part of a particular program while function modules are created with a separate tool - a function builder
 *tool (transaction SE37).
@@ -5424,11 +5425,15 @@ PERFORM sub2.
 *- A 'Regular Function Module' means my function module can be accessed throughout this particular SAP server.
 *- A 'Remote-Enabled Module' means my function module can be called from another SAP server.
 
+*Parameters for the second custom function module.
+PARAMETERS: p_x TYPE i,
+            p_y TYPE i.
+
 *Since function modules are developed in a separate tool, a developer is provisioned with the possibility to test a function module
 *within a function module tool. The below test function module only prints a string using the WRITE statement which displays the
 *output in the output screen - List Processing Screen. If I Test (F8) my function module, I will be taken to another screen where
 *I can select 'Display output list of function module' button on the Application Toolbar. This will show me the list generated.
-
+WRITE: / 'A function module without any parameters:'.
 CALL FUNCTION 'ZBM_FUNCTION_MODULE_ONE'
           .
 
@@ -5439,6 +5444,22 @@ CALL FUNCTION 'ZBM_FUNCTION_MODULE_ONE'
 *WRITE: / 'Hello from ZBM_FUNCTION_MODULE_ONE!'.
 *ENDFUNCTION.
 
+*A function module with parameters:
+WRITE: / 'A function module with parameters:'.
+CALL FUNCTION 'ZBM_FUNCTION_MODULE_TWO'
+  EXPORTING
+    i_x           = p_x
+    i_y           = p_y
+          .
+
+**********************************************
+**THE CODE WITHIN ZBM_FUNCTION_MODULE_TWO.
+**********************************************
+*FUNCTION ZBM_FUNCTION_MODULE_TWO.
+*DATA: lv_z TYPE i.
+*lv_z = i_x + i_y.
+*WRITE: / 'The sum is: ', lv_z.
+*ENDFUNCTION.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
