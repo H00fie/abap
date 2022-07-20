@@ -5520,6 +5520,36 @@ ULINE.
 *e_r2 = i_x - i_y.
 *ENDFUNCTION.
 
+*------------------------------------------------------------------
+*----------A FUNCTION MODULE WITH CHANGING PARAMETERS--------------
+*------------------------------------------------------------------
+*CHANGING parameters act as both import and export parameters - the same parameter can be used for passing the value as well as
+*returning the value.
+*'p_y' acts as both the import and export value. It is one of the paramters exported into the function module and the only one
+*that's being exported. The calculation is being performed on both parameters and one of them is also returned as a result.
+WRITE: / 'A function module with a changing parameter:'.
+CALL FUNCTION 'ZBM_FUNCTION_MODULE_FOUR'
+  EXPORTING
+    i_x           = p_x
+  CHANGING
+    c_y           = p_y
+          .
+WRITE: / 'The result is: ', p_y.
+
+**********************************************
+**THE CODE WITHIN ZBM_FUNCTION_MODULE_THREE.
+**********************************************
+*FUNCTION ZBM_FUNCTION_MODULE_FOUR.
+**"----------------------------------------------------------------------
+**"*"Lokalny interfejs:
+**"  IMPORTING
+**"     REFERENCE(I_X) TYPE  I
+**"  CHANGING
+**"     REFERENCE(C_Y) TYPE  I
+**"----------------------------------------------------------------------
+*c_y = i_x + c_y.
+*ENDFUNCTION.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
