@@ -22,13 +22,16 @@
 *- A 'Regular Function Module' means my function module can be accessed throughout this particular SAP server.
 *- A 'Remote-Enabled Module' means my function module can be called from another SAP server.
 
-*Parameters for the second and third custom function modules.
+*Parameters for the second, third and fourth custom function modules.
 PARAMETERS: p_x TYPE i,
             p_y TYPE i.
 *To contain the values returned by the third function.
 DATA: gv_r1 TYPE i,
       gv_r2 TYPE i.
 
+*------------------------------------------------------------
+*----------A FUNCTION MODULE WITHOUT PARAMETERS--------------
+*------------------------------------------------------------
 *Since function modules are developed in a separate tool, a developer is provisioned with the possibility to test a function module
 *within a function module tool. The below test function module only prints a string using the WRITE statement which displays the
 *output in the output screen - List Processing Screen. If I Test (F8) my function module, I will be taken to another screen where
@@ -42,9 +45,15 @@ ULINE.
 **THE CODE WITHIN ZBM_FUNCTION_MODULE_ONE.
 **********************************************
 *FUNCTION ZBM_FUNCTION_MODULE_ONE.
+**"----------------------------------------------------------------------
+**"*"Lokalny interfejs:
+**"----------------------------------------------------------------------
 *WRITE: / 'Hello from ZBM_FUNCTION_MODULE_ONE!'.
 *ENDFUNCTION.
 
+*---------------------------------------------------------
+*----------A FUNCTION MODULE WITH PARAMETERS--------------
+*---------------------------------------------------------
 *A function module with parameters:
 WRITE: / 'A function module with parameters:'.
 CALL FUNCTION 'ZBM_FUNCTION_MODULE_TWO'
@@ -58,6 +67,12 @@ ULINE.
 **THE CODE WITHIN ZBM_FUNCTION_MODULE_TWO.
 **********************************************
 *FUNCTION ZBM_FUNCTION_MODULE_TWO.
+**"----------------------------------------------------------------------
+**"*"Lokalny interfejs:
+**"  IMPORTING
+**"     REFERENCE(I_X) TYPE  I
+**"     REFERENCE(I_Y) TYPE  I
+**"----------------------------------------------------------------------
 *DATA: lv_z TYPE i.
 *lv_z = i_x + i_y.
 *WRITE: / 'The sum is: ', lv_z.
@@ -66,7 +81,7 @@ ULINE.
 *In different programming languages, a function can return just a single value. In ABAP any number of values can be returned and
 *it depends on the number of export parameters. In ABAP export parameters are always optional. Function modules do not use any
 *"return" keyword, because export parameters are considered the values to be returned.
-*When I am caling a function from my code, what EXPORTING parameters are IMPORTING ones from the function's perspective. Likewise
+*When I am caling a function from my code, the EXPORTING parameters are the IMPORTING ones from the function's perspective. Likewise
 *what, from the perspective of the rest of the code my function is IMPORTING is actually EXPORTING from within the function itself.
 *The words used are dependant on the perspective.
 *Below, esentially, 'p_x' and 'p_y' are being exported into the function module (from within the FM they are being imported), the function
@@ -84,6 +99,54 @@ CALL FUNCTION 'ZBM_FUNCTION_MODULE_THREE'
 WRITE: / 'The first returned value is:', gv_r1.
 WRITE: / 'The second returned value is:', gv_r2.
 ULINE.
+
+**********************************************
+**THE CODE WITHIN ZBM_FUNCTION_MODULE_THREE.
+**********************************************
+*FUNCTION ZBM_FUNCTION_MODULE_THREE.
+*"----------------------------------------------------------------------
+*"*"Lokalny interfejs:
+*"  IMPORTING
+*"     REFERENCE(I_X) TYPE  I
+*"     REFERENCE(I_Y) TYPE  I
+*"  EXPORTING
+*"     REFERENCE(E_R1) TYPE  I
+*"     REFERENCE(E_R2) TYPE  I
+*"----------------------------------------------------------------------
+*e_r1 = i_x + i_y.
+*e_r2 = i_x - i_y.
+*ENDFUNCTION.
+
+*------------------------------------------------------------------
+*----------A FUNCTION MODULE WITH CHANGING PARAMETERS--------------
+*------------------------------------------------------------------
+*CHANGING parameters act as both import and export parameters - the same parameter can be used for passing the value as well as
+*returning the value.
+*'p_y' acts as both the import and export value. It is one of the paramters exported into the function module and the only one
+*that's being exported. The calculation is being performed on both parameters and one of them is also returned as a result.
+WRITE: / 'A function module with a changing parameter:'.
+CALL FUNCTION 'ZBM_FUNCTION_MODULE_FOUR'
+  EXPORTING
+    i_x           = p_x
+  CHANGING
+    c_y           = p_y
+          .
+WRITE: / 'The result is: ', p_y.
+
+**********************************************
+**THE CODE WITHIN ZBM_FUNCTION_MODULE_THREE.
+**********************************************
+*FUNCTION ZBM_FUNCTION_MODULE_FOUR.
+**"----------------------------------------------------------------------
+**"*"Lokalny interfejs:
+**"  IMPORTING
+**"     REFERENCE(I_X) TYPE  I
+**"  CHANGING
+**"     REFERENCE(C_Y) TYPE  I
+**"----------------------------------------------------------------------
+*c_y = i_x + c_y.
+*ENDFUNCTION.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
