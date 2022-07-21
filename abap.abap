@@ -5557,6 +5557,97 @@ WRITE: / 'The result is: ', p_y.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*SELECT-OPTIONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*While PARAMETERS generates a selection-screen for reading a singlue input value, SELECT-OPTIONS generates a selection-screen but
+*for reading a range of input values. An internal table is created in the runtime.
+*To try to extract data based on the net value from VBAK (sales document header data). 'netwr_ak' is a data element for 'netwr' in
+*VBAK.
+*There are three ways to declare SELECT-OPTIONS:
+*--------------------------------------------------------------------*
+*CASE 1:
+*DATA v_netwr TYPE netwr_ak. "This is an equivalent to "(...)TYPE vbak-netwr."
+*SELECT-OPTIONS so_netwr FOR v_netwr. "This is an equivalent to '(...)FOR vbak-netwr."
+*--------------------------------------------------------------------*
+*CASE 2:
+DATA v_netwr TYPE vbak-netwr.
+SELECT-OPTIONS so_netwr FOR v_netwr DEFAULT 1000 TO 1200.
+*--------------------------------------------------------------------*
+*CASE 3:
+*This is not a recommended approach. Whenever I used the keyword TABLES, SAP will create a work-area will all the fields of the
+*database table (VBAK in this case). Out of all these fields, I am referring to just one. All others are wasted space.
+*TABLES: vbak.
+*SELECT-OPTIONS so_netwr FOR vbak-netwr.
+
+TYPES: BEGIN OF t_sales,
+        vbeln TYPE vbak-vbeln,
+        erdat TYPE vbak-erdat,
+        erzet TYPE vbak-erzet,
+        ernam TYPE vbak-ernam,
+        netwr TYPE vbak-netwr,
+END OF t_sales.
+
+DATA: it_sales TYPE TABLE OF t_sales,
+      wa_sales TYPE t_sales.
+
+*SELECT-OPTIONS uses internal tables to store the provided values. These values need to be installed in a table in memory for our
+*program to use. An internal table created thus has a similar restrction to parameters. They can only have a name that contains no
+*more than eight characters. Select tables contain four separate fields which are defined when I create my SELECT-OPTIONS statement.
+*These are:
+* - sign   <-- a data type c with one character's length. It determines for each record whether it should be included or excluded from
+*              the result set. The possible values that can be included here are 'I' and 'E'.
+* - option <-- also type c, but the length of two. It holds the selection operator. Can contain EQ, NE, GT, LT, GE, LE, CP and NP. CP and NP.
+* - low    <-- the lower limit for a range of values that a user can enter.
+* - high   <-- the upper limit. Both low's and high's data types are determined by the database table to which my selection criteria is linked.
+
+*When selection field is filled (whether a single value or multiple values), a record is generated and put into this internal table.
+*There is no limit to how many records can be stored.
+
+START-OF-SELECTION.
+  PERFORM get_sales_orders.
+  PERFORM display_orders.
+
+*&---------------------------------------------------------------------*
+*&      Form  get_sales_orders
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM get_sales_orders.
+  SELECT vbeln erdat erzet ernam netwr
+  FROM vbak
+  INTO TABLE it_sales
+  WHERE netwr IN so_netwr.
+ENDFORM.                    "get_sales_orders
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_ORDERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM display_orders .
+  IF it_sales IS NOT INITIAL.
+    DESCRIBE TABLE it_sales.
+    WRITE: / 'The number of sales orders in the given net value range is: ', sy-tfill.
+    LOOP AT it_sales INTO wa_sales.
+      WRITE: / wa_sales-vbeln,
+               wa_sales-erdat,
+               wa_sales-erzet,
+               wa_sales-ernam,
+               wa_sales-netwr.
+    ENDLOOP.
+  ELSE.
+    MESSAGE: 'No records for the provided net value ranges.' TYPE 'I'.
+  ENDIF.
+ENDFORM.                    " DISPLAY_ORDERS
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
