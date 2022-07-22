@@ -5690,7 +5690,13 @@ START-OF-SELECTION.
   IF it_sales_header IS NOT INITIAL.
     PERFORM get_item_data.
   ENDIF.
-  
+
+*Both of the above functions simply select the data. So I've got two tables, hopefully filled with data, prepared for me to process
+*further.
+*I want to display a record from the header table, all the items for that document and only then the next record from the header table
+*and so on.
+  PERFORM display_data.
+
 *&---------------------------------------------------------------------*
 *&      Form  get_header_data
 *&---------------------------------------------------------------------*
@@ -5719,7 +5725,32 @@ FORM get_item_data.
 *     INTO TABLE it_sales_items
       WHERE vbeln = wa_sales_header.
   ENDLOOP.
-ENDFORM.                    "get_item_data  
+ENDFORM.                    "get_item_data
+
+*&---------------------------------------------------------------------*
+*&      Form  display_data
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM display_data.
+  LOOP AT it_sales_header INTO wa_sales_header.
+    FORMAT COLOR 3.
+      WRITE: / wa_sales_header-vbeln,
+               wa_sales_header-erdat,
+               wa_sales_header-erzet,
+               wa_sales_header-ernam.
+*     WHERE clause is possible here! Due to that I will get only the items for the same document
+*     that is being processed at the time. Without the WHERE, all items would be displayed,
+*     regardless of their document number.
+      LOOP AT it_sales_items INTO wa_sales_items WHERE vbeln = wa_sales_header-vbeln.
+        FORMAT COLOR 7.
+          WRITE: /5 wa_sales_items-vbeln, "'5' means 'leave 5 spaces first'.
+                    wa_sales_items-posnr,
+                    wa_sales_items-matnr,
+                    wa_sales_items-netwr.
+       ENDLOOP.
+  ENDLOOP.
+ENDFORM.                    "display_data
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
