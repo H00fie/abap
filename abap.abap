@@ -5733,6 +5733,8 @@ ENDFORM.                    "get_item_data
 *       text
 *----------------------------------------------------------------------*
 FORM display_data.
+  SORT it_sales_header BY vbeln.
+  SORT it_sales_items BY vbeln posnr.
   LOOP AT it_sales_header INTO wa_sales_header.
     FORMAT COLOR 3.
       WRITE: / wa_sales_header-vbeln,
