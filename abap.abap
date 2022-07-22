@@ -5714,18 +5714,33 @@ ENDFORM.                    "get_header_data
 *&---------------------------------------------------------------------*
 *       text
 *----------------------------------------------------------------------*
+*This is the optimal solution, without a SELECT in a LOOP.
+*FOR ALL ENTRIES does the same thing, but does not require a loop. The SELECT statement is performed only once and SAP, instead of taking
+*'vbelns' from 'wa_sales_header' one by one and performing a separate loop for them all, carries out a single SELECT during which it takes
+*all desired data in one fell swoop.
 FORM get_item_data.
-  LOOP AT it_sales_header INTO wa_sales_header.
-    SELECT vbeln posnr matnr netwr
-      FROM vbap
-*     If I used INTO TABLE here, it would be overwriting the previously selected record
-*     with every loop. APPENDING TABLE appends every selected records to the table before
-*     moving on to the next one.
-      APPENDING TABLE it_sales_items
-*     INTO TABLE it_sales_items
-      WHERE vbeln = wa_sales_header.
-  ENDLOOP.
-ENDFORM.                    "get_item_data
+  SELECT vbeln posnr matnr netwr
+    FROM vbap
+    INTO TABLE it_sales_items
+    FOR ALL ENTRIES IN it_sales_header
+    WHERE vbeln = it_sales_header-vbeln.
+ENDFORM.
+
+**The below solution is correct and gives the expexted results, but performing a SELECT statement inside the loop is not recommended. If
+**a loop goes around 300 times, SELECT will be performed 300 times, increasing the network traffic, increasing the load on the database
+**server and thus decreasing the overall performance.
+*FORM get_item_data.
+*  LOOP AT it_sales_header INTO wa_sales_header.
+*    SELECT vbeln posnr matnr netwr
+*      FROM vbap
+**     If I used INTO TABLE here, it would be overwriting the previously selected record
+**     with every loop. APPENDING TABLE appends every selected records to the table before
+**     moving on to the next one.
+*      APPENDING TABLE it_sales_items
+**     INTO TABLE it_sales_items
+*      WHERE vbeln = wa_sales_header.
+*  ENDLOOP.
+*ENDFORM.                    "get_item_data
 
 *&---------------------------------------------------------------------*
 *&      Form  display_data
