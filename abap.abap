@@ -5648,6 +5648,86 @@ ENDFORM.                    " DISPLAY_ORDERS
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*SELECT-OPTIONS. A HIERARCHIAL REPORT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*An exercise program with the following requirements:
+*- default the sales document input values to from 10 to 100,
+*- restrict the user to enter only a single range,
+*- fetch the corresponding header and item data of sales orders and display it in a hierarchial sequential list.
+
+DATA: v_vbeln TYPE vbak-vbeln.
+
+SELECT-OPTIONS so_vbeln FOR v_vbeln DEFAULT 10 TO 100 NO-EXTENSION. "Both 'I' and string value types will do for DEFAULT.
+
+*I will be taking 'vbeln', 'erdat', 'erzet' and 'ernam' from VBAK and 'vbeln', 'posnr', 'matnr' and 'netwr' from VBAP.
+*It is recommended that the fields are selected in the same sequence they are placed within the database table.
+*I will need two internal tables, because I need multiple header records and multiple item records.
+TYPES: BEGIN OF t_sales_header,
+        vbeln TYPE vbak-vbeln,
+        erdat TYPE vbak-erdat,
+        erzet TYPE vbak-erzet,
+        ernam TYPE vbak-ernam,
+END OF t_sales_header.
+
+DATA: it_sales_header TYPE TABLE OF t_sales_header,
+      wa_sales_header TYPE t_sales_header.
+
+TYPES: BEGIN OF t_sales_items,
+        vbeln TYPE vbap-vbeln,
+        posnr TYPE vbap-posnr,
+        matnr TYPE vbap-matnr,
+        netwr TYPE vbap-netwr,
+END OF t_sales_items.
+
+DATA: it_sales_items TYPE TABLE OF t_sales_items,
+      wa_sales_items TYPE t_sales_items.
+
+START-OF-SELECTION.
+*First I am getting the data for the header of every document.
+  PERFORM get_header_data.
+*If data is there, for every document that's in the header table - I am getting the data for all the items included in that document.
+  IF it_sales_header IS NOT INITIAL.
+    PERFORM get_item_data.
+  ENDIF.
+  
+*&---------------------------------------------------------------------*
+*&      Form  get_header_data
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM get_header_data.
+  SELECT vbeln erdat erzet ernam
+    FROM vbak
+    INTO TABLE it_sales_header
+    WHERE vbeln IN so_vbeln.
+ENDFORM.                    "get_header_data
+
+*&---------------------------------------------------------------------*
+*&      Form  get_item_data
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM get_item_data.
+  LOOP AT it_sales_header INTO wa_sales_header.
+    SELECT vbeln posnr matnr netwr
+      FROM vbap
+*     If I used INTO TABLE here, it would be overwriting the previously selected record
+*     with every loop. APPENDING TABLE appends every selected records to the table before
+*     moving on to the next one.
+      APPENDING TABLE it_sales_items
+*     INTO TABLE it_sales_items
+      WHERE vbeln = wa_sales_header.
+  ENDLOOP.
+ENDFORM.                    "get_item_data  
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
