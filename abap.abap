@@ -5733,11 +5733,11 @@ ENDFORM.
 *  LOOP AT it_sales_header INTO wa_sales_header.
 *    SELECT vbeln posnr matnr netwr
 *      FROM vbap
-**     If I used INTO TABLE here, it would be overwriting the previously selected record
-**     with every loop. APPENDING TABLE appends every selected records to the table before
-**     moving on to the next one.
+**If I used INTO TABLE here, it would be overwriting the previously selected record
+**with every loop. APPENDING TABLE appends every selected records to the table before
+**moving on to the next one.
 *      APPENDING TABLE it_sales_items
-**     INTO TABLE it_sales_items
+**INTO TABLE it_sales_items
 *      WHERE vbeln = wa_sales_header.
 *  ENDLOOP.
 *ENDFORM.                    "get_item_data
@@ -5747,27 +5747,60 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 *       text
 *----------------------------------------------------------------------*
+*In the below solution I am looping through the item table data only and every time a 'vbeln' changes (when the loop takes on a new 'vbeln'),
+*ON CHANGE OF event is triggered. When that happens, READ TABLE places a record of the header table into the header work area and chooses what
+*record it picks by comparing it to the currently processed 'vbeln' in the item table. Due to this section being placed at the start of the code,
+*the data from the header table will be displayed first.
+*When this is done, the loop proceeds to print out the data of the currently processed record from the item table. When the loop ends and goes
+*back to the beginning - a new record is selected and if a change of 'vbeln' occurs - ON CHANGE OF is triggered again. Item table can contain
+*many rows for the same 'vbeln' (document number) so making the reaching for the data from the header table dependant on the change of 'vbeln'
+*makes sure that all the data for the current 'vbeln' from the item table will be printed out one after another.
+*This solution loops only through the item table and "injects" the data about the same 'vbeln' from the item data table as is being currently
+*processed at the beginning of the processing of every new document number ('vbeln').
 FORM display_data.
-  SORT it_sales_header BY vbeln.
-  SORT it_sales_items BY vbeln posnr.
-  LOOP AT it_sales_header INTO wa_sales_header.
-    FORMAT COLOR 3.
-      WRITE: / wa_sales_header-vbeln,
-               wa_sales_header-erdat,
-               wa_sales_header-erzet,
-               wa_sales_header-ernam.
-*     WHERE clause is possible here! Due to that I will get only the items for the same document
-*     that is being processed at the time. Without the WHERE, all items would be displayed,
-*     regardless of their document number.
-      LOOP AT it_sales_items INTO wa_sales_items WHERE vbeln = wa_sales_header-vbeln.
-        FORMAT COLOR 7.
-          WRITE: /5 wa_sales_items-vbeln, "'5' means 'leave 5 spaces first'.
-                    wa_sales_items-posnr,
-                    wa_sales_items-matnr,
-                    wa_sales_items-netwr.
-       ENDLOOP.
+  LOOP AT it_sales_items INTO wa_sales_items.
+    ON CHANGE OF wa_sales_items-vbeln.
+      CLEAR wa_sales_header.
+      READ TABLE it_sales_header INTO wa_sales_header WITH KEY vbeln = wa_sales_items.
+      IF sy-subrc = 0.
+        FORMAT COLOR 3.
+        WRITE: / wa_sales_header-vbeln,
+                 wa_sales_header-erdat,
+                 wa_sales_header-erzet,
+                 wa_sales_header-ernam.
+      ENDIF.
+    ENDON.
+    FORMAT COLOR 7.
+    WRITE: / wa_sales_items-vbeln,
+             wa_sales_items-posnr,
+             wa_sales_items-matnr,
+             wa_sales_items-netwr.
+    FORMAT COLOR OFF.
   ENDLOOP.
-ENDFORM.                    "display_data
+ENDFORM.
+
+**Below solution is correct, but not optimal due to nested loops.
+*FORM display_data.
+*  SORT it_sales_header BY vbeln.
+*  SORT it_sales_items BY vbeln posnr.
+*  LOOP AT it_sales_header INTO wa_sales_header.
+*    FORMAT COLOR 3.
+*      WRITE: / wa_sales_header-vbeln,
+*               wa_sales_header-erdat,
+*               wa_sales_header-erzet,
+*               wa_sales_header-ernam.
+**     WHERE clause is possible here! Due to that I will get only the items for the same document
+**     that is being processed at the time. Without the WHERE, all items would be displayed,
+**     regardless of their document number.
+*      LOOP AT it_sales_items INTO wa_sales_items WHERE vbeln = wa_sales_header-vbeln.
+*        FORMAT COLOR 7.
+*          WRITE: /5 wa_sales_items-vbeln, "'5' means 'leave 5 spaces first'.
+*                    wa_sales_items-posnr,
+*                    wa_sales_items-matnr,
+*                    wa_sales_items-netwr.
+*       ENDLOOP.
+*  ENDLOOP.
+*ENDFORM.                    "display_data
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
