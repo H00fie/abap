@@ -5648,7 +5648,7 @@ ENDFORM.                    " DISPLAY_ORDERS
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*SELECT-OPTIONS. A HIERARCHIAL REPORT.
+*ON-CHANGE-OF. A HIERARCHIAL REPORT.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *An exercise program with the following requirements:
@@ -5801,6 +5801,51 @@ ENDFORM.
 *       ENDLOOP.
 *  ENDLOOP.
 *ENDFORM.                    "display_data
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*ON-CHANGE-OF. CUSTOMERS' COUNTRIES REPORT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*I want to display customers from various countries, but the country itself I want displayed only once for all the citizens hailing
+*from that land.
+TYPES: BEGIN OF t_customer,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+  ort01 TYPE kna1-ort01,
+END OF t_customer.
+
+DATA: it_customer TYPE TABLE OF t_customer,
+      wa_customer TYPE t_customer.
+
+SELECT kunnr land1 name1 ort01
+  FROM kna1
+  INTO TABLE it_customer
+  UP TO 500 ROWS.
+IF sy-subrc = 0.
+*If I didn't sort the results first, I would have multiple separate sections for the same country, because the loop just goes one by
+*one through the internal table and triggers ON CHANGE OF with every change. If the first record is DE, the second is PL and the third
+*is DE again, I'll have two DE sections. SORTing the table solves that problem on arrival.
+  SORT it_customer BY land1.
+  LOOP AT it_customer INTO wa_customer.
+    ON CHANGE OF wa_customer-land1.
+      FORMAT COLOR 4.
+      WRITE: / 'Customer country: ', wa_customer-land1.
+      FORMAT COLOR OFF.
+    ENDON.
+    FORMAT COLOR 2.
+    WRITE: / wa_customer-kunnr,
+             wa_customer-name1,
+             wa_customer-ort01.
+    FORMAT COLOR OFF.
+  ENDLOOP.
+ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
