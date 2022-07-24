@@ -5859,9 +5859,6 @@ ENDIF.
 
 *I want to retrieve data about customers from three countries using SELECT-ENDSELECT and displaying the country's name only once.
 
-*SELECT-ENDSELECT will act as a loop and every SELECT will request a single record which means that a lot of requests to the database
-*will be sent which is a performance issue. The usage of SELECT-ENDSELECT is discouraged.
-
 TYPES: BEGIN OF t_customer,
   kunnr TYPE kna1-kunnr,
   land1 TYPE kna1-land1,
@@ -5871,28 +5868,62 @@ END OF t_customer.
 
 DATA: wa_customer TYPE t_customer.
 
-*SELECT-ENDSELECT is a looping statment. SELECT-ENDSELECT acts like a work area. It will retrieve one record after another and
-*print them before moving back to taking another record. Every loop is another request to the database server. Every following
-*record is overwriting the previous one because I am using a work area and not an internal table.
-*The records selected from the database table are grouped by the country's key which means they are sorted. Then every record
-*is being displayed and the loop goes back to the beginning to process another record. Every time my loop encounteres a new
-*country's key ('land1') - that key is being displayed and the loop goes back to its standard processing of the records.
+**SELECT-ENDSELECT is a looping statment. SELECT-ENDSELECT acts like a work area. It will retrieve one record after another and
+**print them before moving back to taking another record. Every loop is another request to the database server. Every following
+**record is overwriting the previous one because I am using a work area and not an internal table.
+**The records selected from the database table are grouped by the country's key which means they are sorted. Then every record
+**is being displayed and the loop goes back to the beginning to process another record. Every time my loop encounteres a new
+**country's key ('land1') - that key is being displayed and the loop goes back to its standard processing of the records.
+*SELECT kunnr land1 name1 ort01
+*  FROM kna1
+*  INTO wa_customer
+*  WHERE land1 IN ('AR', 'AU', 'BE')
+*  ORDER BY land1. "This is the equivalent of SORT which I cannot use here because I have no table to SORT.
+*    ON CHANGE OF wa_customer-land1.
+*      FORMAT COLOR 2.
+*      WRITE: / 'Country key: ', wa_customer-land1.
+*      FORMAT COLOR OFF.
+*    ENDON.
+*  FORMAT COLOR 5.
+*  WRITE: / wa_customer-kunnr,
+*           wa_customer-name1,
+*           wa_customer-ort01.
+*  FORMAT COLOR OFF.
+*ENDSELECT.
+
+**SELECT-ENDSELECT will act as a loop and every SELECT will request a single record which means that a lot of requests to the database
+*will be sent which is a performance issue. The usage of SELECT-ENDSELECT is discouraged.
+*Instead, an internal table should be used. ORDER BY also increases the load on the database because it attempts to perform the sorting
+*on the database itself so it should be avoided (it attempts to perform the sorting during the data retrieval itself). Instead, I should
+*fetch the data into the internal table and SORT it.
+
+*To create the internal table that wasn't here before.
+DATA: it_customer TYPE TABLE OF t_customer.
+
+*The select is executed only once and all the data comes to my internal table in one fell swoop. No ENDSELECT is required because I am
+*inserting the retrieved data into an internal table, not a work area, so SAP does not need to send multiple requests to the database
+*server as the structure where it keeps the retrieved data no longer can conatin but a single record as was the case with a work area.
 SELECT kunnr land1 name1 ort01
   FROM kna1
-  INTO wa_customer
-  WHERE land1 IN ('AR', 'AU', 'BE')
-  ORDER BY land1. "This is the equivalent of SORT which I cannot use here because I have no table to SORT.
-    ON CHANGE OF wa_customer-land1.
-      FORMAT COLOR 2.
-      WRITE: / 'Country key: ', wa_customer-land1.
-      FORMAT COLOR OFF.
-    ENDON.
-  FORMAT COLOR 5.
-  WRITE: / wa_customer-kunnr,
-           wa_customer-name1,
-           wa_customer-ort01.
-  FORMAT COLOR OFF.
-ENDSELECT.
+  INTO TABLE it_customer
+  WHERE land1 IN ('AR', 'AU', 'BE').
+    IF sy-subrc = 0.
+      SORT it_customer BY land1.
+      LOOP AT it_customer INTO wa_customer.
+        ON CHANGE OF wa_customer-land1.
+          FORMAT COLOR 2.
+          WRITE: / 'Country key: ', wa_customer-land1.
+          FORMAT COLOR OFF.
+        ENDON.
+          FORMAT COLOR 5.
+          WRITE: / wa_customer-kunnr,
+                   wa_customer-name1,
+                   wa_customer-ort01.
+          FORMAT COLOR OFF.
+      ENDLOOP.
+    ELSE.
+      WRITE: / 'No data available.'.
+    ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
