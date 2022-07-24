@@ -201,3 +201,50 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*SELECT-ENDSELECT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*I want to retrieve data about customers from three countries using SELECT-ENDSELECT and displaying the country's name only once.
+
+*SELECT-ENDSELECT will act as a loop and every SELECT will request a single record which means that a lot of requests to the database
+*will be sent which is a performance issue. The usage of SELECT-ENDSELECT is discouraged.
+
+TYPES: BEGIN OF t_customer,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+  ort01 TYPE kna1-ort01,
+END OF t_customer.
+
+DATA: wa_customer TYPE t_customer.
+
+*SELECT-ENDSELECT is a looping statment. SELECT-ENDSELECT acts like a work area. It will retrieve one record after another and
+*print them before moving back to taking another record. Every loop is another request to the database server. Every following
+*record is overwriting the previous one because I am using a work area and not an internal table.
+*The records selected from the database table are grouped by the country's key which means they are sorted. Then every record
+*is being displayed and the loop goes back to the beginning to process another record. Every time my loop encounteres a new
+*country's key ('land1') - that key is being displayed and the loop goes back to its standard processing of the records.
+SELECT kunnr land1 name1 ort01
+  FROM kna1
+  INTO wa_customer
+  WHERE land1 IN ('AR', 'AU', 'BE')
+  ORDER BY land1. "This is the equivalent of SORT which I cannot use here because I have no table to SORT.
+    ON CHANGE OF wa_customer-land1.
+      FORMAT COLOR 2.
+      WRITE: / 'Country key: ', wa_customer-land1.
+      FORMAT COLOR OFF.
+    ENDON.
+  FORMAT COLOR 5.
+  WRITE: / wa_customer-kunnr,
+           wa_customer-name1,
+           wa_customer-ort01.
+  FORMAT COLOR OFF.
+ENDSELECT.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
