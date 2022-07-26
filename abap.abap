@@ -5934,6 +5934,7 @@ SELECT kunnr land1 name1 ort01
 *---------------------------------------------------------------------------------------------------------------------------------
 *THE GLOBAL CLASS.
 *---------------------------------------------------------------------------------------------------------------------------------
+
 *SE24 can be used to create global classes. Such classes are reusable within the entirety of the system without being limited to the
 *local program. The class has a single attribute of 'count' which is a private field. It has the 'Associated Type' of 'INT_5' as this
 *is one of the predefined data types available. It translates to 'number field, 5 positions'.
