@@ -19,7 +19,7 @@ cl_demo_output=>display(
 *********************************************
 *THE CDS VIEW.
 *********************************************
-@AbapCatalog.sqlViewName: 'Z_CDSView_DEMO01'
+@AbapCatalog.sqlViewName: 'Z_CDSView_DEMO01' //The name needs to be shorter than 16 characters' long.
 @AbapCatalog.compiler.compareFilter: true
 @AbapCatalog.preserveKey: true
 @AccessControl.authorizationCheck: #NOT_REQUIRED
