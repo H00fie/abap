@@ -6157,6 +6157,10 @@ define view Z_DEMO_JOIN_01 as select from snwd_so
 inner join snwd_employees
 on snwd_so.created_by = snwd_employees.node_key {
     
+	//With the inner join displayed will be what's common for both the tables.
+    //Only the fields that match the criteria ("on" section) will be displayed.
+    //There needs to be a match between both tables for them to be displayed.
+    //If there is no match both tables' data for that particular row is omitted.
     snwd_so.so_id,
     snwd_so.gross_amount,
     snwd_employees.first_name,
