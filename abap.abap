@@ -6294,6 +6294,14 @@ define view ZI_PurOrderItem as select from ekpo
         menge as OrderQuantity,
         meins as OrderUnit,
         netpr as NetPrice,
+        //Cast operations can be used for determining the type of the calculated field or for converting
+        //the type of the existing fields on the database level.
+        //The syntax starts from the specifying which field I want to cast and into what data type (what comes
+        //after the first "as"). In this case the data will be cast into abap floating type of the length of 16
+        //and multipled in order to have the tax amount included. The result is stored in the new field
+        //(TaxAmount) which does not exist in the database. Hence it's called a calculated field. I am
+        //adding a new field, not changing any existing one.
+        cast( netpr as abap.fltp(16) ) * 0.35 as TaxAmount,
         //Purchase order item is the child, so the header is the parent. The header is also the
         //root view.
         @ObjectModel.association.type: [#TO_COMPOSITION_PARENT, #TO_COMPOSITION_ROOT]
