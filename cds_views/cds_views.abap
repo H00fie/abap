@@ -151,8 +151,8 @@ define view ZI_PurOrderHdr as select from ekko
 @AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'Purchase Order Item'
 define view ZI_PurOrderItem as select from ekpo
-    //One purchase order item can belong to just a single purchase order header hence the
-    //cardinality is 1 to 1.
+ //One purchase order item can belong to just a single purchase order header hence the
+ //cardinality is 1 to 1.
     association [1..1] to ZI_PurOrderHdr as _POHdr on $projection.PurchaseOrder = _POHdr.PurchaseOrder
 {
     
@@ -165,16 +165,25 @@ define view ZI_PurOrderItem as select from ekpo
         menge as OrderQuantity,
         meins as OrderUnit,
         netpr as NetPrice,
-        //Cast operations can be used for determining the type of the calculated field or for converting
-        //the type of the existing fields on the database level.
-        //The syntax starts from the specifying which field I want to cast and into what data type (what comes
-        //after the first "as"). In this case the data will be cast into abap floating type of the length of 16
-        //and multipled in order to have the tax amount included. The result is stored in the new field
-        //(TaxAmount) which does not exist in the database. Hence it's called a calculated field. I am
-        //adding a new field, not changing any existing one.
+//Cast operations can be used for determining the type of the calculated field or for converting
+//the type of the existing fields on the database level.
+//The syntax starts from the specifying which field I want to cast and into what data type (what comes
+//after the first "as"). In this case the data will be cast into abap floating type of the length of 16
+//and multipled in order to have the tax amount included. The result is stored in the new field
+//(TaxAmount) which does not exist in the database. Hence it's called a calculated field. I am
+//adding a new field, not changing any existing one.
         cast( netpr as abap.fltp(16) ) * 0.35 as TaxAmount,
-        //Purchase order item is the child, so the header is the parent. The header is also the
-        //root view.
+        netwr as NetOrderValue,
+ //I can use arithmetic operations here as well, e.g. say I have a 25% discount  on the net value. 
+ //"0.75" is a floating point type, so I need to cast the 'netwr' to a 'fltp' too. There's a lot
+ //of trailing decimal places though.
+        cast( netwr as abap.fltp(16) ) * 0.75 as DiscountedNetOrder,
+//Numeric functions are also available. I can, e.g. round the DiscountedNetOrder in order to get rid
+//of all the trailing decimal places. All the calculations in the CDS View are performed in the
+//database layer, thus the application logic is pushed to the database layer.
+        ceil(cast( netwr as abap.fltp(16) ) * 0.75) as DiscountedRoundedNetOrd,
+//Purchase order item is the child, so the header is the parent. The header is also the
+//root view.
         @ObjectModel.association.type: [#TO_COMPOSITION_PARENT, #TO_COMPOSITION_ROOT]
         _POHdr
        
