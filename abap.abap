@@ -6224,3 +6224,74 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*CDS VIEWS. PURCHASE ORDERS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*********************************************
+*PURCHASE ORDER HEADER CDS VIEW.
+*********************************************
+@AbapCatalog.sqlViewName: 'ZIPurHdr1'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Purchase Order Header'
+define view ZI_PurOrderHdr as select from ekko 
+    //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
+    //OneToMany, basically.
+    //"to" is the equivalent of "from". "on $projection." is a join condition.
+    association [0..*] to ZI_PurOrderItem as _POItem on $projection.PurchaseOrder = _POItem.PurchaseOrder
+{
+
+    //The key field for the CDS View (the same as the key field of the purchase table itself).
+    //The aliases used will become the names of the columns.
+    key ebeln as PurchaseOrder,
+        bsart as PurchaseOrderType,
+        ekorg as PurOrganization,
+        ekgrp as PurGroup,
+        lifnr as Supplier,
+        waers as DocCurrency,
+        aedat as CreationDate,
+        //The annotation here is "exposing the association". Purchase Order Item CDS View is the child view here.
+        @ObjectModel.association.type: [#TO_COMPOSITION_CHILD]
+        _POItem
+    
+}
+
+*********************************************
+*PURCHASE ORDER ITEMS CDS VIEW.
+*********************************************
+@AbapCatalog.sqlViewName: 'ZIPurItm1'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Purchase Order Item'
+define view ZI_PurOrderItem as select from ekpo
+    //One purchase order item can belong to just a single purchase order header hence the
+    //cardinality is 1 to 1.
+    association [1..1] to ZI_PurOrderHdr as _POHdr on $projection.PurchaseOrder = _POHdr.PurchaseOrder
+{
+    
+    key ebeln as PurchaseOrder,
+    key ebelp as PurchaseOrderItem,
+        matnr as Material,
+        txz01 as POItemText,
+        matkl as MaterialGroup,
+        werks as Plant,
+        menge as OrderQuantity,
+        meins as OrderUnit,
+        netpr as NetPrice,
+        //Purchase order item is the child, so the header is the parent. The header is also the
+        //root view.
+        @ObjectModel.association.type: [#TO_COMPOSITION_PARENT, #TO_COMPOSITION_ROOT]
+        _POHdr
+       
+}
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
