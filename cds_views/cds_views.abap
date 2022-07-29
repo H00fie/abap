@@ -120,7 +120,17 @@ define view ZI_PurOrderHdr as select from ekko
     //The key field for the CDS View (the same as the key field of the purchase table itself).
     //The aliases used will become the names of the columns.
     key ebeln as PurchaseOrder,
-        bsart as PurchaseOrderType,
+    //PurchaseOrderTypes' name's are just short codes. I can replace these codes with custom names to improve
+    //the understanding of their meanings. A case statement can be used for it.
+    //First, I specify the operand which I want evaluated ('bsart' in the bracket). After "when" comes the
+    //condition and after "then" comes the result. The result of the case comes as the field specified after
+    //the "as" keyword.
+    //The below section with "case" replaced a simple "bsart as PurchaseOrderType,".
+            case(bsart)
+                when 'RQ' then 'External Quotation'
+                when 'UB' then 'Stock transport order'
+                else 'Other order'
+            end as PurchaseOrderType,
         ekorg as PurOrganization,
         ekgrp as PurGroup,
         lifnr as Supplier,
