@@ -6291,6 +6291,7 @@ define view ZI_PurOrderItem as select from ekpo
         txz01 as POItemText,
         matkl as MaterialGroup,
         werks as Plant,
+        lgort as StorageLocation,
         menge as OrderQuantity,
         meins as OrderUnit,
         netpr as NetPrice,
@@ -6311,6 +6312,8 @@ define view ZI_PurOrderItem as select from ekpo
 //of all the trailing decimal places. All the calculations in the CDS View are performed in the
 //database layer, thus the application logic is pushed to the database layer.
         ceil(cast( netwr as abap.fltp(16) ) * 0.75) as DiscountedRoundedNetOrd,
+//String functions can also be utilized.
+        concat_with_space( werks, lgort, 1) as StorageDetails,
 //Purchase order item is the child, so the header is the parent. The header is also the
 //root view.
         @ObjectModel.association.type: [#TO_COMPOSITION_PARENT, #TO_COMPOSITION_ROOT]
