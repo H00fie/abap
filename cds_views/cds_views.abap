@@ -249,3 +249,33 @@ where werks = '0002'
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*JOINS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+@AbapCatalog.sqlViewName: 'zdemojoin'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'demo join cds'
+//To get a list of purchase order items created from purchase requisitions. The purchase order item table (ekpo) has a purchase requisition
+//reference in 'banfn' and 'bnfpo' (both are key fields for 'eban').
+define view Z007_DEMO_JOIN as select from ekpo as po
+//I want only the records from the purchase order table which are created from the purchase requisitions so an inner join it is.
+inner join eban as pr
+on po.banfn = pr.banfn
+and po.bnfpo = pr.bnfpo {
+    
+    po.ebeln as PONum,
+    po.matnr as Material,
+    pr.banfn as PRNum,
+    pr.bnfpo as PRItemNum
+    
+}
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
