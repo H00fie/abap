@@ -6342,3 +6342,39 @@ define view ZI_PurOrderItem as select from ekpo
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*CDS VIEWS. UNIONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+@AbapCatalog.sqlViewName: 'zuniondemo'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'demo union cds'
+//A list of materials for which there is a purchase requisition or a purchase order for a specific plant.
+//'eban' is a purchase requisition database table.
+define view Z007_DEMO_UNION as select from eban {
+    
+    matnr as material
+    
+}
+//A specific plant.
+where werks = '0002'
+
+//Union has selects from two different tables.
+union
+
+//To combine the materials from the purchase requisition table and the purchase order table (ekpo).
+select from ekpo {
+
+    matnr as material
+
+}
+where werks = '0002'
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
