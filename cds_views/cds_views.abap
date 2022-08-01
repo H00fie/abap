@@ -119,6 +119,8 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 //VDM is intended to be interpreted by view browsers and other functionality which is based on the virtual data model.
 //A Basic view is directly above the database and only Basic views are allowed to select from the database.
 @VDM.viewType: #BASIC
+//To expose the view as an oData service. This annotation will create the service for the view in the system.
+@OData.publish: true
 define view ZI_PurOrderHdr as select from ekko 
  //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
  //OneToMany, basically.
