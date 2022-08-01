@@ -116,6 +116,9 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 @AccessControl.authorizationCheck: #CHECK
 //Specifies the label for the CDS View.
 @EndUserText.label: 'Purchase Order Header'
+//VDM is intended to be interpreted by view browsers and other functionality which is based on the virtual data model.
+//A Basic view is directly above the database and only Basic views are allowed to select from the database.
+@VDM.viewType: #BASIC
 define view ZI_PurOrderHdr as select from ekko 
  //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
  //OneToMany, basically.
@@ -156,6 +159,7 @@ define view ZI_PurOrderHdr as select from ekko
 @AbapCatalog.preserveKey: true
 @AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'Purchase Order Item'
+
 define view ZI_PurOrderItem as select from ekpo
  //One purchase order item can belong to just a single purchase order header hence the
  //cardinality is 1 to 1.
@@ -169,7 +173,13 @@ define view ZI_PurOrderItem as select from ekpo
         matkl as MaterialGroup,
         werks as Plant,
         lgort as StorageLocation,
+//A quantity field requires us to specify which field should be referred to for its unit. E.g. in
+//'ekpo' 'menge' references 'meins' (from 'ekpo') as its unit. In CDS Views it's done with annotations.
+//The quantity refers its units field by its name.
+        @Semantics.quantity.unitOfMeasure: 'OrderUnit'
         menge as OrderQuantity,
+//To inform the system that 'meins' contains the unit.
+        @Semantics.unitOfMeasure: true
         meins as OrderUnit,
         netpr as NetPrice,
 //Cast operations can be used for determining the type of the calculated field or for converting
