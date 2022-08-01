@@ -105,10 +105,16 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 *********************************************
 *PURCHASE ORDER HEADER CDS VIEW.
 *********************************************
+//Specifies the view in the database.
 @AbapCatalog.sqlViewName: 'ZIPurHdr1'
+//The filter conditions of the path expression are compared. If they are the same, the associated join expression 
+//is evaluated only once. If the compareFilter is false, then the associate part is evaluated over and over again.
 @AbapCatalog.compiler.compareFilter: true
+//CDS View specifies the definition of the key fields to be the same as that of the associated database table's.
 @AbapCatalog.preserveKey: true
+//The authorization check for the view is required.
 @AccessControl.authorizationCheck: #CHECK
+//Specifies the label for the CDS View.
 @EndUserText.label: 'Purchase Order Header'
 define view ZI_PurOrderHdr as select from ekko 
  //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
@@ -191,7 +197,6 @@ define view ZI_PurOrderItem as select from ekpo
         _POHdr
        
 }
-
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
