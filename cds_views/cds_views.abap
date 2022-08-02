@@ -165,16 +165,20 @@ define view ZI_PurOrderHdr as select from ekko
 @AbapCatalog.preserveKey: true
 @AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'Purchase Order Item'
-
 define view ZI_PurOrderItem as select from ekpo
  //One purchase order item can belong to just a single purchase order header hence the
  //cardinality is 1 to 1.
     association [1..1] to ZI_PurOrderHdr as _POHdr on $projection.PurchaseOrder = _POHdr.PurchaseOrder
+//An additional association to a material providing CDS View. For each purchase order item there is only
+//one material, hence the cardinality.
+    association [1..1] to Z007_DEMO_ASSOCIATION as _Material on $projection.Material = _Material.Material
 {
     
     key ebeln as PurchaseOrder,
     key ebelp as PurchaseOrderItem,
         matnr as Material,
+//From the second association.
+        _Material.MaterialType as MaterialType,
         txz01 as POItemText,
         matkl as MaterialGroup,
         werks as Plant,
@@ -210,8 +214,32 @@ define view ZI_PurOrderItem as select from ekpo
 //Purchase order item is the child, so the header is the parent. The header is also the
 //root view.
         @ObjectModel.association.type: [#TO_COMPOSITION_PARENT, #TO_COMPOSITION_ROOT]
-        _POHdr
+        _POHdr,
+        _Material
        
+}
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*ASSOCIATIONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+@AbapCatalog.sqlViewName: 'ZDEMOASSOCIATION'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'demo association'
+define view Z007_DEMO_ASSOCIATION as select from mara {
+
+    key matnr as Material,
+        mtart as MaterialType,
+        meins as BaseUnit
+    
 }
 
 *---------------------------------------------------------------------------------------------------------------------------------
