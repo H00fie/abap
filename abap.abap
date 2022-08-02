@@ -6280,7 +6280,8 @@ define view ZI_PurOrderHdr as select from ekko
         aedat as CreationDate,
 //The annotation here is "exposing the association". Purchase Order Item CDS View is the child view here.
 //Since the association is exposed, the OData service (courtesy of @OData(...)) will receive the association's
-//metadata.
+//metadata. It also allows the user of the CDS View to access other fields of the exposed associated table than
+//just those mentioned in this CDS View's select.
         @ObjectModel.association.type: [#TO_COMPOSITION_CHILD]
         _POItem
     
