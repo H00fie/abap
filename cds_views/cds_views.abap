@@ -124,7 +124,8 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 define view ZI_PurOrderHdr as select from ekko 
  //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
  //OneToMany, basically.
- //"to" is the equivalent of "from". "on $projection." is a join condition.
+ //"to" is the equivalent of "from". "on $projection." is a join condition. The naming convention is that the alias
+ //for the association should always start with the underscore.
     association [0..*] to ZI_PurOrderItem as _POItem on $projection.PurchaseOrder = _POItem.PurchaseOrder
 {
 
