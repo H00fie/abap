@@ -6252,9 +6252,10 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 @OData.publish: true
 define view ZI_PurOrderHdr as select from ekko 
  //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
- //OneToMany, basically.
- //"to" is the equivalent of "from". "on $projection." is a join condition. The naming convention is that the alias
- //for the association should always start with the underscore.
+ //The associated CDS View can have a minimum of 0 and a maximum of unlimitied entries. In my case, there might be 
+ //no purchase order items for my header CDS View or there can be an unlimited number of purchase order items.
+ //"to" is the equivalent of "from". "on $projection." is a join condition - the "projected" field maps to the
+ //associated table's field of(...).  The naming convention is that the alias for the association should always start with the underscore.
     association [0..*] to ZI_PurOrderItem as _POItem on $projection.PurchaseOrder = _POItem.PurchaseOrder
 {
 
@@ -6278,6 +6279,8 @@ define view ZI_PurOrderHdr as select from ekko
         waers as DocCurrency,
         aedat as CreationDate,
 //The annotation here is "exposing the association". Purchase Order Item CDS View is the child view here.
+//Since the association is exposed, the OData service (courtesy of @OData(...)) will receive the association's
+//metadata.
         @ObjectModel.association.type: [#TO_COMPOSITION_CHILD]
         _POItem
     
