@@ -6278,6 +6278,14 @@ define view ZI_PurOrderHdr as select from ekko
         lifnr as Supplier,
         waers as DocCurrency,
         aedat as CreationDate,
+        rlwrt as TotalValue,
+//I can use a function to convert currencies. There are mandatory parameters to be provided.
+//'target_currency' requires a 'waers' not a CHAR, so 'USD' has to be cast. 'cuky' is the
+//data element type of the 'waers'.
+        currency_conversion( amount => rlwrt, 
+                             source_currency => waers,
+                             target_currency => cast ('USD' as abap.cuky ),
+                             exchange_rate_date => aedat ) as TotalUSDValue,
 //The annotation here is "exposing the association". Purchase Order Item CDS View is the child view here.
 //Since the association is exposed, the OData service (courtesy of @OData(...)) will receive the association's
 //metadata. It also allows the user of the CDS View to access other fields of the exposed associated table than
