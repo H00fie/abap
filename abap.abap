@@ -6250,6 +6250,13 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 @VDM.viewType: #BASIC
 //To expose the view as an oData service. This annotation will create the service for the view in the system.
 @OData.publish: true
+//The client handling's type is inherited, so it's inherited from the underlying data sources.
+//#AUTOMATED means I don't want to specify from which client I want to inherit, but it should
+//be done automatically - so the client will be the same in which the view is executed.
+//ClientHandling annotations usually are specified only when I need to set a specific behaviour, different
+//from a default one.
+@ClientHandling.type: #INHERITED
+@ClientHandling.algorithm: #AUTOMATED
 define view ZI_PurOrderHdr as select from ekko 
  //The purchase order header can have 0 or more purchase items, so the cardinality is from 0 to many.
  //The associated CDS View can have a minimum of 0 and a maximum of unlimitied entries. In my case, there might be 
