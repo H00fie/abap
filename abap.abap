@@ -6241,7 +6241,8 @@ define view Z_DEMO_JOIN_02 as select from snwd_so
 @AbapCatalog.compiler.compareFilter: true
 //CDS View specifies the definition of the key fields to be the same as that of the associated database table's.
 @AbapCatalog.preserveKey: true
-//The authorization check for the view is required.
+//The authorization check for the view is required. It is a default behaviour and, if that annotation is not specified,
+//the CDS View acts as if it is and its value is #CHECK.
 @AccessControl.authorizationCheck: #CHECK
 //Specifies the label for the CDS View.
 @EndUserText.label: 'Purchase Order Header'
@@ -6362,6 +6363,44 @@ define view ZI_PurOrderItem as select from ekpo
         _POHdr,
         _Material
        
+}
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*CDS VIEWS. DCL - ACCESS CONTROL.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+@EndUserText.label: 'DCL for Purchase Order'
+//The below annotation means that this role is assigned implicitly for all the users. Currently,
+//that's the only value that is supported.
+@MappingRole: true
+//Given how CDS Views' goal is to perform a pushdown of some of the weight of the calculations
+//to the database level, if any authorization is required, it needs to be performed at the
+//CDS View's level. Hence, a SAP has provided a new kind of a repository object - the undersigned,
+//DCL Access Control (or, a role).
+//It is a naming convention that a DCL object (Access Control) is named just like its CDS View.
+//When data is selected from ZI_PURORDERHDR CDS View, this DCL will be executed automatically
+//and will restrict data based on the Purchase Organization to which the user has access.
+define role ZI_PURORDERHDR {
+//This DCL provides a grant on a select from a ZI_PURORDERHDR CDS View.
+    grant 
+        select
+            on
+                ZI_PURORDERHDR
+                    where
+//There are two kinds of conditions that can be added to a DCL. The first one is the aspect condition.
+//It allows me to use a standard authorization concept - 'M_BEST_EKO'. I am required to specify that 
+//authorization object by using the statement 'aspect pfcg_auth'. There comes 'M_BEST_EKO' and it is 
+//followed by a list of parameters for the authorization object itself.
+//'PurOrganization' refers to one of the fields in the ZI_PURORDERHDR CDS View. The conditions means
+//that only users having access to specific Purchase Organizations will see the desired data.
+                        ( PurOrganization ) = aspect pfcg_auth( M_BEST_EKO, EKORG, actvt = '03' );
+                        
 }
 
 *---------------------------------------------------------------------------------------------------------------------------------
