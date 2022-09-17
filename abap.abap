@@ -5537,7 +5537,7 @@ CALL FUNCTION 'ZBM_FUNCTION_MODULE_FOUR'
 WRITE: / 'The result is: ', p_y.
 
 **********************************************
-**THE CODE WITHIN ZBM_FUNCTION_MODULE_THREE.
+**THE CODE WITHIN ZBM_FUNCTION_MODULE_FOUR.
 **********************************************
 *FUNCTION ZBM_FUNCTION_MODULE_FOUR.
 **"----------------------------------------------------------------------
@@ -5550,6 +5550,53 @@ WRITE: / 'The result is: ', p_y.
 *c_y = i_x + c_y.
 *ENDFUNCTION.
 
+*------------------------------------------------------------------
+*----------A FUNCTION MODULE WITH EXCEPTIONS-----------------------
+*------------------------------------------------------------------
+*EXCEPTION handling is performed in order to avoid runtime errors. Due to 'myexception' being defined within the function
+*module and raised if the divider is 0, a runtime error will be avoided and the result will be 0.
+*Upon calling the FM, the exception section is added due to the fact that I created a custom exception for the FM. If the
+*condition will be true (the divider -'i_y' being 0) and this 'myexception' is raised - sy-subrc is set to 1. sy-subrc contains
+*the execution status of the previous ABAP statement. If any different exception is raised, sy-subrc is set to 2. I can assign
+*whatever values I want. If no exception is raised, sy-subrc remains 0.
+WRITE: / 'A function module with a custom exception:'.
+CALL FUNCTION 'ZBM_FUNCTION_MODULE_FIVE'
+  EXPORTING
+    i_x               = p_x
+    i_y               = p_y
+  IMPORTING
+    E_Z               = gv_r1
+ EXCEPTIONS
+   MYEXCEPTION       = 1
+   OTHERS            = 2.
+IF sy-subrc = 0.
+  WRITE: / 'The division is: ', gv_r1.
+ELSEIF sy-subrc = 1.
+  WRITE: 'Cannot divide by 0!'.
+ELSEIF sy-subrc = 2.
+  WRITE: / 'An unknown error occured!'.
+ENDIF.
+
+**********************************************
+**THE CODE WITHIN ZBM_FUNCTION_MODULE_FIVE.
+**********************************************
+*FUNCTION ZBM_FUNCTION_MODULE_FIVE.
+**"----------------------------------------------------------------------
+**"*"Lokalny interfejs:
+**"  IMPORTING
+**"     REFERENCE(I_X) TYPE  I
+**"     REFERENCE(I_Y) TYPE  I
+**"  EXPORTING
+**"     REFERENCE(E_Z) TYPE  I
+**"  EXCEPTIONS
+**"      MYEXCEPTION
+**"----------------------------------------------------------------------
+*IF i_y = 0.
+*  RAISE myexception.
+*ELSE.
+*  e_z = i_x / i_y.
+*ENDIF.
+*ENDFUNCTION.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
