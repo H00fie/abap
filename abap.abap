@@ -5604,6 +5604,92 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*STANDARD FUNCTION MODULES PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Standard FMs are defined by SAP itself and are ready to be used by a developer.
+*AS LISTBOX VISIBLE LENGTH addition provides a drop down list of values for the parameter field. If I used AS LISTBOX without
+*VISIBLE LENGTH, I would get an error. I additionally need to specify a set of values which I would associate with my listbox.
+*Without it, I would have an empty drop-down list.
+*As I execute the program, before the selection screen is displayed, two events are triggered - INITIALIZATION and
+*AT-SELECTION-SCREEN OUTPUT. If I want a fixed set of values to be available within my drop-down list, I need to specify it
+*during the INITIALIZATION event.
+*Every value in the drop-down list needs to be associated with a key which is used to identify the selected value. That key,
+*upon the selection of the value, will be assigned to the parameter ('p_course').
+PARAMETERS p_course(20) TYPE c AS LISTBOX VISIBLE LENGTH 15.
+
+*An internal table required by the standard function module I will use to manage the drop-down list. The line of the table
+*consists of a key and a text.
+*In earlier SAP versions, I would also have to define 'TYPE-POOLS vrm' - to be able to use 'vrm_value'.
+DATA: lt_values TYPE TABLE OF vrm_value,
+      wa_value  TYPE vrm_value.
+
+*The logic assigning values from the drop-down list to their keys should be specified in the INITIALIZATION. In ABAP whenever
+*I need to create a drop-down list, there is a standard function module for that.
+INITIALIZATION.
+  PERFORM prepared_drop_down. "Prepares the input for the FM.
+    IF lt_values IS NOT INITIAL.
+      PERFORM display_dropdown.
+    ENDIF.
+
+*&---------------------------------------------------------------------*
+*&      Form  PREPARED_DROP_DOWN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM prepared_drop_down .
+  CLEAR wa_value.
+  wa_value-key = 'K1'.
+  wa_value-text = 'CORE ABAP'.
+  APPEND wa_value TO lt_values.
+
+  CLEAR wa_value.
+  wa_value-key = 'K2'.
+  wa_value-text = 'OOPS ABAP'.
+  APPEND wa_value TO lt_values.
+
+  CLEAR wa_value.
+  wa_value-key = 'K3'.
+  wa_value-text = 'CROSS APPS'.
+  APPEND wa_value TO lt_values.
+ENDFORM.                    " PREPARED_DROP_DOWN
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_DROPDOWN
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM DISPLAY_DROPDOWN .
+*ID is the name of the drop-down list. That name is the name of the parameter that's supposed to have
+*a drop-down list.
+  CALL FUNCTION 'VRM_SET_VALUES'
+    EXPORTING
+      id                    = 'P_COURSE'
+      values                = lt_values
+   EXCEPTIONS
+     ID_ILLEGAL_NAME       = 1
+     OTHERS                = 2.
+  IF sy-subrc = 1.
+    MESSAGE 'Illegal drop-down list box name.' TYPE 'I'.
+  ELSEIF sy-subrc = 2.
+    MESSAGE 'An unknown error occured.' TYPE 'I'.
+  ENDIF.
+
+ENDFORM.                    " DISPLAY_DROPDOWN
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SELECT-OPTIONS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
