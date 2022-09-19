@@ -5617,20 +5617,42 @@ ENDIF.
 *Every value in the drop-down list needs to be associated with a key which is used to identify the selected value. That key,
 *upon the selection of the value, will be assigned to the parameter ('p_course').
 PARAMETERS p_course(20) TYPE c AS LISTBOX VISIBLE LENGTH 15.
+SELECTION-SCREEN SKIP 2.
+*I want my pushbutton to start from 35th position and be of 15 characters' length. Every pushbutton needs to be associated
+*with a function call (USER-COMMAND). The pushbutton's name is defined in INITIALIZATION. Whenever a pushbutton is pressed,
+*AT-SELECTION-SCREEN event is triggered. The USER-COMMAND's name ('fc1' here) is held within 'sy-ucomm'.
+SELECTION-SCREEN PUSHBUTTON 35(15) b1 USER-COMMAND fc1.
 
 *An internal table required by the standard function module I will use to manage the drop-down list. The line of the table
 *consists of a key and a text.
-*In earlier SAP versions, I would also have to define 'TYPE-POOLS vrm' - to be able to use 'vrm_value'.
+*In earlier SAP versions, I would also have to define 'TYPE-POOLS vrm' - to be able to use 'vrm_value' (double click on
+*'vrm_value' and Types' Group VRM can be seen).
 DATA: lt_values TYPE TABLE OF vrm_value,
       wa_value  TYPE vrm_value.
 
 *The logic assigning values from the drop-down list to their keys should be specified in the INITIALIZATION. In ABAP whenever
 *I need to create a drop-down list, there is a standard function module for that.
 INITIALIZATION.
+  b1 = 'Identify'.
   PERFORM prepared_drop_down. "Prepares the input for the FM.
     IF lt_values IS NOT INITIAL.
       PERFORM display_dropdown.
     ENDIF.
+
+AT SELECTION-SCREEN.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      IF p_course = 'K1'.
+        MESSAGE 'CORE ABAP is selected.' TYPE 'I'.
+      ELSEIF p_course = 'K2'.
+        MESSAGE 'OOPS ABAP is selected.' TYPE 'I'.
+      ELSEIf p_course = 'K3'.
+        MESSAGE 'CROSS APPS is selected.' TYPE 'I'.
+      ELSE.
+        MESSAGE 'No value has been selected.' TYPE 'I'.
+      ENDIF.
+    WHEN OTHERS.
+  ENDCASE.
 
 *&---------------------------------------------------------------------*
 *&      Form  PREPARED_DROP_DOWN
