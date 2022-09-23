@@ -5716,8 +5716,50 @@ ENDFORM.                    " DISPLAY_DROPDOWN
 *---------------------------------------------------------------------------------------------------------------------------------
 
 PARAMETERS p_abc(15) TYPE c AS LISTBOX VISIBLE LENGTH 12.
+DATA: lt_values TYPE TABLE OF vrm_value,
+      wa_values TYPE vrm_value.
 
 INITIALIZATION.
+  PERFORM prepare_values.
+
+*&---------------------------------------------------------------------*
+*&      Form  PREPARE_VALUES
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM PREPARE_VALUES .
+  CLEAR wa_values.
+  wa_values-key  = 'K1'.
+  wa_values-text = 'Courses'.
+  APPEND wa_values TO lt_values.
+
+  CLEAR wa_values.
+  wa_values-key  = 'K2'.
+  wa_values-text = 'Institutes'.
+  APPEND wa_values TO lt_values.
+
+  CLEAR wa_values.
+  wa_values-key  = 'K3'.
+  wa_values-text = 'Locations'.
+  APPEND wa_values TO lt_values.
+
+  CALL FUNCTION 'VRM_SET_VALUES'
+    EXPORTING
+      id                    = 'p_abc'
+      values                = lt_values
+   EXCEPTIONS
+     ID_ILLEGAL_NAME       = 1
+     OTHERS                = 2
+            .
+  IF sy-subrc = 1.
+    MESSAGE 'Exception ID Illegal name raised.' TYPE 'I'.
+  ELSEIF sy-subrc = 2.
+    MESSAGE 'An unknown exception raised.' TYPE 'I'.
+  ENDIF.
+ENDFORM.                    " PREPARE_VALUES
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
