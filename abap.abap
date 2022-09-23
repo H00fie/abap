@@ -5715,10 +5715,14 @@ ENDFORM.                    " DISPLAY_DROPDOWN
 *CONTROLLING SCREEN ELEMENTS WITH EVENTS (STANDARD FUNCTION MODULE).
 *---------------------------------------------------------------------------------------------------------------------------------
 
+*Depending on the parameter value selected, I want certain components of the screen hidden. In order to control the appearance of
+*the screen, I need to use a structure called Screen Structure (SCREEN data type in SE11). It is a regular structure - a collection
+*of fields. Based on this structure, SAP will create an internal table whenever a program is executed. It will contain the information
+*about screen elements.
 PARAMETERS p_abc(15) TYPE c AS LISTBOX VISIBLE LENGTH 12.
 DATA: lt_values TYPE TABLE OF vrm_value,
       wa_values TYPE vrm_value.
-	  
+
 SELECTION-SCREEN BEGIN OF BLOCK bc1 WITH FRAME TITLE t1.
   PARAMETERS: p_c1 AS CHECKBOX,
               p_c2 AS CHECKBOX,
@@ -5730,10 +5734,22 @@ SELECTION-SCREEN BEGIN OF BLOCK bc2 WITH FRAME TITLE t2.
   PARAMETERS: p_r1 RADIOBUTTON GROUP g1,
               p_r2 RADIOBUTTON GROUP g1,
               p_r3 RADIOBUTTON GROUP g1.
-SELECTION-SCREEN END OF BLOCK bc2.	  
+SELECTION-SCREEN END OF BLOCK bc2.
+
+SELECTION-SCREEN BEGIN OF BLOCK bc3 WITH FRAME TITLE t3.
+  SELECTION-SCREEN COMMENT 3(15) lb1.
+  SELECTION-SCREEN COMMENT /3(15) lb2. "The slash indicates a new line.
+  SELECTION-SCREEN COMMENT /3(15) lb3.
+SELECTION-SCREEN END OF BLOCK bc3.
 
 INITIALIZATION.
   PERFORM prepare_values.
+  t1 = 'Courses'.
+  t2 = 'Institues'.
+  t3 = 'Locations'.
+  lb1 = 'Osgiliath'.
+  lb2 = 'Dol Amroth'.
+  lb3 = 'Umbar'.
 
 *&---------------------------------------------------------------------*
 *&      Form  PREPARE_VALUES
