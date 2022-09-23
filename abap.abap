@@ -5718,6 +5718,19 @@ ENDFORM.                    " DISPLAY_DROPDOWN
 PARAMETERS p_abc(15) TYPE c AS LISTBOX VISIBLE LENGTH 12.
 DATA: lt_values TYPE TABLE OF vrm_value,
       wa_values TYPE vrm_value.
+	  
+SELECTION-SCREEN BEGIN OF BLOCK bc1 WITH FRAME TITLE t1.
+  PARAMETERS: p_c1 AS CHECKBOX,
+              p_c2 AS CHECKBOX,
+              p_c3 AS CHECKBOX.
+SELECTION-SCREEN END OF BLOCK bc1.
+
+*Radiobuttons belong in groupes so that the user might select only one of them.
+SELECTION-SCREEN BEGIN OF BLOCK bc2 WITH FRAME TITLE t2.
+  PARAMETERS: p_r1 RADIOBUTTON GROUP g1,
+              p_r2 RADIOBUTTON GROUP g1,
+              p_r3 RADIOBUTTON GROUP g1.
+SELECTION-SCREEN END OF BLOCK bc2.	  
 
 INITIALIZATION.
   PERFORM prepare_values.
