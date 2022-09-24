@@ -5712,13 +5712,15 @@ ENDFORM.                    " DISPLAY_DROPDOWN
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*CONTROLLING SCREEN ELEMENTS WITH EVENTS (STANDARD FUNCTION MODULE).
+*CONTROLLING SCREEN ELEMENTS WITH EVENTS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *Depending on the parameter value selected, I want certain components of the screen hidden. In order to control the appearance of
 *the screen, I need to use a structure called Screen Structure (SCREEN data type in SE11). It is a regular structure - a collection
 *of fields. Based on this structure, SAP will create an internal table whenever a program is executed. It will contain the information
-*about screen elements.
+*about screen elements. Listboxes, blocks, checkboxes, radiobuttons are all screen elements. For example, the screen internal table
+*has a column called 'name' and 'p_abc' will be placed there. There is also the 'invisible' column with the default value of 0.
+*All the elements are visible by default. The value of 1 means the element is invisible.
 PARAMETERS p_abc(15) TYPE c AS LISTBOX VISIBLE LENGTH 12.
 DATA: lt_values TYPE TABLE OF vrm_value,
       wa_values TYPE vrm_value.
@@ -5744,6 +5746,8 @@ SELECTION-SCREEN END OF BLOCK bc3.
 
 INITIALIZATION.
   PERFORM prepare_values.
+*Initially I want the blocks hidden.
+  PERFORM make_blocks_inv.
   t1 = 'Courses'.
   t2 = 'Institues'.
   t3 = 'Locations'.
@@ -5789,6 +5793,40 @@ FORM PREPARE_VALUES .
     MESSAGE 'An unknown exception raised.' TYPE 'I'.
   ENDIF.
 ENDFORM.                    " PREPARE_VALUES
+*&---------------------------------------------------------------------*
+*&      Form  MAKE_BLOCKS_INV
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM MAKE_BLOCKS_INV .
+*By default I want all blocks to be invisible. LOOP AT SCREEN will loop through the internally created screen internal table that
+*hold all screen elements. The parameter is to remain visible. The screen's table 'invisible' column is of CHAR data type so the
+*value needs to be a string literal. screen is a header of the screen internal table. MODIFY SCREEN updates the actual body
+*of the table with the value previously placed within the header.
+  LOOP AT SCREEN.
+    IF screen-name = 'BK1' OR
+       screen-name = 'BK2' OR
+       screen-name = 'BK3' OR
+       screen-name = 'T1' OR
+       screen-name = 'T2' OR
+       screen-name = 'T3' OR
+       screen-name = 'LB1' OR
+       screen-name = 'LB2' OR
+       screen-name = 'LB3' OR
+       screen-name = 'P_C1' OR
+       screen-name = 'P_C2' OR
+       screen-name = 'P_C3' OR
+       screen-name = 'P_R1' OR
+       screen-name = 'P_R2' OR
+       screen-name = 'P_R3'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.                    " MAKE_BLOCKS_INV
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
