@@ -5808,6 +5808,29 @@ AT SELECTION-SCREEN OUTPUT.
     PERFORM make_bk3_visible.
   ENDIF.
 
+*AT-SELECTION-SCREEN ON HELP-REQUEST FOR is an event that triggers when 'F1' is pressed on any selection screen element. For each
+*of the screen elements the event needs to be handled separately. There is a standard function module for displaying a dialog box
+*for displaying the documentation or a message for every screen element - POPUP_TO_INFORM.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_abc.
+  CALL FUNCTION 'POPUP_TO_INFORM'
+    EXPORTING
+      titel         = 'F1 help for the dropdown listbox.' "This is the frame title of the box.
+      txt1          = 'Select a value from the dropdown listbox.' "The first block of text of the dialog box.
+      txt2          = 'Upon selecting the value, displays the appropriate block.'. "The second block of text of the dialog box.
+
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c1.
+  MESSAGE 'F1 help for the first checkbox' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c2.
+  MESSAGE 'F1 help for the second checkbox' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c3.
+  MESSAGE 'F1 help for the third checkbox' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r1.
+  MESSAGE 'F1 help for the first radiobutton' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r2.
+  MESSAGE 'F1 help for the second radiobutton' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r3.
+  MESSAGE 'F1 help for the third radiobutton' TYPE 'I'.
+
 *&---------------------------------------------------------------------*
 *&      Form  PREPARE_VALUES
 *&---------------------------------------------------------------------*
