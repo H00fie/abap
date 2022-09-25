@@ -206,23 +206,26 @@ DATA: lt_values TYPE TABLE OF vrm_value,
       wa_values TYPE vrm_value,
       gv_flag   TYPE i. "The variable for AT-SELECTION-SCREEN event to indicate what value was assumed by the parameter.
 
+*MODIF ID adds the screen element to a screen group which allows me to refer to all the elements from the group at one instead of
+*listing them one after another if I want e.g. to make all the elements of a block invisible. MODIF ID populates a property of
+*the screen internal table - the column 'group1'. The screen group cannot be assigned to a block itself.
 SELECTION-SCREEN BEGIN OF BLOCK bc1 WITH FRAME TITLE t1.
-PARAMETERS: p_c1 AS CHECKBOX,
-            p_c2 AS CHECKBOX,
-            p_c3 AS CHECKBOX.
+PARAMETERS: p_c1 AS CHECKBOX MODIF ID ID1,
+            p_c2 AS CHECKBOX MODIF ID ID1,
+            p_c3 AS CHECKBOX MODIF ID ID1.
 SELECTION-SCREEN END OF BLOCK bc1.
 
 *Radiobuttons belong in groupes so that the user might select only one of them.
 SELECTION-SCREEN BEGIN OF BLOCK bc2 WITH FRAME TITLE t2.
-PARAMETERS: p_r1 RADIOBUTTON GROUP g1,
-            p_r2 RADIOBUTTON GROUP g1,
-            p_r3 RADIOBUTTON GROUP g1.
+PARAMETERS: p_r1 RADIOBUTTON GROUP g1 MODIF ID ID2,
+            p_r2 RADIOBUTTON GROUP g1 MODIF ID ID2,
+            p_r3 RADIOBUTTON GROUP g1 MODIF ID ID2.
 SELECTION-SCREEN END OF BLOCK bc2.
 
 SELECTION-SCREEN BEGIN OF BLOCK bc3 WITH FRAME TITLE t3.
-SELECTION-SCREEN COMMENT 3(15) lb1.
-SELECTION-SCREEN COMMENT /3(15) lb2. "The slash indicates a new line.
-SELECTION-SCREEN COMMENT /3(15) lb3.
+SELECTION-SCREEN COMMENT 3(15) lb1 MODIF ID ID3.
+SELECTION-SCREEN COMMENT /3(15) lb2 MODIF ID ID3. "The slash indicates a new line.
+SELECTION-SCREEN COMMENT /3(15) lb3 MODIF ID ID3.
 SELECTION-SCREEN END OF BLOCK bc3.
 
 INITIALIZATION.
@@ -315,25 +318,17 @@ ENDFORM.                    " PREPARE_VALUES
 *----------------------------------------------------------------------*
 FORM make_blocks_inv.
 *By default I want all blocks to be invisible. LOOP AT SCREEN will loop through the internally created screen internal table that
-*hold all screen elements. The parameter is to remain visible. The screen's table 'invisible' column is of CHAR data type so the
+*holds all the screen elements. The parameter is to remain visible. The screen's table's 'invisible' column is of CHAR data type so the
 *value needs to be a string literal. screen is a header of the screen internal table. MODIFY SCREEN updates the actual body
 *of the table with the value previously placed within the header.
+*MODIF ID allows me to put every screen element into a group which I can refer to here. For example "screen-group1 = 'ID1" replaces
+*"screen-name = 'BK1' OR screen-name = 'P_C1' OR screen-name = P_C2' OR screen-name = 'P_C3'". The blocks themselves ('BC1', 'BC2', 'BC3')
+*and their titles ('T1', 'T2', 'T3') cannot be assigned to screen groups (cannot have MODIF ID). Apparently, the frame titles are
+*more relevant here, because refering to "screen-name = 'T1'" in 'make_visible' subroutines encompasses both the block and the title
+*whereas refering only to 'BC' doesn't actually even work - the block will not be made visible. Basically, adding "screen-name = 'BC1'"
+*and others of the sort is reduntant.
   LOOP AT SCREEN.
-    IF screen-name = 'BK1' OR
-       screen-name = 'BK2' OR
-       screen-name = 'BK3' OR
-       screen-name = 'T1' OR
-       screen-name = 'T2' OR
-       screen-name = 'T3' OR
-       screen-name = 'LB1' OR
-       screen-name = 'LB2' OR
-       screen-name = 'LB3' OR
-       screen-name = 'P_C1' OR
-       screen-name = 'P_C2' OR
-       screen-name = 'P_C3' OR
-       screen-name = 'P_R1' OR
-       screen-name = 'P_R2' OR
-       screen-name = 'P_R3'.
+    IF screen-group1 = 'ID1' OR screen-group1 = 'ID2' OR screen-group1 = 'ID3'.
       screen-invisible = '1'.
       MODIFY SCREEN.
     ENDIF.
@@ -350,11 +345,9 @@ ENDFORM.                    " MAKE_BLOCKS_INV
 *----------------------------------------------------------------------*
 FORM make_bk1_visible.
   LOOP AT SCREEN.
-    IF screen-name = 'BK1' OR
+    IF screen-group1 = 'ID1' OR
+       screen-name = 'BC1' OR
        screen-name = 'T1' OR
-       screen-name = 'P_C1' OR
-       screen-name = 'P_C2' OR
-       screen-name = 'P_C3' OR
        screen-name = 'P_ABC'.
       screen-invisible = '0'.
       MODIFY SCREEN.
@@ -375,11 +368,9 @@ ENDFORM.                    " MAKE_BK1_VISIBLE
 *----------------------------------------------------------------------*
 FORM make_bk2_visible.
   LOOP AT SCREEN.
-    IF screen-name = 'BK2' OR
+    IF screen-group1 = 'ID2' OR
+       screen-name = 'BC2' OR
        screen-name = 'T2' OR
-       screen-name = 'P_R1' OR
-       screen-name = 'P_R2' OR
-       screen-name = 'P_R3' OR
        screen-name = 'P_ABC'.
       screen-invisible = '0'.
       MODIFY SCREEN.
@@ -400,11 +391,9 @@ ENDFORM.                    " MAKE_BK2_VISIBLE
 *----------------------------------------------------------------------*
 FORM make_bk3_visible.
   LOOP AT SCREEN.
-    IF screen-name = 'BK3' OR
+    IF screen-group1 = 'ID3' OR
+       screen-name = 'BC3' OR
        screen-name = 'T3' OR
-       screen-name = 'LB1' OR
-       screen-name = 'LB2' OR
-       screen-name = 'LB3' OR
        screen-name = 'P_ABC'.
       screen-invisible = '0'.
       MODIFY SCREEN.
