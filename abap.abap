@@ -5818,14 +5818,20 @@ AT SELECTION-SCREEN ON HELP-REQUEST FOR p_abc.
       txt1          = 'Select a value from the dropdown listbox.' "The first block of text of the dialog box.
       txt2          = 'Upon selecting the value, displays the appropriate block.'. "The second block of text of the dialog box.
 
+*Instead of using local messages like below, I can define a global message class in transaction SE91. Many programs can use the
+*same set of messages then. One global message class can contain up to 1000 messages.
+*The 's' stand for 'status' - this message will be displayed as a status message at the bottom of SAP GUI. Afterwards comes the
+*number of the message and in the brackets is the name of the message class I want the message from. The number of the message
+*can also start with an 'i' - and it is then displayed in a dialogbox.
 AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c1.
-  MESSAGE 'F1 help for the first checkbox' TYPE 'I'.
+*MESSAGE 'F1 help for the first checkbox' TYPE 'I'. - this is a regular local message.
+ MESSAGE s000(ZBMIERZWI_TEST_MSG). "This is a message from the global class.
 AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c2.
   MESSAGE 'F1 help for the second checkbox' TYPE 'I'.
 AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c3.
   MESSAGE 'F1 help for the third checkbox' TYPE 'I'.
 AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r1.
-  MESSAGE 'F1 help for the first radiobutton' TYPE 'I'.
+  MESSAGE i001(ZBMIERZWI_TEST_MSG). "This is a message from the global class.
 AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r2.
   MESSAGE 'F1 help for the second radiobutton' TYPE 'I'.
 AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r3.
