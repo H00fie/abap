@@ -271,6 +271,29 @@ AT SELECTION-SCREEN OUTPUT.
     PERFORM make_bk3_visible.
   ENDIF.
 
+*AT-SELECTION-SCREEN ON HELP-REQUEST FOR is an event that triggers when 'F1' is pressed on any selection screen element. For each
+*of the screen elements the event needs to be handled separately. There is a standard function module for displaying a dialog box
+*for displaying the documentation or a message for every screen element - POPUP_TO_INFORM.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_abc.
+  CALL FUNCTION 'POPUP_TO_INFORM'
+    EXPORTING
+      titel         = 'F1 help for the dropdown listbox.' "This is the frame title of the box.
+      txt1          = 'Select a value from the dropdown listbox.' "The first block of text of the dialog box.
+      txt2          = 'Upon selecting the value, displays the appropriate block.'. "The second block of text of the dialog box.
+
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c1.
+  MESSAGE 'F1 help for the first checkbox' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c2.
+  MESSAGE 'F1 help for the second checkbox' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_c3.
+  MESSAGE 'F1 help for the third checkbox' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r1.
+  MESSAGE 'F1 help for the first radiobutton' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r2.
+  MESSAGE 'F1 help for the second radiobutton' TYPE 'I'.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_r3.
+  MESSAGE 'F1 help for the third radiobutton' TYPE 'I'.
+
 *&---------------------------------------------------------------------*
 *&      Form  PREPARE_VALUES
 *&---------------------------------------------------------------------*
@@ -403,6 +426,167 @@ FORM make_bk3_visible.
     ENDIF.
   ENDLOOP.
 ENDFORM.                    " MAKE_BK3_VISIBLE
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*ON-CHANGE-OF. A HIERARCHIAL REPORT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*An exercise program with the following requirements:
+*- default the sales document input values to from 10 to 100,
+*- restrict the user to enter only a single range,
+*- fetch the corresponding header and item data of sales orders and display it in a hierarchial sequential list.
+
+DATA: v_vbeln TYPE vbak-vbeln.
+
+SELECT-OPTIONS so_vbeln FOR v_vbeln DEFAULT 10 TO 100 NO-EXTENSION. "Both 'I' and string value types will do for DEFAULT.
+
+*I will be taking 'vbeln', 'erdat', 'erzet' and 'ernam' from VBAK and 'vbeln', 'posnr', 'matnr' and 'netwr' from VBAP.
+*It is recommended that the fields are selected in the same sequence they are placed within the database table.
+*I will need two internal tables, because I need multiple header records and multiple item records.
+TYPES: BEGIN OF t_sales_header,
+        vbeln TYPE vbak-vbeln,
+        erdat TYPE vbak-erdat,
+        erzet TYPE vbak-erzet,
+        ernam TYPE vbak-ernam,
+END OF t_sales_header.
+
+DATA: it_sales_header TYPE TABLE OF t_sales_header,
+      wa_sales_header TYPE t_sales_header.
+
+TYPES: BEGIN OF t_sales_items,
+        vbeln TYPE vbap-vbeln,
+        posnr TYPE vbap-posnr,
+        matnr TYPE vbap-matnr,
+        netwr TYPE vbap-netwr,
+END OF t_sales_items.
+
+DATA: it_sales_items TYPE TABLE OF t_sales_items,
+      wa_sales_items TYPE t_sales_items.
+
+START-OF-SELECTION.
+*First I am getting the data for the header of every document.
+  PERFORM get_header_data.
+*If data is there, for every document that's in the header table - I am getting the data for all the items included in that document.
+  IF it_sales_header IS NOT INITIAL.
+    PERFORM get_item_data.
+  ENDIF.
+
+*Both of the above functions simply select the data. So I've got two tables, hopefully filled with data, prepared for me to process
+*further.
+*I want to display a record from the header table, all the items for that document and only then the next record from the header table
+*and so on.
+  PERFORM display_data.
+
+*&---------------------------------------------------------------------*
+*&      Form  get_header_data
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM get_header_data.
+  SELECT vbeln erdat erzet ernam
+    FROM vbak
+    INTO TABLE it_sales_header
+    WHERE vbeln IN so_vbeln.
+ENDFORM.                    "get_header_data
+
+*&---------------------------------------------------------------------*
+*&      Form  get_item_data
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*This is the optimal solution, without a SELECT in a LOOP.
+*FOR ALL ENTRIES does the same thing, but does not require a loop. The SELECT statement is performed only once and SAP, instead of taking
+*'vbelns' from 'wa_sales_header' one by one and performing a separate loop for them all, carries out a single SELECT during which it takes
+*all desired data in one fell swoop.
+FORM get_item_data.
+  SELECT vbeln posnr matnr netwr
+    FROM vbap
+    INTO TABLE it_sales_items
+    FOR ALL ENTRIES IN it_sales_header
+    WHERE vbeln = it_sales_header-vbeln.
+ENDFORM.
+
+**The below solution is correct and gives the expexted results, but performing a SELECT statement inside the loop is not recommended. If
+**a loop goes around 300 times, SELECT will be performed 300 times, increasing the network traffic, increasing the load on the database
+**server and thus decreasing the overall performance.
+*FORM get_item_data.
+*  LOOP AT it_sales_header INTO wa_sales_header.
+*    SELECT vbeln posnr matnr netwr
+*      FROM vbap
+**If I used INTO TABLE here, it would be overwriting the previously selected record
+**with every loop. APPENDING TABLE appends every selected records to the table before
+**moving on to the next one.
+*      APPENDING TABLE it_sales_items
+**INTO TABLE it_sales_items
+*      WHERE vbeln = wa_sales_header.
+*  ENDLOOP.
+*ENDFORM.                    "get_item_data
+
+*&---------------------------------------------------------------------*
+*&      Form  display_data
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*In the below solution I am looping through the item table data only and every time a 'vbeln' changes (when the loop takes on a new 'vbeln'),
+*ON CHANGE OF event is triggered. When that happens, READ TABLE places a record of the header table into the header work area and chooses what
+*record it picks by comparing it to the currently processed 'vbeln' in the item table. Due to this section being placed at the start of the code,
+*the data from the header table will be displayed first.
+*When this is done, the loop proceeds to print out the data of the currently processed record from the item table. When the loop ends and goes
+*back to the beginning - a new record is selected and if a change of 'vbeln' occurs - ON CHANGE OF is triggered again. Item table can contain
+*many rows for the same 'vbeln' (document number) so making the reaching for the data from the header table dependant on the change of 'vbeln'
+*makes sure that all the data for the current 'vbeln' from the item table will be printed out one after another.
+*This solution loops only through the item table and "injects" the data about the same 'vbeln' from the item data table as is being currently
+*processed at the beginning of the processing of every new document number ('vbeln').
+FORM display_data.
+  LOOP AT it_sales_items INTO wa_sales_items.
+    ON CHANGE OF wa_sales_items-vbeln.
+      CLEAR wa_sales_header.
+      READ TABLE it_sales_header INTO wa_sales_header WITH KEY vbeln = wa_sales_items.
+      IF sy-subrc = 0.
+        FORMAT COLOR 3.
+        WRITE: / wa_sales_header-vbeln,
+                 wa_sales_header-erdat,
+                 wa_sales_header-erzet,
+                 wa_sales_header-ernam.
+      ENDIF.
+    ENDON.
+    FORMAT COLOR 7.
+    WRITE: / wa_sales_items-vbeln,
+             wa_sales_items-posnr,
+             wa_sales_items-matnr,
+             wa_sales_items-netwr.
+    FORMAT COLOR OFF.
+  ENDLOOP.
+ENDFORM.
+
+**Below solution is correct, but not optimal due to nested loops.
+*FORM display_data.
+*  SORT it_sales_header BY vbeln.
+*  SORT it_sales_items BY vbeln posnr.
+*  LOOP AT it_sales_header INTO wa_sales_header.
+*    FORMAT COLOR 3.
+*      WRITE: / wa_sales_header-vbeln,
+*               wa_sales_header-erdat,
+*               wa_sales_header-erzet,
+*               wa_sales_header-ernam.
+**     WHERE clause is possible here! Due to that I will get only the items for the same document
+**     that is being processed at the time. Without the WHERE, all items would be displayed,
+**     regardless of their document number.
+*      LOOP AT it_sales_items INTO wa_sales_items WHERE vbeln = wa_sales_header-vbeln.
+*        FORMAT COLOR 7.
+*          WRITE: /5 wa_sales_items-vbeln, "'5' means 'leave 5 spaces first'.
+*                    wa_sales_items-posnr,
+*                    wa_sales_items-matnr,
+*                    wa_sales_items-netwr.
+*       ENDLOOP.
+*  ENDLOOP.
+*ENDFORM.                    "display_data
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
