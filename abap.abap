@@ -5727,7 +5727,18 @@ ENDFORM.                    " DISPLAY_DROPDOWN
 *AT-SELECTION-SCREEN OUTPUT is required whenever any screen elements need to be changed. It is like PBO (process before output).
 *The screen refreshing logic should always be placed in the final event which is AT-SELECTION-SCREEN OUTPUT. AT-SELECTION-SCREEN
 *houses the indicators (the values for 'gv_flag') for the following event.
-PARAMETERS p_abc(15) TYPE c AS LISTBOX VISIBLE LENGTH 12.
+*USER-COMMAND is being added to the listbox because I want a function call to be associated with it. Without it, certain blocks become
+*visible upon choosing a value only when Enter is pressed. I want it to happen the moment the value is selected and for that I require
+*a function call.
+
+*If I am using the USER-COMMAND option for the parameter statement, I cannot specify the offset or the length of the parameter.
+*PARAMETERS p_abc(15) TYPE c AS LISTBOX VISIBLE LENGTH 12 USER-COMMAND fc1. "Throws the error.
+
+*'gv_abc' is used so I can specify the length of the parameter even though I can't do it directly for 'p_abc' itself. Whenever I select
+*a value in the drop-down listbox, AT-SELECTION-SCREEN event is triggered. So the logic of the function call is specified there.
+DATA: gv_abc(15) TYPE c.
+PARAMETERS p_abc LIKE gv_abc AS LISTBOX VISIBLE LENGTH 12 USER-COMMAND fc1.
+
 DATA: lt_values TYPE TABLE OF vrm_value,
       wa_values TYPE vrm_value,
       gv_flag   TYPE i. "The variable for AT-SELECTION-SCREEN event to indicate what value was assumed by the parameter.
@@ -5764,14 +5775,24 @@ INITIALIZATION.
 
 *The moment the value is selected and Enter is hit, AT-SELECTION-SCREEN event is triggered. The key of the selected value is captured
 *within the the parameter internally - it's performed within PREPARE_VALUES perform.
+*By putting the logic responsible for making a particular block visible into the CASE block associated with the function call associated
+*with the dropdown listbox - I am ensuring that the blocks will become visible upon selecting the value without having to hit Enter beforehand.
+*Without it - I would need to hit Enter first, because AT-SELECTION-SCREEN event triggers as a result of doing that without an "external"
+*stimulus in the form of the function call.
+*It is specified here because AT-SELECTION-SCREEN event is what triggers when an action happens in the selection screen. The values of
+*'K1', 'K2' and 'K3' are assigned to every parameter option during the INITIALIZATION. The function call's responsibility here is to trigger
+*AT-SELECTION-SCREEN event without making the user hit Enter first.
 AT SELECTION-SCREEN.
-  IF p_abc = 'K1'.
-    gv_flag = 1.
-  ELSEIF p_abc = 'K2'.
-    gv_flag = 2.
-  ELSEIF p_abc = 'K3'.
-    gv_flag = 3.
-  ENDIF.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      IF p_abc = 'K1'.
+        gv_flag = 1.
+      ELSEIF p_abc = 'K2'.
+        gv_flag = 2.
+      ELSEIF p_abc = 'K3'.
+        gv_flag = 3.
+      ENDIF.
+  ENDCASE.
 
 *AT-SELECTION-SCREEN OUTPUT event is triggered automatically after AT-SELECTION-SCREEN event AND after the INITIALIZATION event.
 *Any screen refreshing logic should be placed here.
