@@ -5712,7 +5712,7 @@ ENDFORM.                    " DISPLAY_DROPDOWN
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*CONTROLLING SCREEN ELEMENTS WITH EVENTS.
+*SELECTION SCREENS - CONTROLLING SCREEN ELEMENTS WITH EVENTS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *Depending on the parameter value selected, I want certain components of the screen hidden. In order to control the appearance of
@@ -5773,8 +5773,8 @@ AT SELECTION-SCREEN.
     gv_flag = 3.
   ENDIF.
 
-*AT-SELECTION-SCREEN OUTPUT event is triggered automatically after AT-SELECTION-SCREEN event. Any screen refreshing logic should be
-*placed here.
+*AT-SELECTION-SCREEN OUTPUT event is triggered automatically after AT-SELECTION-SCREEN event AND after the INITIALIZATION event.
+*Any screen refreshing logic should be placed here.
 AT SELECTION-SCREEN OUTPUT.
   IF gv_flag = 1.
     PERFORM make_bk1_visible.
