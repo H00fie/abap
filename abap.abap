@@ -6457,9 +6457,10 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*DATABASE DATA RETRIEVAL - SELECT SINGLE.
+*DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE.
 *---------------------------------------------------------------------------------------------------------------------------------
 
+*My variables reflect the fields within the database table in terms of the data type and the length.
 DATA: f1(10) TYPE c,
       f2(3)  TYPE c,
       f3(35) TYPE c,
@@ -6474,6 +6475,17 @@ SELECT SINGLE kunnr land1 name1 name2
   FROM kna1
   INTO (f1, f2, f3, f4)
   WHERE kunnr = p_cstno.
+
+*'sy-subrc' contains the information about the execution status of ABAP statements. 0 means success, 4 means failure.
+IF sy-subrc = 0.
+  MESSAGE 'Customer found!' TYPE 'I'.
+  WRITE: / 'Customer number:', f1,
+         / 'Customer country:', f2,
+         / 'Customer name:', f3,
+         / 'Customer city:', f2.
+ELSE.
+  MESSAGE 'Customer not found!' TYPE 'I'.
+ENDIF.
   
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
