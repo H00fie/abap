@@ -6494,6 +6494,142 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MOVING DATA BETWEEN TWO INTERNAL TABLES. FOR LOOP, VALUE.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+TYPES: BEGIN OF t_tab1,
+  number          TYPE i,
+  name(25)        TYPE c,
+  occupation(25)  TYPE c,
+  sex             TYPE c,
+  fav_pokemon(20) TYPE c,
+  fav_food(25)    TYPE c,
+END OF t_tab1.
+
+TYPES: BEGIN OF t_tab2,
+  number          TYPE i,
+  name(25)        TYPE c,
+  sex             TYPE c,
+  fav_pokemon(20) TYPE c,
+END OF t_tab2.
+
+DATA: lt_tab1 TYPE STANDARD TABLE OF t_tab1,
+      wa_tab1 TYPE t_tab1,
+      lt_tab2 TYPE STANDARD TABLE OF t_tab2,
+      wa_tab2 TYPE t_tab2,
+      flag    TYPE c VALUE 1.
+
+PERFORM populate_lt_tab1.
+
+lt_tab2 = VALUE #( FOR lmao IN lt_tab1 ( number      = lmao-number
+                                         name        = lmao-name
+                                         sex         = lmao-sex
+                                         fav_pokemon = lmao-fav_pokemon ) ).
+
+PERFORM print_results TABLES lt_tab1 USING flag.
+flag = 0.
+PERFORM print_results TABLES lt_tab2 USING flag.
+
+*&---------------------------------------------------------------------*
+*&      Form  POPULATE_LT_TAB1
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM populate_lt_tab1 .
+  wa_tab1-number         = 123.
+  wa_tab1-name           = 'Nezuko'.
+  wa_tab1-occupation     = 'Developer'.
+  wa_tab1-sex            = 'F'.
+  wa_tab1-fav_pokemon    = 'Dedenne'.
+  wa_tab1-fav_food       = 'Blueberry'.
+  APPEND wa_tab1 TO lt_tab1.
+
+  wa_tab1-number         = 537.
+  wa_tab1-name           = 'Abydon'.
+  wa_tab1-occupation     = 'Developer'.
+  wa_tab1-sex            = 'M'.
+  wa_tab1-fav_pokemon    = 'Cyndaquil'.
+  wa_tab1-fav_food       = 'Broccoli'.
+  APPEND wa_tab1 TO lt_tab1.
+
+  wa_tab1-number         = 333.
+  wa_tab1-name           = 'Halibel'.
+  wa_tab1-occupation     = 'Developer'.
+  wa_tab1-sex            = 'F'.
+  wa_tab1-fav_pokemon    = 'Cubone'.
+  wa_tab1-fav_food       = 'Tomato'.
+  APPEND wa_tab1 TO lt_tab1.
+
+  wa_tab1-number         = 193.
+  wa_tab1-name           = 'Bubik'.
+  wa_tab1-occupation     = 'Developer'.
+  wa_tab1-sex            = 'M'.
+  wa_tab1-fav_pokemon    = 'Glaceon'.
+  wa_tab1-fav_food       = 'Soy beans'.
+  APPEND wa_tab1 TO lt_tab1.
+
+  wa_tab1-number         = 666.
+  wa_tab1-name           = 'Attalos'.
+  wa_tab1-occupation     = 'Developer'.
+  wa_tab1-sex            = 'M'.
+  wa_tab1-fav_pokemon    = 'Poochyena'.
+  wa_tab1-fav_food       = 'Peanut butter'.
+  APPEND wa_tab1 TO lt_tab1.
+
+  wa_tab1-number         = 578.
+  wa_tab1-name           = 'Rokaro'.
+  wa_tab1-occupation     = 'Developer'.
+  wa_tab1-sex            = 'M'.
+  wa_tab1-fav_pokemon    = 'Totodile'.
+  wa_tab1-fav_food       = 'Cucumber'.
+  APPEND wa_tab1 TO lt_tab1.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  PRINT_RESULTS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM print_results TABLES p_tab USING p_flag.
+  DATA: p_wa_tab  TYPE t_tab1,
+        p_wa_tab2 TYPE t_tab2.
+IF flag = '1'.
+  WRITE: 'The initial records of the first table:'.
+  ULINE.
+  LOOP AT p_tab INTO p_wa_tab.
+    WRITE: / p_wa_tab-number,
+             p_wa_tab-name,
+             p_wa_tab-occupation,
+             p_wa_tab-sex,
+             p_wa_tab-fav_pokemon,
+             p_wa_tab-fav_food.
+  ENDLOOP.
+  ULINE.
+ELSE.
+  WRITE: 'The records moved to the second table:'.
+  ULINE.
+  LOOP AT p_tab INTO p_wa_tab2.
+    WRITE: / p_wa_tab2-number,
+             p_wa_tab2-name,
+             p_wa_tab2-sex,
+             p_wa_tab2-fav_pokemon.
+  ENDLOOP.
+  ULINE.
+ENDIF.
+ENDFORM.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *CDS VIEWS. EMPLOYEES REPORT.
 *---------------------------------------------------------------------------------------------------------------------------------
 
