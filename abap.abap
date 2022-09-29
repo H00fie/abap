@@ -6521,10 +6521,14 @@ DATA: lt_tab1 TYPE STANDARD TABLE OF t_tab1,
 
 PERFORM populate_lt_tab1.
 
-lt_tab2 = VALUE #( FOR lmao IN lt_tab1 ( number      = lmao-number
-                                         name        = lmao-name
-                                         sex         = lmao-sex
-                                         fav_pokemon = lmao-fav_pokemon ) ).
+*A one line version.
+lt_tab2 = VALUE #( FOR lmao IN lt_tab1 ( CORRESPONDING #( lmao ) ) ).
+
+*A longer version.
+*lt_tab2 = VALUE #( FOR lmao IN lt_tab1 ( number      = lmao-number
+*                                         name        = lmao-name
+*                                         sex         = lmao-sex
+*                                         fav_pokemon = lmao-fav_pokemon ) ).
 
 PERFORM print_results TABLES lt_tab1 USING flag.
 flag = 0.
