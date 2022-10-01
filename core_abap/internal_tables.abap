@@ -789,3 +789,43 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*DATABASE DATA RETRIEVAL - NATIVE SQL.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+PARAMETERS p_kunnr TYPE kna1-kunnr.
+
+DATA: v_kunnr TYPE kna1-kunnr,
+      v_land1 TYPE kna1-land1,
+      v_name1 TYPE kna1-name1,
+      v_ort01 TYPE kna1-ort01.
+
+*Native SQL statements are embbeded within EXEC SQL and ENDEXEC statements. Every database has its own native SQL statements.
+*The below ones are HANA's. The fields need to be separated with a comma.
+*INTO clause does not require the brackets, if I am mentioning all fields separately, but a colon (called "a binding operator)
+*is required as a prefix for every field. The field I am comparing the data from the database table to also needs to be prefixed
+*with a colon and there is no full stop at the end.
+*Using native SQL is not recommended - if a database is changed, all SQL statements would need to be changed too. It's better
+*to use OpenSQL instead.
+EXEC SQL.
+  SELECT kunnr, land1, name1, ort01
+    FROM kna1
+    INTO :v_kunnr, :v_land1, :v_name1, :v_ort01
+    WHERE kunnr = :p_kunnr
+ENDEXEC.
+
+IF sy-subrc = 0.
+  WRITE: / 'Customer number: ', p_kunnr, ' found.'.
+  WRITE: / 'Customer number: ', v_kunnr,
+         / 'Customer country: ', v_land1,
+         / 'Customer name: ', v_name1,
+         / 'Customer city: ', v_ort01.
+
+ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
