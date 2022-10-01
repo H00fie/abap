@@ -753,3 +753,39 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE. WORK AREA.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+PARAMETERS p_kunnr TYPE kna1-kunnr.
+
+TYPES: BEGIN OF t_customer,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+  ort01 TYPE kna1-ort01,
+END OF t_customer.
+
+*Work area is a collection of fields. It is a single row of whatever structure it is based on.
+DATA: wa_customer TYPE t_customer.
+
+SELECT SINGLE kunnr land1 name1 ort01
+  FROM kna1
+  INTO wa_customer
+  WHERE kunnr = p_kunnr.
+IF sy-subrc = 0.
+  WRITE: / 'Customer ', p_kunnr, ' is found:'.
+  WRITE: / 'Customer number: ', wa_customer-kunnr,
+         / 'Customer country: ', wa_customer-land1,
+         / 'Customer name: ', wa_customer-name1,
+         / 'Customer city: ', wa_customer-ort01.
+ELSE.
+  WRITE: 'Cutomer number ', p_kunnr, ' not found.'.
+ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------

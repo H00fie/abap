@@ -6494,7 +6494,7 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*01.10.2022 - DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE. WORK AREA.
+*DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE. WORK AREA.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 PARAMETERS p_kunnr TYPE kna1-kunnr.
