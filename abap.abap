@@ -6457,7 +6457,7 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE.
+*DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE. LOCAL FIELDS NOT REFERING TO DATABASE TABLE'S FIELDS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *My variables reflect the fields within the database table in terms of the data type and the length.
