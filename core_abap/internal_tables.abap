@@ -695,3 +695,61 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*DATABASE DATA RETRIEVAL - SELECT SINGLE. NO INTERNAL TABLE. FIELDS REFERING TO DATABASE TABLE'S FIELDS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*My variables reflect the fields within the database table in terms of the data type and the length... BUT this is a "dangerous"
+*way of declaring the variables. The data types within the database table might change and my variables here will not refelect that.
+*DATA: f1(10) TYPE c,
+*      f2(3)  TYPE c,
+*      f3(35) TYPE c,
+*      f4(35) TYPE c.
+
+*Instead, I should create my variables to be of the same data element as the fields within the database table I am interested in.
+*Thus, if, say, KUNNR is changed by SAP one day, my variables will reflect the change as well.
+*DATA: f1 TYPE kunnr,
+*      f2 TYPE land1_gp,
+*      f3 TYPE name1_gp,
+*      f4 TYPE ort01.
+
+*I can also prefix every data element name with the name of the table from which the field will be taken. I am refering to the
+*names of the fields of the table in this case, not the names of data elements themselves.
+*Both ways of refering to the database table's fields are recommended. It is also recommended to name my program's fields the
+*same as the database table's fields the type of which they are.
+DATA: kunnr TYPE kna1-kunnr,
+      land1 TYPE kna1-land1,
+      name1 TYPE kna1-name1,
+      ort01 TYPE kna1-ort01.
+
+*The limitation to declaring a parameter like that is that I will not have an F4 help by default.
+*PARAMETERS: p_cstno(10) TYPE c.
+
+*Creating a parameter in a more specific way I am ensuring there will be F4 help by default. If the data element is associated
+*with the search help at a database level - the same search help will be associated with my program's selection screen's variable.
+PARAMETERS: p_kunnr TYPE kna1-kunnr.
+
+*SELECT SINGLE ensures I will only get a single record. This is ensured by refering to the primary key field in the WHERE clause.
+*A primary key field is a guarantee I will not have duplicate entries.
+SELECT SINGLE kunnr land1 name1 name2
+  FROM kna1
+  INTO (kunnr, land1, name1, ort01)
+  WHERE kunnr = p_kunnr.
+
+*'sy-subrc' contains the information about the execution status of ABAP statements. 0 means success, 4 means failure.
+IF sy-subrc = 0.
+  MESSAGE 'Customer found!' TYPE 'I'.
+  WRITE: / 'Customer number:', kunnr,
+         / 'Customer country:', land1,
+         / 'Customer name:', name1,
+         / 'Customer city:', ort01.
+ELSE.
+  MESSAGE 'Customer not found!' TYPE 'I'.
+ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
