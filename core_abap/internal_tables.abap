@@ -875,6 +875,12 @@ START-OF-SELECTION.
 *the SELECT statement by using ORDER BY, but this approach is discouraged as it performs the sorting on the database
 *level increasing the load on the database. It is better to get the desired data into the internal table and SORT it
 *based on one of the internal table's fields.
+*The WHERE clause could contain different conditions, e.g. using the keyword OR:
+* - WHERE land1 = 'PL' OR land1 = 'DE' OR land1 = 'EN'...
+*Or a range of values:
+* - WHERE land1 IN ('PL', 'DE', 'EN')...
+*The 'equal to' operator ('=') should be used when I am comparing to exactly one value. If I have a set, I should use
+*the IN operator.
 FORM get_customers.
   SELECT kunnr name1 ort01
     FROM kna1
