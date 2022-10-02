@@ -6570,6 +6570,73 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*DATABASE DATA RETRIEVAL - MULTIPLE RECORDS. INTERNAL TABLE.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*If I am not selecting a single record by design, I might load multiple record. Thus, my target variable needs to be an internal
+*table. All country keys defined within SAP are stored within 'T005' database table.
+PARAMETERS p_land1 TYPE kna1-land1.
+
+*It is recommended that the fields of the internal table are declared in the same sequence as they are within the database table
+*as this will slightly improve the performance.
+TYPES: BEGIN OF t_customer,
+  kunnr TYPE kna1-kunnr,
+  name1 TYPE kna1-name1,
+  ort01 TYPE kna1-ort01,
+END OF t_customer.
+
+DATA: lt_customer TYPE STANDARD TABLE OF t_customer,
+      wa_customer TYPE t_customer.
+
+START-OF-SELECTION.
+  PERFORM get_customers.
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_CUSTOMERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+*The sequence of fields should reflect the sequence of fields within the database table for the performance's improvement.
+*I want to know the number of records retrieved. I can count the number of records within the internal table with the
+*DESCRIBE statement which will count the number of records and store it in the system field 'sy-tfill'. I can also use
+*another system variable - 'sy-dbcnt'. It will hold the number of records retrieved by my SELECT statement. I should use
+*it immediately after the SELECT statement. So the difference is that 'sy-dbcnt' has to be used after the SELECT because
+*the next one will change its value and the combination of DESCRIBE TABLE and sy-tfill allow me to refer to any table
+*anywhere.
+*By using the INTO TABLE I am making the retrieved data sit directly in the body of the table. This process omit the
+*work area - the debugger shows that the work area remains empty while the internal table is filled.
+FORM get_customers.
+  SELECT kunnr name1 ort01
+    FROM kna1
+    INTO TABLE lt_customer
+    WHERE land1 = p_land1.
+  IF sy-subrc = 0. "At least one record is retrieved.
+*The first way of counting the number of records within a table:
+    WRITE: / 'The number of records found using sy-dbcnt is: ', sy-dbcnt.
+*The second way of counting the number of records within a table:
+    DESCRIBE TABLE lt_customer.
+    WRITE: / 'The number of records found using DESCRIBE TABLE and sy-tfill is: ', sy-tfill.
+    SORT lt_customer BY name1.
+    LOOP AT lt_customer INTO wa_customer.
+      WRITE: / wa_customer-kunnr,
+               wa_customer-name1,
+               wa_customer-ort01.
+    ENDLOOP.
+  ELSE.
+    MESSAGE 'No data was found for the provided country key.' TYPE 'I'.
+  ENDIF.
+ENDFORM.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *MOVING DATA BETWEEN TWO INTERNAL TABLES. FOR LOOP, VALUE.
 *---------------------------------------------------------------------------------------------------------------------------------
 
