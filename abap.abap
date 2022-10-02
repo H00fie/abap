@@ -6608,6 +6608,10 @@ START-OF-SELECTION.
 *anywhere.
 *By using the INTO TABLE I am making the retrieved data sit directly in the body of the table. This process omit the
 *work area - the debugger shows that the work area remains empty while the internal table is filled.
+*I am additionally SORTing the results before they are displayed with the SORT keyword. I could also sort them during
+*the SELECT statement by using ORDER BY, but this approach is discouraged as it performs the sorting on the database
+*level increasing the load on the database. It is better to get the desired data into the internal table and SORT it
+*based on one of the internal table's fields.
 FORM get_customers.
   SELECT kunnr name1 ort01
     FROM kna1
