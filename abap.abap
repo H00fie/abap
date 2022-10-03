@@ -6647,6 +6647,32 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*DATABASE DATA RETRIEVAL - CUSTOM F4 HELP.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*I want a program to take the material number as input, complete with having F4 help associated and then, if the material was found,
+*make the second block visible. The second block should include ???? display the material type, the industry sectore and the material group
+SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
+*I want a single line. Without this "line block", the comment and the parameter would be in different lines. If the COMMENT is in the
+*same line as a parameter - it assumes the place of the name 'p_matnr'. If they're in two different lines, I would still see 'p_matnr'
+*next to the input box, but when the COMMENT is in the same line, 'p_matnr' is gone.
+  SELECTION-SCREEN BEGIN OF LINE.
+    SELECTION-SCREEN COMMENT 6(15) lb1.
+    PARAMETERS p_matnr TYPE mara-matnr.
+  SELECTION-SCREEN END OF LINE.
+SELECTION-SCREEN END OF BLOCK bk1.
+
+INITIALIZATION.
+  lb1 = 'Material number'.
+  t1 = 'Input block'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *MOVING DATA BETWEEN TWO INTERNAL TABLES. FOR LOOP, VALUE.
 *---------------------------------------------------------------------------------------------------------------------------------
 
