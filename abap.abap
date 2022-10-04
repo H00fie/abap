@@ -6647,7 +6647,7 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*DATABASE DATA RETRIEVAL - CUSTOM F4 HELP.
+*DATABASE DATA RETRIEVAL - CUSTOM F4 HELP. MODIF ID.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *I want a program to take the material number as input, complete with having F4 help associated and then, if the material was found,
@@ -6662,9 +6662,65 @@ SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
   SELECTION-SCREEN END OF LINE.
 SELECTION-SCREEN END OF BLOCK bk1.
 
+SELECTION-SCREEN SKIP 1.
+
+*I want the entire block two invisible. It consists of 7 elements - the block itself, the three labels and the three input boxes.
+*Thus, all these elements are supposed to have a common property. I can group these elements - with a MODIF ID. This is an addition
+*that is used to group screen elements together. MODIF ID saves the name of the group (however I name it) within 'group1' field
+*of the 'screen' internal table.
+SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
+
+  SELECTION-SCREEN BEGIN OF LINE.
+    SELECTION-SCREEN COMMENT 6(15) lb2 MODIF ID id1.
+    PARAMETERS p_mtart TYPE mara-mtart MODIF ID id1.
+  SELECTION-SCREEN END OF LINE.
+
+  SELECTION-SCREEN BEGIN OF LINE.
+    SELECTION-SCREEN COMMENT 6(15) lb3 MODIF ID id1.
+    PARAMETERS p_mbrsh TYPE mara-mbrsh MODIF ID id1.
+  SELECTION-SCREEN END OF LINE.
+
+  SELECTION-SCREEN BEGIN OF LINE.
+    SELECTION-SCREEN COMMENT 6(15) lb4 MODIF ID id1.
+    PARAMETERS p_matkl TYPE mara-matkl MODIF ID id1.
+  SELECTION-SCREEN END OF LINE.
+
+SELECTION-SCREEN END OF BLOCK bk2.
+
+SELECTION-SCREEN SKIP 1.
+
+SELECTION-SCREEN PUSHBUTTON 1(20) b1 USER-COMMAND fc1.
+
 INITIALIZATION.
   lb1 = 'Material number'.
   t1 = 'Input block'.
+  lb2 = 'Material type'.
+  lb3 = 'Industry sector'.
+  lb4 = 'Material group'.
+  t2 = 'Material data'.
+
+*By default, I want the second block invisible.
+  PERFORM make_bk2_inv.
+
+*&---------------------------------------------------------------------*
+*&      Form  MAKE_BK2_INV
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM make_bk2_inv.
+*During the execution of every program, SAP internally creates an internal table - 'screen'. I can iterate through it and update it
+*in order to control the appearance of the screen. The value of 'group1' field is saved in capital letters - it has to be 'ID1'
+*because 'id1' will not work.
+  LOOP AT SCREEN.
+    IF screen-group1 = 'ID1'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
