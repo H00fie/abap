@@ -6714,9 +6714,15 @@ FORM make_bk2_inv.
 *During the execution of every program, SAP internally creates an internal table - 'screen'. I can iterate through it and update it
 *in order to control the appearance of the screen. The value of 'group1' field is saved in capital letters - it has to be 'ID1'
 *because 'id1' will not work.
+*'screen-invisible = 1' will make labels and comments invisible, but input fields will still be there. 'screen-invisible = 1' is sufficient
+*for checkboxes, blocks and radiobuttons too, but not for input fields, so until they are made invisible too - a block will still be visible.
+*It would be invisible, but a few of its elements are still visible, so it can't be invisible itself.
+*To make input fields invisible to, I need to set 'screen-input' to '0'.
+*Without it - input fields will not be invisible and will just come in the encrypted format (input will be stars).
   LOOP AT SCREEN.
     IF screen-group1 = 'ID1'.
       screen-invisible = '1'.
+      screen-input = '0'.
       MODIFY SCREEN.
     ENDIF.
   ENDLOOP.
