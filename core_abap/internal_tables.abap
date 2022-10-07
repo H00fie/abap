@@ -919,6 +919,10 @@ SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
 *I want a single line. Without this "line block", the comment and the parameter would be in different lines. If the COMMENT is in the
 *same line as a parameter - it assumes the place of the name 'p_matnr'. If they're in two different lines, I would still see 'p_matnr'
 *next to the input box, but when the COMMENT is in the same line, 'p_matnr' is gone.
+*Creating a parameter of the database table's field's type I am ensuring there will be F4 help by default. If the data element is associated
+*with the search help at a database level - the same search help will be associated with my program's selection screen's variable. I can
+*overwrite this automated mechanism by defining custom behaviour withint the AT SELECTION-SCREEN ON VALUE REQUEST FOR block. If I so much
+*as define the event without anything afterwards - the default behaviour will already not function.
   SELECTION-SCREEN BEGIN OF LINE.
     SELECTION-SCREEN COMMENT 6(15) lb1.
     PARAMETERS p_matnr TYPE mara-matnr.
@@ -954,6 +958,15 @@ SELECTION-SCREEN SKIP 1.
 
 SELECTION-SCREEN PUSHBUTTON 1(20) b1 USER-COMMAND fc1.
 
+*Data for the 'F4IF_INT_TABLE_VALUE_REQUEST' FM to create my custom list of values for the F4 help.
+TYPES: BEGIN OF t_f4values,
+  matnr TYPE mara-matnr,
+  mtart TYPE mara-mtart,
+END OF t_f4values.
+
+DATA: lt_f4values TYPE STANDARD TABLE OF t_f4values,
+      wa_f4values TYPE t_f4values.
+
 INITIALIZATION.
   lb1 = 'Material number'.
   t1 = 'Input block'.
@@ -964,6 +977,47 @@ INITIALIZATION.
 
 *By default, I want the second block invisible.
   PERFORM make_bk2_inv.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_matnr.
+*In order to establish a custom F4 help - with my custom values, I need to use a standard FM. 'F4IF_INT_TABLE_VALUE_REQUEST'
+*is always used for that purpose.
+  CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+    EXPORTING
+*     DDIC_STRUCTURE         = ' '
+      retfield               =
+*     PVALKEY                = ' '
+*     DYNPPROG               = ' '
+*     DYNPNR                 = ' '
+*     DYNPROFIELD            = ' '
+*     STEPL                  = 0
+*     WINDOW_TITLE           =
+*     VALUE                  = ' '
+*     VALUE_ORG              = 'C'
+*     MULTIPLE_CHOICE        = ' '
+*     DISPLAY                = ' '
+*     CALLBACK_PROGRAM       = ' '
+*     CALLBACK_FORM          = ' '
+*     CALLBACK_METHOD        =
+*     MARK_TAB               =
+*   IMPORTING
+*     USER_RESET             =
+    tables
+      value_tab              =
+*     FIELD_TAB              =
+*     RETURN_TAB             =
+*     DYNPFLD_MAPPING        =
+*   EXCEPTIONS
+*     PARAMETER_ERROR        = 1
+*     NO_VALUES_FOUND        = 2
+*     OTHERS                 = 3
+            .
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+  
+
+START-OF-SELECTION.
+  WRITE: / 'You entered ', p_matnr.
 
 *&---------------------------------------------------------------------*
 *&      Form  MAKE_BK2_INV
