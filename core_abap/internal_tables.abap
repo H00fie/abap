@@ -915,48 +915,51 @@ ENDFORM.
 
 *I want a program to take the material number as input, complete with having F4 help associated and then, if the material was found,
 *make the second block visible. The second block should include ???? display the material type, the industry sectore and the material group
-SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
+  SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
 *I want a single line. Without this "line block", the comment and the parameter would be in different lines. If the COMMENT is in the
 *same line as a parameter - it assumes the place of the name 'p_matnr'. If they're in two different lines, I would still see 'p_matnr'
 *next to the input box, but when the COMMENT is in the same line, 'p_matnr' is gone.
-*Creating a parameter of the database table's field's type I am ensuring there will be F4 help by default. If the data element is associated
-*with the search help at a database level - the same search help will be associated with my program's selection screen's variable. I can
-*overwrite this automated mechanism by defining custom behaviour withint the AT SELECTION-SCREEN ON VALUE REQUEST FOR block. If I so much
-*as define the event without anything afterwards - the default behaviour will already not function.
+*By creating a parameter of the database table's field's type I am ensuring there will be F4 help by default. If the data element is associated
+*with the search help at a database level - the same search help will be associated with my program's selection screen's variable. I can see
+*within the database table itself if a field has help associated with it. To do this I should navigate to the details of a particular data
+*element and check the Further Characteristics tab - 'matnr' for example has the value of 'S_MAT1' associated with it and mentioned in the
+*help box.
+*I can overwrite the automated F4 help mechanism by defining custom behaviour withint the AT SELECTION-SCREEN ON VALUE REQUEST FOR block.
+*If I so much as define the event without anything afterwards - the default behaviour will already not function.
   SELECTION-SCREEN BEGIN OF LINE.
-    SELECTION-SCREEN COMMENT 6(15) lb1.
-    PARAMETERS p_matnr TYPE mara-matnr.
+  SELECTION-SCREEN COMMENT 6(15) lb1.
+  PARAMETERS p_matnr TYPE mara-matnr MODIF ID id2.
   SELECTION-SCREEN END OF LINE.
-SELECTION-SCREEN END OF BLOCK bk1.
+  SELECTION-SCREEN END OF BLOCK bk1.
 
-SELECTION-SCREEN SKIP 1.
+  SELECTION-SCREEN SKIP 1.
 
 *I want the entire block two invisible. It consists of 7 elements - the block itself, the three labels and the three input boxes.
 *Thus, all these elements are supposed to have a common property. I can group these elements - with a MODIF ID. This is an addition
 *that is used to group screen elements together. MODIF ID saves the name of the group (however I name it) within 'group1' field
 *of the 'screen' internal table.
-SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
+  SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
 
   SELECTION-SCREEN BEGIN OF LINE.
-    SELECTION-SCREEN COMMENT 6(15) lb2 MODIF ID id1.
-    PARAMETERS p_mtart TYPE mara-mtart MODIF ID id1.
+  SELECTION-SCREEN COMMENT 6(15) lb2 MODIF ID id1.
+  PARAMETERS p_mtart TYPE mara-mtart MODIF ID id1.
   SELECTION-SCREEN END OF LINE.
 
   SELECTION-SCREEN BEGIN OF LINE.
-    SELECTION-SCREEN COMMENT 6(15) lb3 MODIF ID id1.
-    PARAMETERS p_mbrsh TYPE mara-mbrsh MODIF ID id1.
+  SELECTION-SCREEN COMMENT 6(15) lb3 MODIF ID id1.
+  PARAMETERS p_mbrsh TYPE mara-mbrsh MODIF ID id1.
   SELECTION-SCREEN END OF LINE.
 
   SELECTION-SCREEN BEGIN OF LINE.
-    SELECTION-SCREEN COMMENT 6(15) lb4 MODIF ID id1.
-    PARAMETERS p_matkl TYPE mara-matkl MODIF ID id1.
+  SELECTION-SCREEN COMMENT 6(15) lb4 MODIF ID id1.
+  PARAMETERS p_matkl TYPE mara-matkl MODIF ID id1.
   SELECTION-SCREEN END OF LINE.
 
-SELECTION-SCREEN END OF BLOCK bk2.
+  SELECTION-SCREEN END OF BLOCK bk2.
 
-SELECTION-SCREEN SKIP 1.
+  SELECTION-SCREEN SKIP 1.
 
-SELECTION-SCREEN PUSHBUTTON 1(20) b1 USER-COMMAND fc1.
+  SELECTION-SCREEN PUSHBUTTON 1(20) b1 USER-COMMAND fc1.
 
 *Data for the 'F4IF_INT_TABLE_VALUE_REQUEST' FM to create my custom list of values for the F4 help.
 TYPES: BEGIN OF t_f4values,
@@ -974,11 +977,15 @@ INITIALIZATION.
   lb3 = 'Industry sector'.
   lb4 = 'Material group'.
   t2 = 'Material data'.
+  b1 = 'Get Material Data'.
 
 *By default, I want the second block invisible.
   PERFORM make_bk2_inv.
 
 AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_matnr.
+*In order to have 'lt_f4values' filled with data.
+  PERFORM get_f4_values.
+
 *In order to establish a custom F4 help - with my custom values, I need to use a standard FM. 'F4IF_INT_TABLE_VALUE_REQUEST'
 *is always used for that purpose.
   CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
@@ -1014,7 +1021,7 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_matnr.
   IF sy-subrc <> 0.
 * Implement suitable error handling here
   ENDIF.
-  
+
 
 START-OF-SELECTION.
   WRITE: / 'You entered ', p_matnr.
@@ -1043,6 +1050,24 @@ FORM make_bk2_inv.
       MODIFY SCREEN.
     ENDIF.
   ENDLOOP.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_F4_VALUES
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+*I want just two fields to be available in my custom F4 help. I also only want limited data (WHERE clause). The selection of the help
+*is to be limited, because it's a functionality that's supposed to provide the user with values they can choose from. And the set
+*of values I want them to be able to choose from is limited.
+FORM get_f4_values .
+  SELECT matnr mtart
+    FROM mara
+    INTO TABLE lt_f4values
+    WHERE mtart IN ('WGOT', 'SPOM').
 ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
