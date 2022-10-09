@@ -914,7 +914,7 @@ ENDFORM.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *I want a program to take the material number as input, complete with having F4 help associated and then, if the material was found,
-*make the second block visible. The second block should include ???? display the material type, the industry sectore and the material group
+*make the second block visible and fill all its input fields with data associated to the selected and found material number.
   SELECTION-SCREEN BEGIN OF BLOCK bk1 WITH FRAME TITLE t1.
 *I want a single line. Without this "line block", the comment and the parameter would be in different lines. If the COMMENT is in the
 *same line as a parameter - it assumes the place of the name 'p_matnr'. If they're in two different lines, I would still see 'p_matnr'
@@ -938,6 +938,8 @@ ENDFORM.
 *Thus, all these elements are supposed to have a common property. I can group these elements - with a MODIF ID. This is an addition
 *that is used to group screen elements together. MODIF ID saves the name of the group (however I name it) within 'group1' field
 *of the 'screen' internal table.
+*This block is to become visible when the first parameter ('p_matnr') has been found and the pusbutton has been pressed. All the
+*input fields of this block are to be filled with the data associated to the selected material number ('p_matnr').
   SELECTION-SCREEN BEGIN OF BLOCK bk2 WITH FRAME TITLE t2.
 
   SELECTION-SCREEN BEGIN OF LINE.
@@ -999,7 +1001,6 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_matnr.
 *Without the above, the value selected from the F4 Help list will not be moved to the input field when I double-click my chosen one.
 *- 'value_org' refers to the way the data is transferred. 'S' means 'structure'. Without it, the program will believe there are
 *no values found.
-
   IF lt_f4values IS NOT INITIAL.
     CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
       EXPORTING
@@ -1018,6 +1019,30 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_matnr.
 *   Implement suitable error handling here
     ENDIF.
   ENDIF.
+
+*AT SELECTION-SCREEN event is triggered e.g. when a pushbutton in the selection screen is pushed. I have a USER-COMMAND 'fc1'
+*associated with the button, so 'sy-ucomm' will catch that name.
+*If the material number has been found - the input fields of the second block are to filled with data associated with the
+*material number. If the material is not found, the input fields of the second block are being cleared just in case a material
+*number has been found previously and these fields still hold values. Thanks to the CLEAR - there will be no misconception here.
+AT SELECTION-SCREEN.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      IF p_matnr IS NOT INITIAL.
+        SELECT SINGLE mtart mbrsh matkl
+          INTO (p_mtart, p_mbrsh, p_matkl)
+          FROM mara
+          WHERE matnr = p_matnr.
+          IF sy-subrc = 0.
+            MESSAGE 'Material found!' TYPE 'I'.
+          ELSE.
+            MESSAGE 'Material not found!' TYPE 'I'.
+            CLEAR: p_mtart,
+                   p_mbrsh,
+                   p_matkl.
+          ENDIF.
+      ENDIF.
+  ENDCASE.
 
 START-OF-SELECTION.
   WRITE: / 'You entered ', p_matnr.
@@ -1039,6 +1064,7 @@ FORM make_bk2_inv.
 *It would be invisible, but a few of its elements are still visible, so it can't be invisible itself.
 *To make input fields invisible to, I need to set 'screen-input' to '0'.
 *Without it - input fields will not be invisible and will just come in the encrypted format (input will be stars).
+*When AT SELECTION-SCREEN event is triggerd all the elements become visible automatically again.
   LOOP AT SCREEN.
     IF screen-group1 = 'ID1'.
       screen-invisible = '1'.
