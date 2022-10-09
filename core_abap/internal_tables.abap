@@ -988,40 +988,36 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_matnr.
 
 *In order to establish a custom F4 help - with my custom values, I need to use a standard FM. 'F4IF_INT_TABLE_VALUE_REQUEST'
 *is always used for that purpose.
-  CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
-    EXPORTING
-*     DDIC_STRUCTURE         = ' '
-      retfield               =
-*     PVALKEY                = ' '
-*     DYNPPROG               = ' '
-*     DYNPNR                 = ' '
-*     DYNPROFIELD            = ' '
-*     STEPL                  = 0
-*     WINDOW_TITLE           =
-*     VALUE                  = ' '
-*     VALUE_ORG              = 'C'
-*     MULTIPLE_CHOICE        = ' '
-*     DISPLAY                = ' '
-*     CALLBACK_PROGRAM       = ' '
-*     CALLBACK_FORM          = ' '
-*     CALLBACK_METHOD        =
-*     MARK_TAB               =
-*   IMPORTING
-*     USER_RESET             =
-    tables
-      value_tab              =
-*     FIELD_TAB              =
-*     RETURN_TAB             =
-*     DYNPFLD_MAPPING        =
-*   EXCEPTIONS
-*     PARAMETER_ERROR        = 1
-*     NO_VALUES_FOUND        = 2
-*     OTHERS                 = 3
-            .
-  IF sy-subrc <> 0.
-* Implement suitable error handling here
-  ENDIF.
+*'retfield' - is the field I want "returned" which is the field for which the F4 help is supposed to be. It refers to the field
+*within the created table of values. 'retfield' and 'lt_f4values' are the only obligatory elements of the FM, but just providing
+*'retfield' will not suffice - the program will claim there are no results within the table (although they are there!).
+*I also need to provide a few "optional" fields for the FM to function properly:
+*- 'dynpprog' is the name of the program where the help is supposed to be used.
+*- 'dynpnr' refers to the screen number. The selection screen's number is always 1000 though.
+*- 'dynprofield' points to the screen's field which is to be populated with the found value. I want my input field to be filled,
+*  so 'p_matnr' it is.
+*Without the above, the value selected from the F4 Help list will not be moved to the input field when I double-click my chosen one.
+*- 'value_org' refers to the way the data is transferred. 'S' means 'structure'. Without it, the program will believe there are
+*no values found.
 
+  IF lt_f4values IS NOT INITIAL.
+    CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+      EXPORTING
+        retfield               = 'MATNR'
+        dynpprog               = sy-repid
+        dynpnr                 = sy-dynnr
+        dynprofield            = 'P_MATNR'
+        value_org              = 'S'
+      TABLES
+        value_tab              = lt_f4values
+     EXCEPTIONS
+       PARAMETER_ERROR        = 1
+       NO_VALUES_FOUND        = 2
+       OTHERS                 = 3.
+    IF sy-subrc <> 0.
+*   Implement suitable error handling here
+    ENDIF.
+  ENDIF.
 
 START-OF-SELECTION.
   WRITE: / 'You entered ', p_matnr.
@@ -1063,6 +1059,7 @@ ENDFORM.
 *I want just two fields to be available in my custom F4 help. I also only want limited data (WHERE clause). The selection of the help
 *is to be limited, because it's a functionality that's supposed to provide the user with values they can choose from. And the set
 *of values I want them to be able to choose from is limited.
+*I want the F4 help to show me two columns - 'matnr' and 'mtart'.
 FORM get_f4_values .
   SELECT matnr mtart
     FROM mara
