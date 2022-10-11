@@ -7402,3 +7402,65 @@ and po.bnfpo = pr.bnfpo {
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*BALLOG. LOGGING THE INFORMATION ABOUT A FAILED DATABASE TABLE INSERTION ATTEMPT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A program adding a new record to a database table and making a ballog out of the process. Below is the section just for adding
+*the record.
+PARAMETERS: p_emp   TYPE zenumv2,
+            p_name  TYPE zforenamev2,
+            p_lname TYPE zsurnamev2.
+
+DATA: wa_employees TYPE zpokemon.
+
+START-OF-SELECTION.
+  wa_employees-employee = p_emp.
+  wa_employees-surname  = p_lname.
+  wa_employees-forename = p_name.
+
+INSERT zpokemon FROM wa_employees.
+IF sy-subrc = 0.
+  MESSAGE 'The record was successfully added.' TYPE 'I'.
+*Below is the section required for the ballog. I am making a log in case a record has not been added to a database.
+ELSEIF sy-subrc = 4.
+  DATA: ls_header  TYPE bal_s_log,
+        lt_handler TYPE bal_t_logh,
+        lv_handle  TYPE balloghndl,
+        lv_text    TYPE c LENGTH 50.
+
+  ls_header-object    = 'ZBM_TEST5'.
+  ls_header-subobject = 'ZBM_TEST5_SUB'.
+  ls_header-extnumber = 'An employee inserting report log'.
+
+*The creation of the ballog object itself.
+  CALL FUNCTION 'BAL_LOG_CREATE'
+    EXPORTING
+      i_s_log                       = ls_header
+    IMPORTING
+      e_log_handle                  = lv_handle.
+
+*An error message.
+  lv_text = 'An employee of that number already exists in the database table.'.
+
+  CALL FUNCTION 'BAL_LOG_MSG_ADD_FREE_TEXT'
+    EXPORTING
+      i_log_handle              = lv_handle
+      i_msgty                   = 'E'
+      i_text                    = lv_text.
+
+  APPEND lv_handle TO lt_handler.
+
+  CALL FUNCTION 'BAL_DB_SAVE'
+    EXPORTING
+      i_t_log_handle             = lt_handler.
+
+  MESSAGE: lv_text TYPE 'E'.
+ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
