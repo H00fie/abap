@@ -1064,10 +1064,9 @@ FORM make_bk2_inv.
 *It would be invisible, but a few of its elements are still visible, so it can't be invisible itself.
 *To make input fields invisible to, I need to set 'screen-input' to '0'.
 *Without it - input fields will not be invisible and will just come in the encrypted format (input will be stars).
-*When AT SELECTION-SCREEN event is triggerd all the elements become visible automatically again... because it's done in the INITIALIZATION.
-*If I placed it within AT SELECTION-SCREEN OUTPUT event block, then it would remain invisible until asked otherwise! Placing the functionality
-*within AT SELECTION-SCREEN OUTPUT event block would still make the elements initially invisible beacause that event is triggered both after
-*the AT SELECTION-SCREEN and INITIALIZATION!
+*When AT SELECTION-SCREEN event is triggerd all the elements become visible automatically again. The idea is to initially make blocks invisible
+*in the INITIALIZATION and then any modifications perform in the AT SELECTION-SCREEN OUTPUT making sure every time that screen elements that are
+*to remain invisible receive the confirmation they are to remain invisible, e.g. IF...screen-invisible = '1'. ELSEIF...screen-invisible = '0'.
   LOOP AT SCREEN.
     IF screen-group1 = 'ID1'.
       screen-invisible = '1'.
