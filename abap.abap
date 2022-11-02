@@ -7466,3 +7466,64 @@ ENDIF.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*PROUDLY ABAPER - RANGES AND CONTROL BREAK EVENTS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*RANGES is similar to SELECT-OPTIONS, but SELECT-OPTIONS generates the selection screen where the user can provide the range
+*of values, but RANGES does not generate the selection screen. They have the same structure (sign, option, low and high). RANGES
+*too is an internal table. RANGES are used when I am sure about the range and don't want the user to provide it - when I want to
+*fetch data based on a fixed range.
+RANGES r_vbeln FOR vbap-vbeln.
+
+*To hold the results.
+TYPES: BEGIN OF ty_sales_items,
+  vbeln TYPE vbap-vbeln,
+  posnr TYPE vbap-posnr,
+  matnr TYPE vbap-matnr,
+  netwr TYPE vbap-netwr,
+END OF ty_sales_items.
+DATA: it_sales_items TYPE TABLE OF ty_sales_items,
+      wa_sales_items TYPE ty_sales_items.
+
+START-OF-SELECTION.
+*By providing a low and a high value and APPENDING it to the internal table (the range) multiple times, I can providing multiple
+*ranges to my range - just like SELECT-OPTIONS allows for in the selection screen.
+*SELECT-OPTIONS uses a default value for SIGN field ('I'), but RANGES do not have a default value here and it needs to be provided.
+*The same goes for the OPTION field. SELECT-OPTIONS have a default value of 'BT' (between). RANGES expect me to provide the value
+*manually.
+r_vbeln-sign = 'I'.
+r_vbeln-option = 'BT'.
+r_vbeln-low = '0000004970'.
+r_vbeln-high = '0000004975'.
+APPEND r_vbeln.
+r_vbeln-sign = 'I'.
+r_vbeln-option = 'BT'.
+r_vbeln-low = '0000004980'.
+r_vbeln-high = '0000004985'.
+APPEND r_vbeln.
+
+PERFORM get_sales_items.
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_sales_items.
+*When I am using RANGES in the WHERE clause, much like with SELECT-OPTIONS, I need to use IN operator.
+  SELECT vbeln posnr matnr netwr
+    FROM vbap
+    INTO TABLE it_sales_items
+    WHERE vbeln IN r_vbeln.
+ENDFORM.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
