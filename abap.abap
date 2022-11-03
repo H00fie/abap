@@ -7566,6 +7566,7 @@ FORM display_sales_items.
 *with the same 'vbeln' and store them within the 'netwr' field for the duration of the event. When control leaves
 *the event, the summed value will disappear from the 'netwr' field. 'vbeln' field is not being summed up because
 *it's a character, not a numeric field.
+*UNDER keyword will align the placement of the wa_sales_items-netwr with the placement of... wa_sales_items_netwr.
     AT END OF vbeln.
       SUM.
       FORMAT COLOR 6.
