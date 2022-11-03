@@ -7540,6 +7540,7 @@ FORM display_sales_items.
   LOOP AT it_sales_items INTO wa_sales_items.
 *AT FIRST is a control break event. It means that whenever the first record is being processed, this event is
 *triggered.
+*Control break events can only be used between LOOP and ENDLOOP.
     AT FIRST.
       FORMAT COLOR 1.
       WRITE: /15 'Sales documents item data with prices'.
@@ -7571,6 +7572,13 @@ FORM display_sales_items.
       SUM.
       FORMAT COLOR 6.
       WRITE: / 'Net value of ', wa_sales_items-vbeln, ' is', wa_sales_items-netwr UNDER wa_sales_items-netwr.
+      FORMAT COLOR OFF.
+    ENDAT.
+*AT LAST is a control break event. It is triggered when the last row is iterated.
+    AT LAST.
+      SUM.
+      FORMAT COLOR 2.
+      WRITE: / 'The grand total is ', wa_sales_items-netwr UNDER wa_sales_items-netwr.
       FORMAT COLOR OFF.
     ENDAT.
   ENDLOOP.
