@@ -7536,17 +7536,29 @@ ENDFORM.
 *  -->  p1        text
 *  <--  p2        text
 *----------------------------------------------------------------------*
-FORM display_sales_items .
+FORM display_sales_items.
   LOOP AT it_sales_items INTO wa_sales_items.
 *AT FIRST is a control break event. It means that whenever the first record is being processed, this event is
 *triggered.
     AT FIRST.
+      FORMAT COLOR 1.
       WRITE: /15 'Sales documents item data with prices'.
+      FORMAT COLOR OFF.
     ENDAT.
-    WRITE: / wa_sales_items-vbeln,
-             wa_sales_items-posnr,
+*AT NEW <data_element> is a control break event. Whenever a new 'vbeln' is encountered, the event will be triggered.
+*It is similar to the ON CHANGE OF event. ON CHANGE OF is similarily triggered when there is a change with the given
+*field's value. The difference is AT NEW event can only be used within LOOP-ENDLOOP. ON CHANGE OF event can be used
+*within any of the looping statements (SELECT-ENDSELECT, WHILE-ENDWHILE, LOOP-ENDLOOP, etc).
+    AT NEW vbeln.
+      FORMAT COLOR 3.
+      WRITE: / 'Sales document number: ', wa_sales_items-vbeln.
+      FORMAT COLOR OFF.
+    ENDAT.
+    FORMAT COLOR 7.
+    WRITE: /5 wa_sales_items-posnr,
              wa_sales_items-matnr,
              wa_sales_items-netwr.
+    FORMAT COLOR OFF.
   ENDLOOP.
 ENDFORM.
 
