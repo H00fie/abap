@@ -7538,6 +7538,11 @@ ENDFORM.
 *----------------------------------------------------------------------*
 FORM display_sales_items .
   LOOP AT it_sales_items INTO wa_sales_items.
+*AT FIRST is a control break event. It means that whenever the first record is being processed, this event is
+*triggered.
+    AT FIRST.
+      WRITE: /15 'Sales documents item data with prices'.
+    ENDAT.
     WRITE: / wa_sales_items-vbeln,
              wa_sales_items-posnr,
              wa_sales_items-matnr,
