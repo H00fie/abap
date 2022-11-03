@@ -7559,6 +7559,19 @@ FORM display_sales_items.
              wa_sales_items-matnr,
              wa_sales_items-netwr.
     FORMAT COLOR OFF.
+*AT END OF is a control break event. Whenever the control stops processing a 'vbeln' (many records could have had
+*the same 'vbeln') I want the sum of the net value of all the items of the currently processed document displayed.
+*SUM keyword will calculate the sum of all the numeric fields of the corresponding rows and store the summed value
+*within the same field. So, combined with AT END OF vbeln event - it will sum up all the net values of all records
+*with the same 'vbeln' and store them within the 'netwr' field for the duration of the event. When control leaves
+*the event, the summed value will disappear from the 'netwr' field. 'vbeln' field is not being summed up because
+*it's a character, not a numeric field.
+    AT END OF vbeln.
+      SUM.
+      FORMAT COLOR 6.
+      WRITE: / 'Net value of ', wa_sales_items-vbeln, ' is', wa_sales_items-netwr UNDER wa_sales_items-netwr.
+      FORMAT COLOR OFF.
+    ENDAT.
   ENDLOOP.
 ENDFORM.
 
