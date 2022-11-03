@@ -7470,7 +7470,7 @@ ENDIF.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*PROUDLY ABAPER - RANGES AND CONTROL BREAK EVENTS.
+*RANGES AND CONTROL BREAK EVENTS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *RANGES is similar to SELECT-OPTIONS, but SELECT-OPTIONS generates the selection screen where the user can provide the range
@@ -7507,7 +7507,11 @@ r_vbeln-high = '0000004985'.
 APPEND r_vbeln.
 
 PERFORM get_sales_items.
-
+IF sy-subrc = 0.
+  PERFORM display_sales_items.
+ELSE.
+  MESSAGE 'No sales items have been found in the provided range.' TYPE 'I'.
+ENDIF.
 *&---------------------------------------------------------------------*
 *&      Form  GET_SALES_ITEMS
 *&---------------------------------------------------------------------*
@@ -7522,6 +7526,23 @@ FORM get_sales_items.
     FROM vbap
     INTO TABLE it_sales_items
     WHERE vbeln IN r_vbeln.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_sales_items .
+  LOOP AT it_sales_items INTO wa_sales_items.
+    WRITE: / wa_sales_items-vbeln,
+             wa_sales_items-posnr,
+             wa_sales_items-matnr,
+             wa_sales_items-netwr.
+  ENDLOOP.
 ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
