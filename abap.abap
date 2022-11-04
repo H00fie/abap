@@ -7610,6 +7610,25 @@ ENDFORM.
 *associated displayed in the next list - Secondary List (index 2). Whenever a MATNR in that list is clicked, I should display a standard
 *transaction - MM03 (responsible for displaying the material data).
 *The INCLUDE for data declarations.
+INCLUDE INTERACTIVE_REPORTING_TOP.
+
+********************************************
+*THE INCLUDES ARE DEFINED BELOW
+********************************************
+*&---------------------------------------------------------------------*
+*&  Include           INTERACTIVE_REPORTING_TOP
+*&---------------------------------------------------------------------*
+
+DATA: v_kunnr TYPE kna1-kunnr.
+SELECT-OPTIONS so_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
+
+TYPES: BEGIN OF ty_customers,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+END OF ty_customers.
+DATA: it_customers TYPE STANDARD TABLE OF ty_customers,
+      wa_customers TYPE ty_customers.  
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
