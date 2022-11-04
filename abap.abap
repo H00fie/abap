@@ -7587,3 +7587,30 @@ ENDFORM.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERACTIVE REPORTING.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*If my program is just generating a report and I cannot interact in any way with the results - I get only "one level" of a report
+*- it's static reporting. If I get one list of results, it's static reporting.
+*Results of a report can be interactive - based on a user's interaction, I can display additional data in the next list. That's called
+*interactive reporting.
+*When a static report is at work - upon execution I might get a selection screen and, when the parameters are provided, the report is
+*displayed. This is a one level report.
+*When an interactive reporting is being deployed - the first report/list I am getting is called Basic List (it has an index of 0). When
+*a user interacts with the list (e.g. double-clicks a row), I get a second level of report. This operation can be 21 levels deep. From
+*the second list onwards, they are called Secondary Lists (indexes from 1 to 20).
+*Whenever I run the program, I should get a selection screen where I should be able to provide a range of customer numbers. Results
+*from KNA1 should be displayed. This is the Basic List (index 0). Whenever I interact with any of the displayed rows, e.g. double-click
+*a customer number, I should check if that customer has any sales orders associated with them. If so - then I should get them and
+*display them in the next list - Secondary List (index 1). Again, upon double-clicking a sales order - I should have the sales items
+*associated displayed in the next list - Secondary List (index 2). Whenever a MATNR in that list is clicked, I should display a standard
+*transaction - MM03 (responsible for displaying the material data).
+*The INCLUDE for data declarations.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
