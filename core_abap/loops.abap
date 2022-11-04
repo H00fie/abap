@@ -264,3 +264,124 @@ ENDFORM.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*RANGES AND CONTROL BREAK EVENTS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*RANGES is similar to SELECT-OPTIONS, but SELECT-OPTIONS generates the selection screen where the user can provide the range
+*of values, but RANGES does not generate the selection screen. They have the same structure (sign, option, low and high). RANGES
+*too is an internal table. RANGES are used when I am sure about the range and don't want the user to provide it - when I want to
+*fetch data based on a fixed range.
+RANGES r_vbeln FOR vbap-vbeln.
+
+*To hold the results.
+TYPES: BEGIN OF ty_sales_items,
+  vbeln TYPE vbap-vbeln,
+  posnr TYPE vbap-posnr,
+  matnr TYPE vbap-matnr,
+  netwr TYPE vbap-netwr,
+END OF ty_sales_items.
+DATA: it_sales_items TYPE TABLE OF ty_sales_items,
+      wa_sales_items TYPE ty_sales_items.
+
+START-OF-SELECTION.
+*By providing a low and a high value and APPENDING it to the internal table (the range) multiple times, I can providing multiple
+*ranges to my range - just like SELECT-OPTIONS allows for in the selection screen.
+*SELECT-OPTIONS uses a default value for SIGN field ('I'), but RANGES do not have a default value here and it needs to be provided.
+*The same goes for the OPTION field. SELECT-OPTIONS have a default value of 'BT' (between). RANGES expect me to provide the value
+*manually.
+r_vbeln-sign = 'I'.
+r_vbeln-option = 'BT'.
+r_vbeln-low = '0000004970'.
+r_vbeln-high = '0000004975'.
+APPEND r_vbeln.
+r_vbeln-sign = 'I'.
+r_vbeln-option = 'BT'.
+r_vbeln-low = '0000004980'.
+r_vbeln-high = '0000004985'.
+APPEND r_vbeln.
+
+PERFORM get_sales_items.
+IF sy-subrc = 0.
+  PERFORM display_sales_items.
+ELSE.
+  MESSAGE 'No sales items have been found in the provided range.' TYPE 'I'.
+ENDIF.
+*&---------------------------------------------------------------------*
+*&      Form  GET_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_sales_items.
+*When I am using RANGES in the WHERE clause, much like with SELECT-OPTIONS, I need to use IN operator.
+  SELECT vbeln posnr matnr netwr
+    FROM vbap
+    INTO TABLE it_sales_items
+    WHERE vbeln IN r_vbeln.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_sales_items.
+  LOOP AT it_sales_items INTO wa_sales_items.
+*AT FIRST is a control break event. It means that whenever the first record is being processed, this event is
+*triggered.
+*Control break events can only be used between LOOP and ENDLOOP.
+    AT FIRST.
+      FORMAT COLOR 1.
+      WRITE: /15 'Sales documents item data with prices'.
+      FORMAT COLOR OFF.
+    ENDAT.
+*AT NEW <data_element> is a control break event. Whenever a new 'vbeln' is encountered, the event will be triggered.
+*It is similar to the ON CHANGE OF event. ON CHANGE OF is similarily triggered when there is a change with the given
+*field's value. The difference is AT NEW event can only be used within LOOP-ENDLOOP. ON CHANGE OF event can be used
+*within any of the looping statements (SELECT-ENDSELECT, WHILE-ENDWHILE, LOOP-ENDLOOP, etc).
+    AT NEW vbeln.
+      FORMAT COLOR 3.
+      WRITE: / 'Sales document number: ', wa_sales_items-vbeln.
+      FORMAT COLOR OFF.
+    ENDAT.
+    FORMAT COLOR 7.
+    WRITE: /5 wa_sales_items-posnr,
+             wa_sales_items-matnr,
+             wa_sales_items-netwr.
+    FORMAT COLOR OFF.
+*AT END OF is a control break event. Whenever the control stops processing a 'vbeln' (many records could have had
+*the same 'vbeln') I want the sum of the net value of all the items of the currently processed document displayed.
+*SUM keyword will calculate the sum of all the numeric fields of the corresponding rows and store the summed value
+*within the same field. So, combined with AT END OF vbeln event - it will sum up all the net values of all records
+*with the same 'vbeln' and store them within the 'netwr' field for the duration of the event. When control leaves
+*the event, the summed value will disappear from the 'netwr' field. 'vbeln' field is not being summed up because
+*it's a character, not a numeric field.
+*UNDER keyword will align the placement of the wa_sales_items-netwr with the placement of... wa_sales_items_netwr.
+    AT END OF vbeln.
+      SUM.
+      FORMAT COLOR 6.
+      WRITE: / 'Net value of ', wa_sales_items-vbeln, ' is', wa_sales_items-netwr UNDER wa_sales_items-netwr.
+      FORMAT COLOR OFF.
+    ENDAT.
+*AT LAST is a control break event. It is triggered when the last row is iterated.
+    AT LAST.
+      SUM.
+      FORMAT COLOR 2.
+      WRITE: / 'The grand total is ', wa_sales_items-netwr UNDER wa_sales_items-netwr.
+      FORMAT COLOR OFF.
+    ENDAT.
+  ENDLOOP.
+ENDFORM.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
