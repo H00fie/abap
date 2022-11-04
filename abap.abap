@@ -7615,10 +7615,16 @@ INCLUDE INTERACTIVE_REPORTING_SUB.
 
 START-OF-SELECTION.
   PERFORM get_customers.
-
+  IF it_customers IS NOT INITIAL.
+    PERFORM display_customers.
+  ELSE.
+    MESSAGE 'No customers have been found.' TYPE 'I'.
+  ENDIF.
+  
 ********************************************
 *THE INCLUDES ARE DEFINED BELOW
 ********************************************
+
 *&---------------------------------------------------------------------*
 *&  Include           INTERACTIVE_REPORTING_TOP
 *&---------------------------------------------------------------------*
@@ -7651,6 +7657,21 @@ FORM get_customers .
     INTO TABLE it_customers
     WHERE kunnr IN so_kunnr.
 ENDFORM.	  
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_CUSTOMERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_customers .
+  LOOP AT it_customers INTO wa_customers.
+    WRITE: / wa_customers-kunnr,
+             wa_customers-land1,
+             wa_customers-name1.
+  ENDLOOP.
+ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
