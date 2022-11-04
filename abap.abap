@@ -7611,6 +7611,10 @@ ENDFORM.
 *transaction - MM03 (responsible for displaying the material data).
 *The INCLUDE for data declarations.
 INCLUDE INTERACTIVE_REPORTING_TOP.
+INCLUDE INTERACTIVE_REPORTING_SUB.
+
+START-OF-SELECTION.
+  PERFORM get_customers.
 
 ********************************************
 *THE INCLUDES ARE DEFINED BELOW
@@ -7628,7 +7632,25 @@ TYPES: BEGIN OF ty_customers,
   name1 TYPE kna1-name1,
 END OF ty_customers.
 DATA: it_customers TYPE STANDARD TABLE OF ty_customers,
-      wa_customers TYPE ty_customers.  
+      wa_customers TYPE ty_customers.
+
+*----------------------------------------------------------------------*
+***INCLUDE INTERACTIVE_REPORTING_SUB.
+*----------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&      Form  GET_CUSTOMERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_customers .
+  SELECT kunnr land1 name1
+    FROM kna1
+    INTO TABLE it_customers
+    WHERE kunnr IN so_kunnr.
+ENDFORM.	  
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
