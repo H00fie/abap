@@ -7689,7 +7689,17 @@ TOP-OF-PAGE.
 *AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
 AT LINE-SELECTION.
 *'sy-lisel' stores the content of the selected line.
-  WRITE: 'The selected line is ', sy-lisel.
+*  WRITE: 'The selected line is ', sy-lisel.
+*'sy-lsind' contains the index of the next available Secondary List.
+CASE sy-lsind.
+  WHEN 1.
+*To extract the customer number from 'sy-lisel' which stores the content of any selected line.
+*I am using a previously declared variable. 'sy-lisel' contains the entire line, but 'kunnr' is at the very beginning
+*of it.
+    CLEAR v_kunnr.
+    v_kunnr = sy-lisel+0(10). "Extracting a portion of a string is called 'offset logic'.
+    WRITE: / 'Customer number: ', v_kunnr.
+ENDCASE.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
