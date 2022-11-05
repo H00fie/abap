@@ -7620,7 +7620,37 @@ START-OF-SELECTION.
   ELSE.
     MESSAGE 'No customers have been found.' TYPE 'I'.
   ENDIF.
+
+*TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
+TOP-OF-PAGE.
+  WRITE: / 'CUSTOMER MASTER DATA' COLOR 1.
   
+*AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
+AT LINE-SELECTION.
+*'sy-lisel' stores the content of the selected line.
+*  WRITE: 'The selected line is ', sy-lisel.
+*'sy-lsind' contains the index of the next available Secondary List.
+CASE sy-lsind.
+  WHEN 1.
+*To extract the customer number from 'sy-lisel' which stores the content of any selected line.
+*I am using a previously declared variable. 'sy-lisel' contains the entire line, but 'kunnr' is at the very beginning
+*of it. I am making it 20 characters' long despite 'kunnr' being of only 10 chracters' long because I already reserved
+*20 first spaces of a line for 'kunnr' in the displaying perform. Blanks will be ignored anyway.
+    CLEAR v_kunnr.
+    v_kunnr = sy-lisel+0(20). "Extracting a portion of a string is called 'offset logic'.
+*    WRITE: / 'Customer number: ', v_kunnr.
+    IF v_kunnr IS NOT INITIAL.
+*If a customer is found and then clicked - it will be stored in 'sy-lisel'. Clicking it will trigger the Secondary List
+*of the index 1 and I want that List to contain a list of sales orders for the chosen customer.
+      PERFORM get_sales_orders.
+      IF it_sales_orders IS NOT INITIAL.
+        PERFORM display_sales_orders.
+      ELSE.
+        MESSAGE 'No sales orders have been found for the selected customer.' TYPE 'I'.
+      ENDIF.
+    ENDIF.
+ENDCASE.
+
 ********************************************
 *THE INCLUDES ARE DEFINED BELOW
 ********************************************
@@ -7640,9 +7670,19 @@ END OF ty_customers.
 DATA: it_customers TYPE STANDARD TABLE OF ty_customers,
       wa_customers TYPE ty_customers.
 
+TYPES: BEGIN OF ty_sales_orders,
+  vbeln TYPE vbak-vbeln,
+  erdat TYPE vbak-erdat,
+  erzet TYPE vbak-erzet,
+  ernam TYPE vbak-ernam,
+END OF ty_sales_orders.
+DATA: it_sales_orders TYPE STANDARD TABLE OF ty_sales_orders,
+      wa_sales_orders TYPE ty_sales_orders.
+
 *----------------------------------------------------------------------*
 ***INCLUDE INTERACTIVE_REPORTING_SUB.
 *----------------------------------------------------------------------*
+
 *&---------------------------------------------------------------------*
 *&      Form  GET_CUSTOMERS
 *&---------------------------------------------------------------------*
@@ -7656,7 +7696,8 @@ FORM get_customers .
     FROM kna1
     INTO TABLE it_customers
     WHERE kunnr IN so_kunnr.
-ENDFORM.	  
+ENDFORM.
+
 *&---------------------------------------------------------------------*
 *&      Form  DISPLAY_CUSTOMERS
 *&---------------------------------------------------------------------*
@@ -7682,24 +7723,37 @@ FORM display_customers.
   FORMAT COLOR OFF.
 ENDFORM.
 
-*TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
-TOP-OF-PAGE.
-  WRITE: / 'CUSTOMER MASTER DATA' COLOR 1.
-  
-*AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
-AT LINE-SELECTION.
-*'sy-lisel' stores the content of the selected line.
-*  WRITE: 'The selected line is ', sy-lisel.
-*'sy-lsind' contains the index of the next available Secondary List.
-CASE sy-lsind.
-  WHEN 1.
-*To extract the customer number from 'sy-lisel' which stores the content of any selected line.
-*I am using a previously declared variable. 'sy-lisel' contains the entire line, but 'kunnr' is at the very beginning
-*of it.
-    CLEAR v_kunnr.
-    v_kunnr = sy-lisel+0(10). "Extracting a portion of a string is called 'offset logic'.
-    WRITE: / 'Customer number: ', v_kunnr.
-ENDCASE.
+*&---------------------------------------------------------------------*
+*&      Form  GET_SALES_ORDERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_sales_orders .
+  SELECT vbeln erdat erzet ernam
+    FROM vbak
+    INTO TABLE it_sales_orders
+    WHERE kunnr = v_kunnr.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_SALES_ORDERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_sales_orders .
+  LOOP AT it_sales_orders INTO wa_sales_orders.
+    WRITE: / wa_sales_orders-vbeln,
+             wa_sales_orders-erdat,
+             wa_sales_orders-erzet,
+             wa_sales_orders-ernam.
+  ENDLOOP.
+ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
