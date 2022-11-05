@@ -7674,13 +7674,17 @@ FORM display_customers.
   FORMAT COLOR 7.
   LOOP AT it_customers INTO wa_customers.
     WRITE: /(20) wa_customers-kunnr,
-                 sy-vline,
+                 sy-vline, "Prints a vertical line.
             (12) wa_customers-land1,
                  sy-vline,
             (40) wa_customers-name1.
   ENDLOOP.
   FORMAT COLOR OFF.
 ENDFORM.
+
+*TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
+TOP-OF-PAGE.
+  WRITE: / 'CUSTOMER MASTER DATA' COLOR 1.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
