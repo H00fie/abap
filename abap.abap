@@ -7685,6 +7685,11 @@ ENDFORM.
 *TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
 TOP-OF-PAGE.
   WRITE: / 'CUSTOMER MASTER DATA' COLOR 1.
+  
+*AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
+AT LINE-SELECTION.
+*'sy-lisel' stores the content of the selected line.
+  WRITE: 'The selected line is ', sy-lisel.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
