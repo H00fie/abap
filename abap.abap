@@ -7665,12 +7665,21 @@ ENDFORM.
 *  -->  p1        text
 *  <--  p2        text
 *----------------------------------------------------------------------*
-FORM display_customers .
+FORM display_customers.
+  ULINE.
+  FORMAT COLOR 3.
+  WRITE: /(21) 'Customer number', (14) 'Country key', (40) 'Customer name'.
+  FORMAT COLOR OFF.
+  ULINE.
+  FORMAT COLOR 7.
   LOOP AT it_customers INTO wa_customers.
-    WRITE: / wa_customers-kunnr,
-             wa_customers-land1,
-             wa_customers-name1.
+    WRITE: /(20) wa_customers-kunnr,
+                 sy-vline,
+            (12) wa_customers-land1,
+                 sy-vline,
+            (40) wa_customers-name1.
   ENDLOOP.
+  FORMAT COLOR OFF.
 ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
