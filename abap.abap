@@ -7623,8 +7623,17 @@ START-OF-SELECTION.
 
 *TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
 TOP-OF-PAGE.
-  WRITE: / 'CUSTOMER MASTER DATA' COLOR 1.
-  
+  WRITE: /(20) 'CUSTOMER MASTER DATA' COLOR 1.
+
+*TOP-OF-PAGE DURING LINE SELECTION event is the same as above, but works for the Secondary Lists. If I want
+*only specific Secondary Lists, I need to differentiate between them with the CASE statement and indexes.
+*'sy-lsind' contains the index of the next available Secondary List.
+TOP-OF-PAGE DURING LINE-SELECTION.
+  CASE sy-lsind.
+    WHEN 1.
+      WRITE: /(20) 'SALES ORDERS' COLOR 1.
+  ENDCASE.
+
 *AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
 AT LINE-SELECTION.
 *'sy-lisel' stores the content of the selected line.
