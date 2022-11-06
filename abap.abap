@@ -7738,7 +7738,14 @@ FORM get_sales_orders.
 *vary.
 *UNPACK is one way to achieve this. It will prefix the given variable with as many zeroes as is needed to
 *achieve the length of the data type of another provided variable.
-  UNPACK v_kunnr TO v_kunnr.
+*  UNPACK v_kunnr TO v_kunnr.
+*'CONVERSION_EXIT_ALPHA_INPUT' function module is another way of achieving the same result.
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input         = v_kunnr
+    IMPORTING
+      output        = v_kunnr.
+  
   SELECT vbeln erdat erzet ernam
     FROM vbak
     INTO TABLE it_sales_orders
