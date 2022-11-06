@@ -7731,7 +7731,14 @@ ENDFORM.
 *  -->  p1        text
 *  <--  p2        text
 *----------------------------------------------------------------------*
-FORM get_sales_orders .
+FORM get_sales_orders.
+*VBAK requires 'kunnr' to be of 10 characters' length, but 'kunnr' coming from KNA1 not necesserily will.
+*In order to have it work correctly, I need to supply leading zeros in case the 'kunnr' is shorter than
+*10 characters. If it's 1234, I need to make it 0000001234 - the number of zeroes I might need to add will
+*vary.
+*UNPACK is one way to achieve this. It will prefix the given variable with as many zeroes as is needed to
+*achieve the length of the data type of another provided variable.
+  UNPACK v_kunnr TO v_kunnr.
   SELECT vbeln erdat erzet ernam
     FROM vbak
     INTO TABLE it_sales_orders
