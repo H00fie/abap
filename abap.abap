@@ -7610,10 +7610,11 @@ ENDFORM.
 *associated displayed in the next list - Secondary List (index 2). Whenever a MATNR in that list is clicked, I should display a standard
 *transaction - MM03 (responsible for displaying the material data).
 *The INCLUDE for data declarations.
-INCLUDE INTERACTIVE_REPORTING_TOP.
-INCLUDE INTERACTIVE_REPORTING_SUB.
+INCLUDE Z_BMIERZWINSKI_DEV_TEST_TOP.
+INCLUDE Z_BMIERZWINSKI_DEV_TEST_SUB.
 
 START-OF-SELECTION.
+*Subroutines are defined in the INCLUDE Z_BMIERZWINSKI_DEV_TEST_SUB.
   PERFORM get_customers.
   IF it_customers IS NOT INITIAL.
     PERFORM display_customers.
@@ -7630,8 +7631,10 @@ TOP-OF-PAGE.
 *'sy-lsind' contains the index of the next available Secondary List.
 TOP-OF-PAGE DURING LINE-SELECTION.
   CASE sy-lsind.
-    WHEN 1.
+    WHEN 1. "Secondary List index 1 (after the Basic List's row has been double-clicked).
       WRITE: /(20) 'SALES ORDERS' COLOR 1.
+    WHEN 2. "Secondary List index 2 (after the Secondary List index 1's row has been double-clicked).
+      WRITE: /(20) 'SALES ITEMS' COLOR 1.
   ENDCASE.
 
 *AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
@@ -7658,6 +7661,22 @@ CASE sy-lsind.
         MESSAGE 'No sales orders have been found for the selected customer.' TYPE 'I'.
       ENDIF.
     ENDIF.
+*When I am in the Secondary List index 1 and I double-click any of the lines (with Sales Orders), I want to move to
+*the Secondary List index 2 which contains sales orders' items (one sales order might contain many items).
+*VBAK and VBAP are linked via 'vbeln'. I need to extract it from 'sy-lisel' just like I was doing it before to get 'kunnr'
+*for the first Secondary List.
+  WHEN 2.
+    CLEAR v_vbeln.
+*'v_vbeln' might, like 'kunnr' above, not be of ten characters so the database query based on it, will require the UNPACK.
+    v_vbeln = sy-lisel+0(10).
+    IF v_vbeln IS NOT INITIAL.
+      PERFORM get_sales_items.
+      IF it_sales_items IS NOT INITIAL.
+        PERFORM display_sales_items.
+      ELSE.
+        MESSAGE 'No sales items have been found for the selected sales document.' TYPE 'I'.
+      ENDIF.
+    ENDIF.
 ENDCASE.
 
 ********************************************
@@ -7668,7 +7687,8 @@ ENDCASE.
 *&  Include           INTERACTIVE_REPORTING_TOP
 *&---------------------------------------------------------------------*
 
-DATA: v_kunnr TYPE kna1-kunnr.
+DATA: v_kunnr TYPE kna1-kunnr,
+      v_vbeln TYPE vbak-vbeln.
 SELECT-OPTIONS so_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
 
 TYPES: BEGIN OF ty_customers,
@@ -7687,6 +7707,15 @@ TYPES: BEGIN OF ty_sales_orders,
 END OF ty_sales_orders.
 DATA: it_sales_orders TYPE STANDARD TABLE OF ty_sales_orders,
       wa_sales_orders TYPE ty_sales_orders.
+
+TYPES: BEGIN OF ty_sales_items,
+  vbeln TYPE vbap-vbeln,
+  posnr TYPE vbap-posnr,
+  matnr TYPE vbap-matnr,
+  netwr TYPE vbap-netwr,
+END OF ty_sales_items.
+DATA: it_sales_items TYPE STANDARD TABLE OF ty_sales_items,
+      wa_sales_items TYPE ty_sales_items.
 
 *----------------------------------------------------------------------*
 ***INCLUDE INTERACTIVE_REPORTING_SUB.
@@ -7754,7 +7783,7 @@ FORM get_sales_orders.
       input         = v_kunnr
     IMPORTING
       output        = v_kunnr.
-  
+
   SELECT vbeln erdat erzet ernam
     FROM vbak
     INTO TABLE it_sales_orders
@@ -7775,6 +7804,38 @@ FORM display_sales_orders .
              wa_sales_orders-erdat,
              wa_sales_orders-erzet,
              wa_sales_orders-ernam.
+  ENDLOOP.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  GET_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_sales_items.
+*To make sure 'v_vbeln' has ten characters and zeroes are prefixed if necessary to reach the length of 10.
+  UNPACK v_vbeln TO v_vbeln.
+  SELECT vbeln posnr matnr netwr
+    FROM vbap
+    INTO TABLE it_sales_items
+    WHERE vbeln = v_vbeln.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_sales_items.
+  LOOP AT it_sales_items INTO wa_sales_items.
+    WRITE: / wa_sales_items-vbeln,
+             wa_sales_items-posnr,
+             wa_sales_items-matnr,
+             wa_sales_items-netwr.
   ENDLOOP.
 ENDFORM.
 
