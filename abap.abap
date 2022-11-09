@@ -7677,6 +7677,18 @@ CASE sy-lsind.
         MESSAGE 'No sales items have been found for the selected sales document.' TYPE 'I'.
       ENDIF.
     ENDIF.
+*When 'matnr' is double-clicked, I want the transaction MM03 displayed. The selected material number should be automatically
+*placed within MM03's input box. I need the 'Parameter ID' of the input box for that. I can check it via F1 -> Technical Details.
+*In this case, it's 'MAT'.
+  WHEN 3.
+*I need to extract 'matnr' from 'sy-lisel'. 'matnr' starts from the 17th character, so the index is 16, because the indexing
+*starts at 0. 18 is the length of the data element of 'matnr'.
+    CLEAR v_matnr.
+    v_matnr = sy-lisel+16(18).
+    IF v_matnr IS NOT INITIAL.
+      CALL TRANSACTION 'MM03'.
+    ENDIF.
+ENDCASE.
 ENDCASE.
 
 ********************************************
