@@ -7663,20 +7663,28 @@ CASE sy-lsind.
     ENDIF.
 *When I am in the Secondary List index 1 and I double-click any of the lines (with Sales Orders), I want to move to
 *the Secondary List index 2 which contains sales orders' items (one sales order might contain many items).
-*VBAK and VBAP are linked via 'vbeln'. I need to extract it from 'sy-lisel' just like I was doing it before to get 'kunnr'
-*for the first Secondary List.
+*VBAK and VBAP are linked via 'vbeln'.
+*There are two ways for me to achieve this!
   WHEN 2.
-    CLEAR v_vbeln.
+*1. I need to extract it from 'sy-lisel' just like I was doing it before to get 'kunnr' for the first Secondary List.
+*    CLEAR v_vbeln.
 *'v_vbeln' might, like 'kunnr' above, not be of ten characters so the database query based on it, will require the UNPACK.
-    v_vbeln = sy-lisel+0(10).
-    IF v_vbeln IS NOT INITIAL.
+*    v_vbeln = sy-lisel+0(10).
+*    IF v_vbeln IS NOT INITIAL.
+*2. Use Hide Memory Area. It's a hidden memory area which can have values put into it by using HIDE keyword. I am doing
+*   that in the 'display_sales_orders' perform in the Basic List - all values are displayed in the List Processing Screen,
+*   BUT every 'vbeln' is also placed within Hide Memory Area. Upon the changing of the screens (from the Basic List to
+*   the Secondary List index 1 or from the Secondary List index 1 to Secondary List index 2 and so on) the Hide Memory Area
+*   is cleared with the exception of the value associated with the line the user has clicked. Thus, I can place a value
+*   I will need to get more values in the following Secondary List into Hide Memory Area (e.g. place all 'vbelns' there)
+*   and when the user clicks a line, the same work area I was using to display the values in the previous List will now
+*   contain the value associated with the selected line.
       PERFORM get_sales_items.
       IF it_sales_items IS NOT INITIAL.
         PERFORM display_sales_items.
       ELSE.
         MESSAGE 'No sales items have been found for the selected sales document.' TYPE 'I'.
       ENDIF.
-    ENDIF.
 *When 'matnr' is double-clicked, I want the transaction MM03 displayed. The selected material number should be automatically
 *placed within MM03's input box. I need the 'Parameter ID' of the input box for that. I can check it via F1 -> Technical Details.
 *In this case, it's 'MAT'.
@@ -7686,9 +7694,9 @@ CASE sy-lsind.
     CLEAR v_matnr.
     v_matnr = sy-lisel+16(18).
     IF v_matnr IS NOT INITIAL.
+      SET PARAMETER ID 'MAT' FIELD v_matnr.
       CALL TRANSACTION 'MM03'.
     ENDIF.
-ENDCASE.
 ENDCASE.
 
 ********************************************
@@ -7816,6 +7824,11 @@ FORM display_sales_orders .
              wa_sales_orders-erdat,
              wa_sales_orders-erzet,
              wa_sales_orders-ernam.
+*HIDE places a chosen variable within Hide Memory Area which is an invisible memory area. First 'vbeln' is
+*displayed on the List Processing Screen just like any other variable, but additionally I am putting every
+*'vbeln' into Hide Memory Area. Upon changing the screens, SAP will clear the entire Hide Memory Area and
+*will retain only the value associated with the line with which the user has interacted.
+    HIDE wa_sales_orders-vbeln.
   ENDLOOP.
 ENDFORM.
 *&---------------------------------------------------------------------*
@@ -7828,11 +7841,20 @@ ENDFORM.
 *----------------------------------------------------------------------*
 FORM get_sales_items.
 *To make sure 'v_vbeln' has ten characters and zeroes are prefixed if necessary to reach the length of 10.
-  UNPACK v_vbeln TO v_vbeln.
+*It would be required if I was utilizing 'sy-lisel' for this task, but I am trading it for HIDE, so I will
+*be getting 'vbeln' from Hide Memory Area instead. No need to UNPACK it thus. The 'vbeln' will come
+*directly from the work area too, as this is where the mechanism of Hide Memory Area will store the value
+*associated with the line the user has clicked!
+*  UNPACK v_vbeln TO v_vbeln.
+*  SELECT vbeln posnr matnr netwr
+*    FROM vbap
+*    INTO TABLE it_sales_items
+*    WHERE vbeln = v_vbeln.
+
   SELECT vbeln posnr matnr netwr
     FROM vbap
     INTO TABLE it_sales_items
-    WHERE vbeln = v_vbeln.
+    WHERE vbeln = wa_sales_orders-vbeln.
 ENDFORM.
 *&---------------------------------------------------------------------*
 *&      Form  DISPLAY_SALES_ITEMS
