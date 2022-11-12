@@ -7664,7 +7664,7 @@ CASE sy-lsind.
 *When I am in the Secondary List index 1 and I double-click any of the lines (with Sales Orders), I want to move to
 *the Secondary List index 2 which contains sales orders' items (one sales order might contain many items).
 *VBAK and VBAP are linked via 'vbeln'.
-*There are two ways for me to achieve this!
+*There are three ways for me to achieve this (the third is described in 'WHEN 3' section).
   WHEN 2.
 *1. I need to extract it from 'sy-lisel' just like I was doing it before to get 'kunnr' for the first Secondary List.
 *    CLEAR v_vbeln.
@@ -7674,29 +7674,43 @@ CASE sy-lsind.
 *2. Use Hide Memory Area. It's a hidden memory area which can have values put into it by using HIDE keyword. I am doing
 *   that in the 'display_sales_orders' perform in the Basic List - all values are displayed in the List Processing Screen,
 *   BUT every 'vbeln' is also placed within Hide Memory Area. Upon the changing of the screens (from the Basic List to
-*   the Secondary List index 1 or from the Secondary List index 1 to Secondary List index 2 and so on) the Hide Memory Area
-*   is cleared with the exception of the value associated with the line the user has clicked. Thus, I can place a value
-*   I will need to get more values in the following Secondary List into Hide Memory Area (e.g. place all 'vbelns' there)
-*   and when the user clicks a line, the same work area I was using to display the values in the previous List will now
-*   contain the value associated with the selected line.
+*   the Secondary List index 1 or from the Secondary List index 1 to Secondary List index 2 and so on) - so upon the
+*   triggering of AT LINE-SELECTION event, the Hide Memory Area is cleared with the exception of the value associated with
+*   the line the user has clicked. Thus, I can place a value I will need to get more values in the following Secondary List
+*   into Hide Memory Area (e.g. place all 'vbelns' there) and when the user clicks a line, the same work area I was using
+*   to display the values in the previous List will now contain the value associated with the selected line.
       PERFORM get_sales_items.
       IF it_sales_items IS NOT INITIAL.
         PERFORM display_sales_items.
       ELSE.
         MESSAGE 'No sales items have been found for the selected sales document.' TYPE 'I'.
       ENDIF.
+*     ENDIF.
 *When 'matnr' is double-clicked, I want the transaction MM03 displayed. The selected material number should be automatically
 *placed within MM03's input box. I need the 'Parameter ID' of the input box for that. I can check it via F1 -> Technical Details.
 *In this case, it's 'MAT'.
   WHEN 3.
-*I need to extract 'matnr' from 'sy-lisel'. 'matnr' starts from the 17th character, so the index is 16, because the indexing
-*starts at 0. 18 is the length of the data element of 'matnr'.
-    CLEAR v_matnr.
-    v_matnr = sy-lisel+16(18).
-    IF v_matnr IS NOT INITIAL.
-      SET PARAMETER ID 'MAT' FIELD v_matnr.
-      CALL TRANSACTION 'MM03'.
-    ENDIF.
+*I could extract 'matnr' from 'sy-lisel'. 'matnr' starts from the 19th character, so the index would be 18, because the indexing
+*starts at 0. Two previous values in the line took up 10 and 6 characters respectively, but there's also two blanks there.
+*18 is the length of the data element of 'matnr'. Instead of extracting 'matnr' from 'sy-lisel', I could again use Hide Memory
+*Area. During the 'display_sales_items' perform, I would need to HIDE every 'matnr' there. Thus it would be sufficient for me to
+*simply refer to the work area that was used during the hiding.
+*3. Instead, I am doing the third way.
+*   I need to get the field's name and field's value the user has interacted with. GET CURSOR FIELD will save the name of the field
+*   that has been clicked and VALUE will save its value. I have declared my custom variables to hold both of these. If the name
+*   of the field clicked is equal to the work area's field holding material, then I am placing its value into the input box of
+*   MM03 transaction. If any other field is clicked - a message will pop up.
+*   'v_matnr' has been declared as a specific data type (vbap-matnr) because SET PARAMETER ID requires either a character, an
+*   alphanumeric or a specific data type and string ('v_fvalue' is a string) will not suffice.
+      GET CURSOR FIELD v_fname VALUE v_fname.
+      IF v_fname EQ 'WA_SALES_ITEMS-MATNR'.
+        CLEAR v_matnr.
+        v_matnr = v_fvalue.
+        SET PARAMETER ID 'MAT' FIELD v_matnr.
+        CALL TRANSACTION 'MM03'.
+      ELSE.
+        MESSAGE 'Please, select material only.' TYPE 'I'.
+      ENDIF.
 ENDCASE.
 
 ********************************************
@@ -7707,8 +7721,11 @@ ENDCASE.
 *&  Include           INTERACTIVE_REPORTING_TOP
 *&---------------------------------------------------------------------*
 
-DATA: v_kunnr TYPE kna1-kunnr,
-      v_vbeln TYPE vbak-vbeln.
+DATA: v_kunnr TYPE kna1-kunnr, "To be used by the first method of retaining the value of what use has interacted with for the following Secondary Lists.
+      v_fname TYPE string, "To be used by the third (yes, third, not second) method of retaining the value of what use has interacted with for the following Secondary Lists.
+      v_fvalue TYPE string, "To be used by the third (yes, the second doesn't need a variable) method of retaining the value of what use has interacted with for the following Secondary Lists.
+      v_matnr TYPE vbap-matnr. "Required for SET PARAMETER ID to place a value into the input box of MM03 transaction as a string will not suffice. Character, alphanumeric or a certain data
+                               "type will be accepted.
 SELECT-OPTIONS so_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
 
 TYPES: BEGIN OF ty_customers,
@@ -7865,11 +7882,14 @@ ENDFORM.
 *  <--  p2        text
 *----------------------------------------------------------------------*
 FORM display_sales_items.
+*HOTSPOT ON means the hand symbol will be displayed when the cursor hovers over that field. Also, just a single click will
+*be required to trigger AT LINE-SELECTION event.
   LOOP AT it_sales_items INTO wa_sales_items.
     WRITE: / wa_sales_items-vbeln,
              wa_sales_items-posnr,
-             wa_sales_items-matnr,
+             wa_sales_items-matnr HOTSPOT ON,
              wa_sales_items-netwr.
+*    HIDE wa_sales_items-matnr.
   ENDLOOP.
 ENDFORM.
 
