@@ -7625,6 +7625,18 @@ START-OF-SELECTION.
 *TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
 TOP-OF-PAGE.
   WRITE: /(20) 'CUSTOMER MASTER DATA' COLOR 1.
+  
+*END-OF-PAGE works just like TOP-OF-PAGE but generates a footer instead. This event is triggered only when
+*control reaches the end of the page. I need to instruct SAP how many lines I want reserves for a page. This
+*is done by adding LINE-COUNT to the name of the report. E.g. LINE-COUNT 10(3) which means I want 10 lines per
+*page and the last 3 are for the footer (7 for the body). Basically - after every seventh line a footer will
+*appear.
+END-OF-PAGE.
+  FORMAT COLOR 2.
+  ULINE.
+  WRITE: /15 'SAP training.',
+         /1  'Hoofie Technologies'.
+  FORMAT COLOR OFF.
 
 *TOP-OF-PAGE DURING LINE SELECTION event is the same as above, but works for the Secondary Lists. If I want
 *only specific Secondary Lists, I need to differentiate between them with the CASE statement and indexes.
