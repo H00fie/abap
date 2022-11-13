@@ -7630,7 +7630,10 @@ TOP-OF-PAGE.
 *control reaches the end of the page. I need to instruct SAP how many lines I want reserves for a page. This
 *is done by adding LINE-COUNT to the name of the report. E.g. LINE-COUNT 10(3) which means I want 10 lines per
 *page and the last 3 are for the footer (7 for the body). Basically - after every seventh line a footer will
-*appear.
+*appear. In this case I am generating three lines for the footer - the ULINE and two WRITES. If I reserved
+*only two lines for the footer - 10(2), I wouldn't be able to have all three lines generated and
+*Hoofie Technologies" would be lost.
+*LINE-COUNT added to the name of the report is mandatory for END-OF-PAGE to display anything.
 END-OF-PAGE.
   FORMAT COLOR 2.
   ULINE.
