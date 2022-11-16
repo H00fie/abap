@@ -7948,6 +7948,48 @@ ENDFORM.
 *Only two rows are joined in the above query because A~D = B~E only in two cases (d2 and d3). Inner join discards the rows of both
 *tables if they do not have a match between them.
 
+*I want to get the customer data (KNA1) and the sales orders header data (VBAK) based on the provided customer range for every
+*customer with a single select query.
+DATA: v_kunnr TYPE kna1-kunnr.
+SELECT-OPTIONS: sl_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
+
+TYPES: BEGIN OF ty_customer_sales,
+  kunnr TYPE kna1-kunnr,
+  ort01 TYPE kna1-ort01,
+  vbeln TYPE vbak-vbeln,
+  erdat TYPE vbak-erdat,
+  erzet TYPE vbak-erzet,
+END OF ty_customer_sales.
+DATA: gt_customer_sales TYPE STANDARD TABLE OF ty_customer_sales,
+      gwa_customer_sales TYPE ty_customer_sales.
+
+START-OF-SELECTION.
+*Every field that is present in both tables needs to be prefixed with the name of the table from which it's supposed to be
+*retrieved from. 'ort01' and 'erzet' do not require specifying their table of origin because each of them is present only
+*in one of the tables that are part of the select query. All other fields are present within both tables and must thus be
+*prefixed with the appropriate table's name.
+  SELECT kna1~kunnr ort01 vbeln vbak~erdat erzet
+    FROM kna1 INNER JOIN vbak
+      ON kna1~kunnr = vbak~kunnr
+        INTO TABLE gt_customer_sales
+          WHERE kna1~kunnr IN sl_kunnr.
+  IF gt_customer_sales IS NOT INITIAL.
+    FORMAT COLOR 3.
+    DESCRIBE TABLE gt_customer_sales. "Saves the number of records in 'sy-tfill'.
+    WRITE: / 'Total records: ', sy-tfill.
+    FORMAT COLOR OFF.
+    SORT gt_customer_sales BY kunnr.
+    LOOP AT gt_customer_sales INTO gwa_customer_sales.
+      WRITE: / gwa_customer_sales-kunnr,
+               gwa_customer_sales-ort01,
+               gwa_customer_sales-vbeln,
+               gwa_customer_sales-erdat,
+               gwa_customer_sales-erzet.
+    ENDLOOP.
+  ELSE.
+    MESSAGE 'No data has been retrieved.' TYPE 'I'.
+  ENDIF.
+
 *2. LEFT OUTER JOIN.
 *While inner join discards the rows from both tables if no match for them has been found, left outer join retains all the rows from
 *the left hand table even if they don't have a matching row in the right hand table and all the right hand side table's columns are
