@@ -600,3 +600,330 @@ ENDFORM.
 
 
 
+*---------------------------------------------------------------------------------------------------------------------------------
+*INTERACTIVE REPORTING. TOP-OF-PAGE, END-OF-PAGE, TOP-OF-PAGE DURING LINE SELECTION, AT LINE-SELECTION.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*If my program is just generating a report and I cannot interact in any way with the results - I get only "one level" of a report
+*- it's static reporting. If I get one list of results, it's static reporting.
+*Results of a report can be interactive - based on a user's interaction, I can display additional data in the next list. That's called
+*interactive reporting.
+*When a static report is at work - upon execution I might get a selection screen and, when the parameters are provided, the report is
+*displayed. This is a one level report.
+*When an interactive reporting is being deployed - the first report/list I am getting is called Basic List (it has an index of 0). When
+*a user interacts with the list (e.g. double-clicks a row), I get a second level of report. This operation can be 21 levels deep. From
+*the second list onwards, they are called Secondary Lists (indexes from 1 to 20).
+*Whenever I run the program, I should get a selection screen where I should be able to provide a range of customer numbers. Results
+*from KNA1 should be displayed. This is the Basic List (index 0). Whenever I interact with any of the displayed rows, e.g. double-click
+*a customer number, I should check if that customer has any sales orders associated with them. If so - then I should get them and
+*display them in the next list - Secondary List (index 1). Again, upon double-clicking a sales order - I should have the sales items
+*associated displayed in the next list - Secondary List (index 2). Whenever a MATNR in that list is clicked, I should display a standard
+*transaction - MM03 (responsible for displaying the material data).
+*The INCLUDE for data declarations.
+INCLUDE Z_BMIERZWINSKI_DEV_TEST_TOP.
+INCLUDE Z_BMIERZWINSKI_DEV_TEST_SUB.
+
+START-OF-SELECTION.
+*Subroutines are defined in the INCLUDE Z_BMIERZWINSKI_DEV_TEST_SUB.
+  PERFORM get_customers.
+  IF it_customers IS NOT INITIAL.
+    PERFORM display_customers.
+  ELSE.
+    MESSAGE 'No customers have been found.' TYPE 'I'.
+  ENDIF.
+
+*TOP-OF-PAGE is an event triggered in the Basic List to generate a heading. If I have a single statement there
+*(WRITE), it means one line per page is reserved for that statement. If I added ULINE there too, that would be
+*two lines reserved. It related to "LINE-COUNT" specified next to the name of the report. If i have it as 10(3),
+*it means the page is 10 lines long and 3 of them are reserved for the footer. There are 7 lines left, one of them
+*(just the WRITE) is taken by the header. So the results themselves will take only 6 lines out of 10. If I set
+*the LINE-COUNT to say 4(2) and then made my header have two lines, I would get a runtime error if there were
+*any records to be displayed, because there's no space for them left.
+TOP-OF-PAGE.
+  WRITE: /(20) 'CUSTOMER MASTER DATA' COLOR 1.
+  
+*END-OF-PAGE works just like TOP-OF-PAGE but generates a footer instead. This event is triggered only when
+*control reaches the end of the page. I need to instruct SAP how many lines I want reserves for a page. This
+*is done by adding LINE-COUNT to the name of the report. E.g. LINE-COUNT 10(3) which means I want 10 lines per
+*page and the last 3 are for the footer (7 for the body). Basically - after every seventh line a footer will
+*appear. In this case I am generating three lines for the footer - the ULINE and two WRITES. If I reserved
+*only two lines for the footer - 10(2), I wouldn't be able to have all three lines generated and
+*Hoofie Technologies" would be lost.
+*LINE-COUNT added to the name of the report is mandatory for END-OF-PAGE to display anything.
+END-OF-PAGE.
+  FORMAT COLOR 2.
+  ULINE.
+  WRITE: /15 'SAP training.',
+         /1  'Hoofie Technologies'.
+  FORMAT COLOR OFF.
+
+*TOP-OF-PAGE DURING LINE SELECTION event is the same as above, but works for the Secondary Lists. If I want
+*only specific Secondary Lists, I need to differentiate between them with the CASE statement and indexes.
+*'sy-lsind' contains the index of the next available Secondary List.
+TOP-OF-PAGE DURING LINE-SELECTION.
+  CASE sy-lsind.
+    WHEN 1. "Secondary List index 1 (after the Basic List's row has been double-clicked).
+      WRITE: /(20) 'SALES ORDERS' COLOR 1.
+    WHEN 2. "Secondary List index 2 (after the Secondary List index 1's row has been double-clicked).
+      WRITE: /(20) 'SALES ITEMS' COLOR 1.
+  ENDCASE.
+
+*AT LINE-SELECTION is an event triggered whenever I click on any value in the list in the Basic List.
+AT LINE-SELECTION.
+*'sy-lisel' stores the content of the selected line.
+*  WRITE: 'The selected line is ', sy-lisel.
+*'sy-lsind' contains the index of the next available Secondary List.
+CASE sy-lsind.
+  WHEN 1.
+*To extract the customer number from 'sy-lisel' which stores the content of any selected line.
+*I am using a previously declared variable. 'sy-lisel' contains the entire line, but 'kunnr' is at the very beginning
+*of it. I am making it 20 characters' long despite 'kunnr' being of only 10 chracters' long because I already reserved
+*20 first spaces of a line for 'kunnr' in the displaying perform. Blanks will be ignored anyway.
+    CLEAR v_kunnr.
+    v_kunnr = sy-lisel+0(20). "Extracting a portion of a string is called 'offset logic'.
+*    WRITE: / 'Customer number: ', v_kunnr.
+    IF v_kunnr IS NOT INITIAL.
+*If a customer is found and then clicked - it will be stored in 'sy-lisel'. Clicking it will trigger the Secondary List
+*of the index 1 and I want that List to contain a list of sales orders for the chosen customer.
+      PERFORM get_sales_orders.
+      IF it_sales_orders IS NOT INITIAL.
+        PERFORM display_sales_orders.
+      ELSE.
+        MESSAGE 'No sales orders have been found for the selected customer.' TYPE 'I'.
+      ENDIF.
+    ENDIF.
+*When I am in the Secondary List index 1 and I double-click any of the lines (with Sales Orders), I want to move to
+*the Secondary List index 2 which contains sales orders' items (one sales order might contain many items).
+*VBAK and VBAP are linked via 'vbeln'.
+*There are three ways for me to achieve this (the third is described in 'WHEN 3' section).
+  WHEN 2.
+*1. I need to extract it from 'sy-lisel' just like I was doing it before to get 'kunnr' for the first Secondary List.
+*    CLEAR v_vbeln.
+*'v_vbeln' might, like 'kunnr' above, not be of ten characters so the database query based on it, will require the UNPACK.
+*    v_vbeln = sy-lisel+0(10).
+*    IF v_vbeln IS NOT INITIAL.
+*2. Use Hide Memory Area. It's a hidden memory area which can have values put into it by using HIDE keyword. I am doing
+*   that in the 'display_sales_orders' perform in the Basic List - all values are displayed in the List Processing Screen,
+*   BUT every 'vbeln' is also placed within Hide Memory Area. Upon the changing of the screens (from the Basic List to
+*   the Secondary List index 1 or from the Secondary List index 1 to Secondary List index 2 and so on) - so upon the
+*   triggering of AT LINE-SELECTION event, the Hide Memory Area is cleared with the exception of the value associated with
+*   the line the user has clicked. Thus, I can place a value I will need to get more values in the following Secondary List
+*   into Hide Memory Area (e.g. place all 'vbelns' there) and when the user clicks a line, the same work area I was using
+*   to display the values in the previous List will now contain the value associated with the selected line.
+      PERFORM get_sales_items.
+      IF it_sales_items IS NOT INITIAL.
+        PERFORM display_sales_items.
+      ELSE.
+        MESSAGE 'No sales items have been found for the selected sales document.' TYPE 'I'.
+      ENDIF.
+*     ENDIF.
+*When 'matnr' is double-clicked, I want the transaction MM03 displayed. The selected material number should be automatically
+*placed within MM03's input box. I need the 'Parameter ID' of the input box for that. I can check it via F1 -> Technical Details.
+*In this case, it's 'MAT'.
+  WHEN 3.
+*I could extract 'matnr' from 'sy-lisel'. 'matnr' starts from the 19th character, so the index would be 18, because the indexing
+*starts at 0. Two previous values in the line took up 10 and 6 characters respectively, but there's also two blanks there.
+*18 is the length of the data element of 'matnr'. Instead of extracting 'matnr' from 'sy-lisel', I could again use Hide Memory
+*Area. During the 'display_sales_items' perform, I would need to HIDE every 'matnr' there. Thus it would be sufficient for me to
+*simply refer to the work area that was used during the hiding.
+*3. Instead, I am doing the third way.
+*   I need to get the field's name and field's value the user has interacted with. GET CURSOR FIELD will save the name of the field
+*   that has been clicked and VALUE will save its value. I have declared my custom variables to hold both of these. If the name
+*   of the field clicked is equal to the work area's field holding material, then I am placing its value into the input box of
+*   MM03 transaction. If any other field is clicked - a message will pop up.
+*   'v_matnr' has been declared as a specific data type (vbap-matnr) because SET PARAMETER ID requires either a character, an
+*   alphanumeric or a specific data type and string ('v_fvalue' is a string) will not suffice.
+      GET CURSOR FIELD v_fname VALUE v_fname.
+      IF v_fname EQ 'WA_SALES_ITEMS-MATNR'.
+        CLEAR v_matnr.
+        v_matnr = v_fvalue.
+        SET PARAMETER ID 'MAT' FIELD v_matnr.
+        CALL TRANSACTION 'MM03'.
+      ELSE.
+        MESSAGE 'Please, select material only.' TYPE 'I'.
+      ENDIF.
+ENDCASE.
+
+********************************************
+*THE INCLUDES ARE DEFINED BELOW
+********************************************
+
+*&---------------------------------------------------------------------*
+*&  Include           INTERACTIVE_REPORTING_TOP
+*&---------------------------------------------------------------------*
+
+DATA: v_kunnr TYPE kna1-kunnr, "To be used by the first method of retaining the value of what use has interacted with for the following Secondary Lists.
+      v_fname TYPE string, "To be used by the third (yes, third, not second) method of retaining the value of what use has interacted with for the following Secondary Lists.
+      v_fvalue TYPE string, "To be used by the third (yes, the second doesn't need a variable) method of retaining the value of what use has interacted with for the following Secondary Lists.
+      v_matnr TYPE vbap-matnr. "Required for SET PARAMETER ID to place a value into the input box of MM03 transaction as a string will not suffice. Character, alphanumeric or a certain data
+                               "type will be accepted.
+SELECT-OPTIONS so_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
+
+TYPES: BEGIN OF ty_customers,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+END OF ty_customers.
+DATA: it_customers TYPE STANDARD TABLE OF ty_customers,
+      wa_customers TYPE ty_customers.
+
+TYPES: BEGIN OF ty_sales_orders,
+  vbeln TYPE vbak-vbeln,
+  erdat TYPE vbak-erdat,
+  erzet TYPE vbak-erzet,
+  ernam TYPE vbak-ernam,
+END OF ty_sales_orders.
+DATA: it_sales_orders TYPE STANDARD TABLE OF ty_sales_orders,
+      wa_sales_orders TYPE ty_sales_orders.
+
+TYPES: BEGIN OF ty_sales_items,
+  vbeln TYPE vbap-vbeln,
+  posnr TYPE vbap-posnr,
+  matnr TYPE vbap-matnr,
+  netwr TYPE vbap-netwr,
+END OF ty_sales_items.
+DATA: it_sales_items TYPE STANDARD TABLE OF ty_sales_items,
+      wa_sales_items TYPE ty_sales_items.
+
+*----------------------------------------------------------------------*
+***INCLUDE INTERACTIVE_REPORTING_SUB.
+*----------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_CUSTOMERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_customers .
+  SELECT kunnr land1 name1
+    FROM kna1
+    INTO TABLE it_customers
+    WHERE kunnr IN so_kunnr.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_CUSTOMERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_customers.
+  ULINE.
+  FORMAT COLOR 3.
+  WRITE: /(21) 'Customer number', (14) 'Country key', (40) 'Customer name'.
+  FORMAT COLOR OFF.
+  ULINE.
+  FORMAT COLOR 7.
+  LOOP AT it_customers INTO wa_customers.
+    WRITE: /(20) wa_customers-kunnr,
+                 sy-vline, "Prints a vertical line.
+            (12) wa_customers-land1,
+                 sy-vline,
+            (40) wa_customers-name1.
+  ENDLOOP.
+  FORMAT COLOR OFF.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  GET_SALES_ORDERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_sales_orders.
+*VBAK requires 'kunnr' to be of 10 characters' length, but 'kunnr' coming from KNA1 not necesserily will.
+*In order to have it work correctly, I need to supply leading zeros in case the 'kunnr' is shorter than
+*10 characters. If it's 1234, I need to make it 0000001234 - the number of zeroes I might need to add will
+*vary.
+*UNPACK is one way to achieve this. It will prefix the given variable with as many zeroes as is needed to
+*achieve the length of the data type of another provided variable.
+*  UNPACK v_kunnr TO v_kunnr.
+*'CONVERSION_EXIT_ALPHA_INPUT' function module is another way of achieving the same result.
+  CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+    EXPORTING
+      input         = v_kunnr
+    IMPORTING
+      output        = v_kunnr.
+
+  SELECT vbeln erdat erzet ernam
+    FROM vbak
+    INTO TABLE it_sales_orders
+    WHERE kunnr = v_kunnr.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_SALES_ORDERS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_sales_orders .
+  LOOP AT it_sales_orders INTO wa_sales_orders.
+    WRITE: / wa_sales_orders-vbeln,
+             wa_sales_orders-erdat,
+             wa_sales_orders-erzet,
+             wa_sales_orders-ernam.
+*HIDE places a chosen variable within Hide Memory Area which is an invisible memory area. First 'vbeln' is
+*displayed on the List Processing Screen just like any other variable, but additionally I am putting every
+*'vbeln' into Hide Memory Area. Upon changing the screens, SAP will clear the entire Hide Memory Area and
+*will retain only the value associated with the line with which the user has interacted.
+    HIDE wa_sales_orders-vbeln.
+  ENDLOOP.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  GET_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM get_sales_items.
+*To make sure 'v_vbeln' has ten characters and zeroes are prefixed if necessary to reach the length of 10.
+*It would be required if I was utilizing 'sy-lisel' for this task, but I am trading it for HIDE, so I will
+*be getting 'vbeln' from Hide Memory Area instead. No need to UNPACK it thus. The 'vbeln' will come
+*directly from the work area too, as this is where the mechanism of Hide Memory Area will store the value
+*associated with the line the user has clicked!
+*  UNPACK v_vbeln TO v_vbeln.
+*  SELECT vbeln posnr matnr netwr
+*    FROM vbap
+*    INTO TABLE it_sales_items
+*    WHERE vbeln = v_vbeln.
+
+  SELECT vbeln posnr matnr netwr
+    FROM vbap
+    INTO TABLE it_sales_items
+    WHERE vbeln = wa_sales_orders-vbeln.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*&      Form  DISPLAY_SALES_ITEMS
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM display_sales_items.
+*HOTSPOT ON means the hand symbol will be displayed when the cursor hovers over that field. Also, just a single click will
+*be required to trigger AT LINE-SELECTION event.
+  LOOP AT it_sales_items INTO wa_sales_items.
+    WRITE: / wa_sales_items-vbeln,
+             wa_sales_items-posnr,
+             wa_sales_items-matnr HOTSPOT ON,
+             wa_sales_items-netwr.
+*    HIDE wa_sales_items-matnr.
+  ENDLOOP.
+ENDFORM.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
