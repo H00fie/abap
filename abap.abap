@@ -7622,7 +7622,13 @@ START-OF-SELECTION.
     MESSAGE 'No customers have been found.' TYPE 'I'.
   ENDIF.
 
-*TOP-OF-PAGE is an event triggered in the Basic List to generate a heading.
+*TOP-OF-PAGE is an event triggered in the Basic List to generate a heading. If I have a single statement there
+*(WRITE), it means one line per page is reserved for that statement. If I added ULINE there too, that would be
+*two lines reserved. It related to "LINE-COUNT" specified next to the name of the report. If i have it as 10(3),
+*it means the page is 10 lines long and 3 of them are reserved for the footer. There are 7 lines left, one of them
+*(just the WRITE) is taken by the header. So the results themselves will take only 6 lines out of 10. If I set
+*the LINE-COUNT to say 4(2) and then made my header have two lines, I would get a runtime error if there were
+*any records to be displayed, because there's no space for them left.
 TOP-OF-PAGE.
   WRITE: /(20) 'CUSTOMER MASTER DATA' COLOR 1.
   
