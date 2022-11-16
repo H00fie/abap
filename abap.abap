@@ -7591,7 +7591,7 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*INTERACTIVE REPORTING.
+*INTERACTIVE REPORTING. TOP-OF-PAGE, END-OF-PAGE, TOP-OF-PAGE DURING LINE SELECTION, AT LINE-SELECTION.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *If my program is just generating a report and I cannot interact in any way with the results - I get only "one level" of a report
