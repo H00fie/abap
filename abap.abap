@@ -7948,6 +7948,27 @@ ENDFORM.
 *Only two rows are joined in the above query because A~D = B~E only in two cases (d2 and d3). Inner join discards the rows of both
 *tables if they do not have a match between them.
 
+*2. LEFT OUTER JOIN.
+*While inner join discards the rows from both tables if no match for them has been found, left outer join retains all the rows from
+*the left hand table even if they don't have a matching row in the right hand table and all the right hand side table's columns are
+*filled with default values (e.g. numeric data types to 0 and character data types to blanks).
+*E.g.
+*          TABLE A                       TABLE B
+*         A  B  C  D                    E  F  G  H
+*         a1 b1 c1 d1                   e1 f1 g1 h1
+*         a2 b2 c2 d2                   e2 f2 g2 h2
+*         a3 b3 c3 d3                   d2 f3 g3 h3
+*         a4 b4 c4 d4                   d3 f4 g4 h4
+*
+*        TABLE A LEFT OUTER JOIN TABLE B ON A~D = B~E
+*
+*                       RESULT TABLE
+*                  A  B  C  D  E  F  G  H
+*                  a1 b1 c1 d1                  
+*                  a2 b2 c2 d2 d2 f3 g3 h3
+*                  a3 b3 c3 d3 d3 f4 g4 h4
+*                  a4 b4 c4 d4   
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
