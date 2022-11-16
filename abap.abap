@@ -7917,3 +7917,37 @@ ENDFORM.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*SELECT STATEMENTS. INNER JOIN, LEFT OUTER JOIN.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Joins are used for retrieving the data from two or more tables using a single select query. In order to use joins to connect multiple
+*tables, there should be at least one field shared by the tables being joined and that field should be compared between these tables
+*during the select query.
+*1. INNER JOIN.
+*Whenever an inner join is used in the select query - each row of the left hand side table is compared with all the rows of the right
+*hand side table.
+*E.g.
+*          TABLE A                       TABLE B
+*         A  B  C  D                    E  F  G  H
+*         a1 b1 c1 d1                   e1 f1 g1 h1
+*         a2 b2 c2 d2                   e2 f2 g2 h2
+*         a3 b3 c3 d3                   d2 f3 g3 h3
+*         a4 b4 c4 d4                   d3 f4 g4 h4
+*
+*          TABLE A INNER JOIN TABLE B ON A~D = B~E
+*
+*                       RESULT TABLE
+*                  A  B  C  D  E  F  G  H
+*                  a2 b2 c2 d2 d2 f3 g3 h3
+*                  a3 b3 c3 d3 d3 f4 g4 h4
+*
+*Only two rows are joined in the above query because A~D = B~E only in two cases (d2 and d3). Inner join discards the rows of both
+*tables if they do not have a match between them.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
