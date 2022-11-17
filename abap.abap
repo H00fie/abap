@@ -7979,12 +7979,26 @@ START-OF-SELECTION.
     WRITE: / 'Total records: ', sy-tfill.
     FORMAT COLOR OFF.
     SORT gt_customer_sales BY kunnr.
+*AT NEW should print the values mentioned within only once, whenever they are changed, but it works only for the value mentioned
+*directly after AT NEW (so - kunnr). That means this will not work for 'ort01' - it will be replaced by a line of stars.
+*In order to achieve this, I need to declare a variable for every variable other than specified with the AT NEW that I want
+*treated in the same way. This variable should assume the value of the field I want displayed within AT NEW and be used instead
+*of it. This is the case because, when inside AT NEW, all other fields in the work area but the one specified are replaced with stars.
+    DATA: lv_ort01 TYPE kna1-ort01.
     LOOP AT gt_customer_sales INTO gwa_customer_sales.
-      WRITE: / gwa_customer_sales-kunnr,
-               gwa_customer_sales-ort01,
-               gwa_customer_sales-vbeln,
-               gwa_customer_sales-erdat,
-               gwa_customer_sales-erzet.
+      CLEAR lv_ort01.
+      lv_ort01 = gwa_customer_sales-ort01.
+      AT NEW kunnr.
+        FORMAT COLOR 1.
+        WRITE: / 'Customer number: ', gwa_customer_sales-kunnr,
+                 'Customer city: ', lv_ort01.
+        FORMAT COLOR OFF.
+      ENDAT.
+      FORMAT COLOR 2.
+        WRITE: / gwa_customer_sales-vbeln,
+                 gwa_customer_sales-erdat,
+                 gwa_customer_sales-erzet.
+      FORMAT COLOR OFF.
     ENDLOOP.
   ELSE.
     MESSAGE 'No data has been retrieved.' TYPE 'I'.
