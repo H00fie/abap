@@ -7968,11 +7968,11 @@ START-OF-SELECTION.
 *retrieved from. 'ort01' and 'erzet' do not require specifying their table of origin because each of them is present only
 *in one of the tables that are part of the select query. All other fields are present within both tables and must thus be
 *prefixed with the appropriate table's name.
-  SELECT kna1~kunnr ort01 vbeln vbak~erdat erzet
-    FROM kna1 INNER JOIN vbak
-      ON kna1~kunnr = vbak~kunnr
+  SELECT k~kunnr ort01 vbeln v~erdat erzet
+    FROM kna1 AS k INNER JOIN vbak AS v
+      ON k~kunnr = v~kunnr
         INTO TABLE gt_customer_sales
-          WHERE kna1~kunnr IN sl_kunnr.
+          WHERE k~kunnr IN sl_kunnr.
   IF gt_customer_sales IS NOT INITIAL.
     FORMAT COLOR 3.
     DESCRIBE TABLE gt_customer_sales. "Saves the number of records in 'sy-tfill'.
@@ -8006,10 +8006,12 @@ START-OF-SELECTION.
 *
 *                       RESULT TABLE
 *                  A  B  C  D  E  F  G  H
-*                  a1 b1 c1 d1                  
+*                  a1 b1 c1 d1
 *                  a2 b2 c2 d2 d2 f3 g3 h3
 *                  a3 b3 c3 d3 d3 f4 g4 h4
-*                  a4 b4 c4 d4   
+*                  a4 b4 c4 d4
+
+*For an example, change the INNER JOIN to LEFT OUTER JOIN in the select query there.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
