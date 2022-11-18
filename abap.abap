@@ -7984,16 +7984,26 @@ START-OF-SELECTION.
 *In order to achieve this, I need to declare a variable for every variable other than specified with the AT NEW that I want
 *treated in the same way. This variable should assume the value of the field I want displayed within AT NEW and be used instead
 *of it. This is the case because, when inside AT NEW, all other fields in the work area but the one specified are replaced with stars.
-    DATA: lv_ort01 TYPE kna1-ort01.
+    DATA: lv_ort01 TYPE kna1-ort01. "For the AT NEW event.
+*The other way to achieve the same result is to use ON CHANGE OF event. It's triggered whenever a new value appears in the specified
+*field ('kunnr' here). The advantage of ON CHANGE OF is thus it does not suppress the values in other fields than the one specified
+*alongside the event like AT NEW does. ON CHANGE OF event can also be used in any of the looping statements (LOOP-ENDLOOP, WHILE-ENDWHILE,
+*DO-ENDDO, SELECT-ENDSELECT) and AT NEW event can be used only inside LOOP-ENDLOOP.
     LOOP AT gt_customer_sales INTO gwa_customer_sales.
-      CLEAR lv_ort01.
-      lv_ort01 = gwa_customer_sales-ort01.
-      AT NEW kunnr.
+*      CLEAR lv_ort01.
+*      lv_ort01 = gwa_customer_sales-ort01.
+*      AT NEW kunnr.
+*        FORMAT COLOR 1.
+*        WRITE: / 'Customer number: ', gwa_customer_sales-kunnr,
+*                 'Customer city: ', lv_ort01.
+*        FORMAT COLOR OFF.
+*      ENDAT.
+      ON CHANGE OF gwa_customer_sales-kunnr.
         FORMAT COLOR 1.
-        WRITE: / 'Customer number: ', gwa_customer_sales-kunnr,
-                 'Customer city: ', lv_ort01.
+        WRITE: / gwa_customer_sales-kunnr,
+                 gwa_customer_sales-ort01.
         FORMAT COLOR OFF.
-      ENDAT.
+      ENDON.
       FORMAT COLOR 2.
         WRITE: / gwa_customer_sales-vbeln,
                  gwa_customer_sales-erdat,
