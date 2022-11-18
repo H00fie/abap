@@ -605,16 +605,18 @@ START-OF-SELECTION.
       INTO TABLE gt_customer_sales
         WHERE kna1~kunnr IN sl_kunnr.
   IF gt_customer_sales IS NOT INITIAL.
-    WRITE: / gwa_customer_sales-kunnr,
-             gwa_customer_sales-land1,
-             gwa_customer_sales-name1,
-             gwa_customer_sales-vbeln,
-             gwa_customer_sales-erdat,
-             gwa_customer_sales-erzet,
-             gwa_customer_sales-ernam,
-             gwa_customer_sales-posnr,
-             gwa_customer_sales-matnr,
-             gwa_customer_sales-netwr.
+    LOOP AT gt_customer_sales INTO gwa_customer_sales.
+      WRITE: / gwa_customer_sales-kunnr,
+               gwa_customer_sales-land1,
+               gwa_customer_sales-name1,
+               gwa_customer_sales-vbeln,
+               gwa_customer_sales-erdat,
+               gwa_customer_sales-erzet,
+               gwa_customer_sales-ernam,
+               gwa_customer_sales-posnr,
+               gwa_customer_sales-matnr,
+               gwa_customer_sales-netwr.
+    ENDLOOP.
   ELSE.
     MESSAGE 'No data has been found.' TYPE 'I'.
   ENDIF.
