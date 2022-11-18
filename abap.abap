@@ -7984,6 +7984,8 @@ START-OF-SELECTION.
 *In order to achieve this, I need to declare a variable for every variable other than specified with the AT NEW that I want
 *treated in the same way. This variable should assume the value of the field I want displayed within AT NEW and be used instead
 *of it. This is the case because, when inside AT NEW, all other fields in the work area but the one specified are replaced with stars.
+*The field specified with the AT NEW event should be the first field of the internal table, otherwise the event will be triggered
+*for every field of the table.
     DATA: lv_ort01 TYPE kna1-ort01. "For the AT NEW event.
 *The other way to achieve the same result is to use ON CHANGE OF event. It's triggered whenever a new value appears in the specified
 *field ('kunnr' here). The advantage of ON CHANGE OF is thus it does not suppress the values in other fields than the one specified
