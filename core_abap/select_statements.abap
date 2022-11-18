@@ -435,3 +435,131 @@ ENDFORM.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*SELECT STATEMENTS. INNER JOIN, LEFT OUTER JOIN.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Joins are used for retrieving the data from two or more tables using a single select query. In order to use joins to connect multiple
+*tables, there should be at least one field shared by the tables being joined and that field should be compared between these tables
+*during the select query.
+*1. INNER JOIN.
+*Whenever an inner join is used in the select query - each row of the left hand side table is compared with all the rows of the right
+*hand side table.
+*E.g.
+*          TABLE A                       TABLE B
+*         A  B  C  D                    E  F  G  H
+*         a1 b1 c1 d1                   e1 f1 g1 h1
+*         a2 b2 c2 d2                   e2 f2 g2 h2
+*         a3 b3 c3 d3                   d2 f3 g3 h3
+*         a4 b4 c4 d4                   d3 f4 g4 h4
+*
+*          TABLE A INNER JOIN TABLE B ON A~D = B~E
+*
+*                       RESULT TABLE
+*                  A  B  C  D  E  F  G  H
+*                  a2 b2 c2 d2 d2 f3 g3 h3
+*                  a3 b3 c3 d3 d3 f4 g4 h4
+*
+*Only two rows are joined in the above query because A~D = B~E only in two cases (d2 and d3). Inner join discards the rows of both
+*tables if they do not have a match between them.
+
+*I want to get the customer data (KNA1) and the sales orders header data (VBAK) based on the provided customer range for every
+*customer with a single select query.
+DATA: v_kunnr TYPE kna1-kunnr.
+SELECT-OPTIONS: sl_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
+
+TYPES: BEGIN OF ty_customer_sales,
+  kunnr TYPE kna1-kunnr,
+  ort01 TYPE kna1-ort01,
+  vbeln TYPE vbak-vbeln,
+  erdat TYPE vbak-erdat,
+  erzet TYPE vbak-erzet,
+END OF ty_customer_sales.
+DATA: gt_customer_sales TYPE STANDARD TABLE OF ty_customer_sales,
+      gwa_customer_sales TYPE ty_customer_sales.
+
+START-OF-SELECTION.
+*Every field that is present in both tables needs to be prefixed with the name of the table from which it's supposed to be
+*retrieved from. 'ort01' and 'erzet' do not require specifying their table of origin because each of them is present only
+*in one of the tables that are part of the select query. All other fields are present within both tables and must thus be
+*prefixed with the appropriate table's name.
+  SELECT k~kunnr ort01 vbeln v~erdat erzet
+    FROM kna1 AS k INNER JOIN vbak AS v
+      ON k~kunnr = v~kunnr
+        INTO TABLE gt_customer_sales
+          WHERE k~kunnr IN sl_kunnr.
+  IF gt_customer_sales IS NOT INITIAL.
+    FORMAT COLOR 3.
+    DESCRIBE TABLE gt_customer_sales. "Saves the number of records in 'sy-tfill'.
+    WRITE: / 'Total records: ', sy-tfill.
+    FORMAT COLOR OFF.
+    SORT gt_customer_sales BY kunnr.
+*AT NEW should print the values mentioned within only once, whenever they are changed, but it works only for the value mentioned
+*directly after AT NEW (so - kunnr). That means this will not work for 'ort01' - it will be replaced by a line of stars.
+*In order to achieve this, I need to declare a variable for every variable other than specified with the AT NEW that I want
+*treated in the same way. This variable should assume the value of the field I want displayed within AT NEW and be used instead
+*of it. This is the case because, when inside AT NEW, all other fields in the work area but the one specified are replaced with stars.
+*The field specified with the AT NEW event should be the first field of the internal table, otherwise the event will be triggered
+*for every field of the table.
+*In this particular case, it wouldn't happen because the select query above joins the tables based on 'kunnr'. Somehow this would
+*prevent the neccessity of having to have 'kunnr' as the first field of the internal table in order to have AT NEW event work correctly
+*with it.
+    DATA: lv_ort01 TYPE kna1-ort01. "For the AT NEW event.
+*The other way to achieve the same result is to use ON CHANGE OF event. It's triggered whenever a new value appears in the specified
+*field ('kunnr' here). The advantage of ON CHANGE OF is thus it does not suppress the values in other fields than the one specified
+*alongside the event like AT NEW does. ON CHANGE OF event can also be used in any of the looping statements (LOOP-ENDLOOP, WHILE-ENDWHILE,
+*DO-ENDDO, SELECT-ENDSELECT) and AT NEW event can be used only inside LOOP-ENDLOOP.
+    LOOP AT gt_customer_sales INTO gwa_customer_sales.
+*      CLEAR lv_ort01.
+*      lv_ort01 = gwa_customer_sales-ort01.
+*      AT NEW kunnr.
+*        FORMAT COLOR 1.
+*        WRITE: / 'Customer number: ', gwa_customer_sales-kunnr,
+*                 'Customer city: ', lv_ort01.
+*        FORMAT COLOR OFF.
+*      ENDAT.
+      ON CHANGE OF gwa_customer_sales-kunnr.
+        FORMAT COLOR 1.
+        WRITE: / gwa_customer_sales-kunnr,
+                 gwa_customer_sales-ort01.
+        FORMAT COLOR OFF.
+      ENDON.
+      FORMAT COLOR 2.
+        WRITE: / gwa_customer_sales-vbeln,
+                 gwa_customer_sales-erdat,
+                 gwa_customer_sales-erzet.
+      FORMAT COLOR OFF.
+    ENDLOOP.
+  ELSE.
+    MESSAGE 'No data has been retrieved.' TYPE 'I'.
+  ENDIF.
+
+*2. LEFT OUTER JOIN.
+*While inner join discards the rows from both tables if no match for them has been found, left outer join retains all the rows from
+*the left hand table even if they don't have a matching row in the right hand table and all the right hand side table's columns are
+*filled with default values (e.g. numeric data types to 0 and character data types to blanks).
+*E.g.
+*          TABLE A                       TABLE B
+*         A  B  C  D                    E  F  G  H
+*         a1 b1 c1 d1                   e1 f1 g1 h1
+*         a2 b2 c2 d2                   e2 f2 g2 h2
+*         a3 b3 c3 d3                   d2 f3 g3 h3
+*         a4 b4 c4 d4                   d3 f4 g4 h4
+*
+*        TABLE A LEFT OUTER JOIN TABLE B ON A~D = B~E
+*
+*                       RESULT TABLE
+*                  A  B  C  D  E  F  G  H
+*                  a1 b1 c1 d1
+*                  a2 b2 c2 d2 d2 f3 g3 h3
+*                  a3 b3 c3 d3 d3 f4 g4 h4
+*                  a4 b4 c4 d4
+
+*For an example, change the INNER JOIN to LEFT OUTER JOIN in the select query there.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
