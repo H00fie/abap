@@ -7986,6 +7986,9 @@ START-OF-SELECTION.
 *of it. This is the case because, when inside AT NEW, all other fields in the work area but the one specified are replaced with stars.
 *The field specified with the AT NEW event should be the first field of the internal table, otherwise the event will be triggered
 *for every field of the table.
+*In this particular case, it wouldn't happen because the select query above joins the tables based on 'kunnr'. Somehow this would
+*prevent the neccessity of having to have 'kunnr' as the first field of the internal table in order to have AT NEW event work correctly
+*with it.
     DATA: lv_ort01 TYPE kna1-ort01. "For the AT NEW event.
 *The other way to achieve the same result is to use ON CHANGE OF event. It's triggered whenever a new value appears in the specified
 *field ('kunnr' here). The advantage of ON CHANGE OF is thus it does not suppress the values in other fields than the one specified
