@@ -563,3 +563,62 @@ START-OF-SELECTION.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*INNER JOIN, THREE TABLES. RAW FORMAT - CUSTOMER REPEATED FOR EVERY SALES ORDER.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+DATA: v_kunnr TYPE kna1-kunnr.
+SELECT-OPTIONS: sl_kunnr FOR v_kunnr DEFAULT '1000' TO '1010'.
+
+TYPES: BEGIN OF ty_customer_sales,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+  vbeln TYPE vbak-vbeln,
+  erdat TYPE vbak-erdat,
+  erzet TYPE vbak-erzet,
+  ernam TYPE vbak-ernam,
+  posnr TYPE vbap-posnr,
+  matnr TYPE vbap-matnr,
+  netwr TYPE vbap-netwr,
+END OF ty_customer_sales.
+
+DATA: gt_customer_sales TYPE STANDARD TABLE OF ty_customer_sales,
+      gwa_customer_sales TYPE ty_customer_sales.
+
+START-OF-SELECTION.
+*Fields that are not unique to a single table included in the query require specifying from which table they are supposed to be
+*taken from.
+*Records here might be displayed in two lines each. I can amend that by adding the addition LINE-SIZE <number> to the name of the
+*report to establish the number of characters I want every line to have.
+*In the program's current form, the customer number/data is repeated multiple times. This is because every customer has multiple
+*sales orders. If a particular customer has three sales orders, that customer will be repeated thrice - once for every displayed
+*sales order of theirs.
+  SELECT kna1~kunnr land1 name1
+         vbak~vbeln vbak~erdat vbak~erzet vbak~ernam
+         posnr matnr vbap~netwr
+    FROM kna1 INNER JOIN vbak ON kna1~kunnr = vbak~kunnr
+              INNER JOIN vbap ON vbak~vbeln = vbap~vbeln
+      INTO TABLE gt_customer_sales
+        WHERE kna1~kunnr IN sl_kunnr.
+  IF gt_customer_sales IS NOT INITIAL.
+    WRITE: / gwa_customer_sales-kunnr,
+             gwa_customer_sales-land1,
+             gwa_customer_sales-name1,
+             gwa_customer_sales-vbeln,
+             gwa_customer_sales-erdat,
+             gwa_customer_sales-erzet,
+             gwa_customer_sales-ernam,
+             gwa_customer_sales-posnr,
+             gwa_customer_sales-matnr,
+             gwa_customer_sales-netwr.
+  ELSE.
+    MESSAGE 'No data has been found.' TYPE 'I'.
+  ENDIF.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
