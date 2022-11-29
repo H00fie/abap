@@ -8106,3 +8106,69 @@ START-OF-SELECTION.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*PROUDLY ABAPER. CREATING CUSTOM DATABASE TABLES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*There are many standard database tables provided by SAP itself. To maintain data within them, one uses standard transactions also
+*provided by SAP.
+*E.g.
+*Customer data -> transaction XD01 (Creating customer). Data is persisted in KNA1, KNBK...
+*Material data -> transaction MM01 (Creating material). Data is persisted in MARA, MAKT, MARC, MARD...
+*Sales order data -> transaction VA01 (Creating sales order). Data is persisted in VBAK, VBAP...
+*Purchase order data -> transaction ME21 (Creating purchase order). Data is persisted in EKKO, EKPO...
+*
+*Sometimes standard tables are not enough to represent all the data required by a specific customer. In such a scenario I need to
+*create "customer specific tables" which hold data specific to a customer.
+*
+*Database tables are accessed within the dictionary - SE11. There are a few steps that need to be followed in order to create a
+*database table:
+* - Delivery and Maintenance:
+*                Delivery Class needs to be specified. It is used for controlling the transportation of the table's data. The transportation
+*                               refers to sending the table between the systems (development, quality and production). I can choose whether
+*                               to transport only the structure or the structure along with the date. That transportaion is controlled by
+*                               the Delivery Class.
+*                                      "A - Application Table (master and transaction data)" - whenever I want to store master or transaction
+*                                           data, A is the choice. Master data means data which has more read than write operations,
+*                                           e.g. a bank account's number, the holder's name, etc. They do not keep on changing, so
+*                                           they are master data. Transaction data is when I have more write operations. It's day to
+*                                           day business data.
+*                                      "C - Customizing table, maintenance only by cust., not SAP import" - my custom customer specific tables.
+*
+*                              The master and transaction data is maintained through the aforementioned standard transactions. In the case of
+*                              "C" tables, it should be taken care of by the customer themselves. The majority of the tables provided by SAP
+*                              are "A". Whenever I create my own tables, they are "C".
+*
+*                Data Browser/Table View Editing provides three possible options:
+*                                      "Display/Maintenance Allowed with Restrictions" - I can only view the data but cannot insert, update nor
+*                                           delete records. Almost all of the standard tables provided by SAP have this options.
+*                                      "Display/Maintenance Allowed" - I can perform all the operations.
+*                                      "Display/Maintenance Not Allowed" - I cannot perform any of the operations.
+* - Fields:
+*               Also called columns. Just like with internal tables. Names, data types, sizes.
+* - Technical settings:
+*               Data class needs to be specified because the SAP database is partitioned into multiple schemas. There is a master schema which
+*                              stores master tables that have more read operations than others. There is a transaction schema with transaction
+*                              tables, etc. Thus Data Class specifies in which schema the database table is to be stored.
+*                                      APPL0 - Master Data, Transparent Tables. This means the table is used for storing master data.
+*                                      APPL1 - Transaction Data, Transparent Tables. This means the table is used for storing day to day data,
+*                                              sales orders data.
+*               Size category means the number of records expected to be stored in the database table. E.g. setting the size to 3 will make SAP
+*                             initially allocate enough memory to store a maximum of 7400 records. It doesn't mean no more will fit - it's just
+*                             the initial amount of memory. If the threshold is exceeded though, the allocated memory is extended by the initial
+*                             amount, e.g. if I add 7401th record to the database table of the size 3, the table will receive memory for additional
+*                             7400 records and will thus have memory for 14800 records in total.
+*                             The extending of the database table requires some work from SAP, so choosing too small a size is discouraged. Having
+*                             to enlarge the database table will degrade the performance.
+*                             Likewise, it's not a good idea to assume too big the size of a table as it will waste memory.
+* - Enhancement category:
+*               If a customer wants 260 fields in a master data table, but SAP's standard KNA1 only has 251 and not all the fields match anyway,
+*               I can use the enhance option to augment the SAP standard. In SE11 I can open a database table, go to Extras, choose Enhancement
+*               Category... KNA1 for instance can be enhanced
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
