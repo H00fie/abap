@@ -8166,8 +8166,12 @@ START-OF-SELECTION.
 *                             Likewise, it's not a good idea to assume too big the size of a table as it will waste memory.
 * - Enhancement category:
 *               If a customer wants 260 fields in a master data table, but SAP's standard KNA1 only has 251 and not all the fields match anyway,
-*               I can use the enhance option to augment the SAP standard. In SE11 I can open a database table, go to Extras, choose Enhancement
-*               Category... KNA1 for instance can be enhanced
+*               I can use the enhance option to augment the SAP standard. The enhancement category controls the extensibility of SAP database
+*               tables.
+*               I can check the category of the database table by opening the table in SE11, going to Extras and checking Ehancement Category.
+*               E.g. KNA1 has the "Can be enhanced (character-like or numeric)" option. This means additional fields can be added here and they
+*               need to either be character or numeric fields. The "Can be enhanced (Deep)" option - "deep" means a structure within a structure
+*               (any kind of data type can be added).
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
