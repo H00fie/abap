@@ -8173,6 +8173,15 @@ START-OF-SELECTION.
 *               need to either be character or numeric fields. The "Can be enhanced (Deep)" option - "deep" means a structure within a structure
 *               (any kind of data type can be added).
 
+*If a table contains MANDT as the first field - it's a client dependent table. It stores the client's number. A client independent table does not
+*have a MANDT field and the rows (records - the actual values stored) are not specific to any client. If I want records accessible across all the
+*clients, I can create a client independent table (without the MANDT).
+
+*Every table should have at least one primary key (16 is maximum). Making a field a primary key field prevents it from having duplicate values.
+*A combination of more than one primary key is called a composite key.
+*The initial values option forces a not null policy. If no value is provided then a default value (specific to a data type the field is of) is
+*inserted. It is automatically checked for primary key fields.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
