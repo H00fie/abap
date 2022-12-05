@@ -8179,8 +8179,13 @@ START-OF-SELECTION.
 
 *Every table should have at least one primary key (16 is maximum). Making a field a primary key field prevents it from having duplicate values.
 *A combination of more than one primary key is called a composite key.
-*The initial values option forces a not null policy. If no value is provided then a default value (specific to a data type the field is of) is
+*The Initial Values option forces a not null policy. If no value is provided then a default value (specific to a data type the field is of) is
 *inserted. It is automatically checked for primary key fields.
+
+*A new record can be added from the level of the database table's creation - SE11 -> enter a table -> Utilities -> Table Contents -> Create Entries.
+*I can also manipulate the existing records by going to Utilities -> Table Contents -> Display (or pressing the Contents button in the Application
+*Bar). When displaying the contents I can select the option of Table Entry and manipulate any record in a capacity allowed by the
+*"Data Browser/Table View Maint." option selected when creating the table.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
