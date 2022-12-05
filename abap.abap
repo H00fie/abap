@@ -8173,19 +8173,26 @@ START-OF-SELECTION.
 *               need to either be character or numeric fields. The "Can be enhanced (Deep)" option - "deep" means a structure within a structure
 *               (any kind of data type can be added).
 
+*---MANDT's purpose---
 *If a table contains MANDT as the first field - it's a client dependent table. It stores the client's number. A client independent table does not
 *have a MANDT field and the rows (records - the actual values stored) are not specific to any client. If I want records accessible across all the
 *clients, I can create a client independent table (without the MANDT).
 
+*---Primary Key and Initial Values---
 *Every table should have at least one primary key (16 is maximum). Making a field a primary key field prevents it from having duplicate values.
 *A combination of more than one primary key is called a composite key.
 *The Initial Values option forces a not null policy. If no value is provided then a default value (specific to a data type the field is of) is
 *inserted. It is automatically checked for primary key fields.
 
+*---Manipulating the data---
 *A new record can be added from the level of the database table's creation - SE11 -> enter a table -> Utilities -> Table Contents -> Create Entries.
 *I can also manipulate the existing records by going to Utilities -> Table Contents -> Display (or pressing the Contents button in the Application
 *Bar). When displaying the contents I can select the option of Table Entry and manipulate any record in a capacity allowed by the
 *"Data Browser/Table View Maint." option selected when creating the table.
+
+*---Table Maintenance---
+*After the table has been created, I need to generate Table Maintenance which will create an interface through which the end user can maintain
+*the table. To generate Table Maintenance, I need a function group.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
