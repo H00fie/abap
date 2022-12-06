@@ -8192,7 +8192,24 @@ START-OF-SELECTION.
 
 *---Table Maintenance---
 *After the table has been created, I need to generate Table Maintenance which will create an interface through which the end user can maintain
-*the table. To generate Table Maintenance, I need a function group.
+*the table. To generate Table Maintenance, I need a Function Group.
+*Whenever I generate Table Maintenance, some dependent objects are generated. They are stored within the Function Group. A Function Group can
+*be created in SE80. When it's there, I need to activate it (right click its name).
+*To generate Table Maintenance, I need to open the table in SE11, go to Utilities and select Table Maintenance Generator.
+*- Authorization Group specifies what users can maintain the table in case I didn't want just any end-user to be able to do this. E.g. the
+*                      option of "&NC&" means "without authorization group so anyone can maintain the table.
+*- Maintenance Type needs to be specified as either One Step or Two Step.
+*                   a) One Step - one screen is generated - the Overview Screen. In this screen all the CRUD operations can be performed
+*                                 (adding, removing, updating and deleting records). I need to provide the screen number - any number up to
+*                                 9999. I can have this number generated automatically by SAP. In the Application Toolbar there is a button
+*                                 "Find Scr. Number(s)". I have three options there, one of which is "Propose screen number(s)". If this is
+*                                 the first Table Maintenance created within the Function Group, the proposed number will be 1.
+*                   B) Two Step - the Overview Screen is generated and the Single Screen is generated. In the Overview Screen I can only read
+*                                 the data and the other three operations can be performed in the Single Screen.
+*                   When that's done, I can click the white sheet button ("Create") and save the Table Maintenance. Then I F3 out of the Table
+*                   Maintenance genertaion environment back to the database table in SE11, save and activate it.
+
+*The user can maintain the table in SM30.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
