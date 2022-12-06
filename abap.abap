@@ -8148,7 +8148,11 @@ START-OF-SELECTION.
 *                                      "Display/Maintenance Allowed" - I can perform all the operations.
 *                                      "Display/Maintenance Not Allowed" - I cannot perform any of the operations.
 * - Fields:
-*               Also called columns. Just like with internal tables. Names, data types, sizes.
+*               Also called columns. Just like with internal tables. Names, data types, sizes. I can create my fields either basing them on
+*               direct data types or data elements/domains. There are limitations to using direct data types here - the fields' values are always 
+*               captured in the upper case, I cannot impose any validation on the data, it doesn't support reusability and I cannot maintain field's
+*               labels. E.g. I might want to have my column Designation provide only four possible values. I cannot impose any validation on what's 
+*               being provided if the data type is a simple string.
 * - Technical settings:
 *               Data class needs to be specified because the SAP database is partitioned into multiple schemas. There is a master schema which
 *                              stores master tables that have more read operations than others. There is a transaction schema with transaction
@@ -8209,7 +8213,24 @@ START-OF-SELECTION.
 *                   When that's done, I can click the white sheet button ("Create") and save the Table Maintenance. Then I F3 out of the Table
 *                   Maintenance genertaion environment back to the database table in SE11, save and activate it.
 
-*The user can maintain the table in SM30.
+*The user can maintain the table in SM30. Though here the user needs to remember the name of the table and specifically select the Maintain
+*button out of all the available ones. I should provide them with a better tailored interface - I need to provide them with a tool that
+*requires minimum navigating from them.
+*For this purpose - I should create my own custom Transaction Code.
+
+*To skip the initial screen of SM30 and create a Transaction Code that initially fires up the Maintain option, I need to collect the function call
+*of the Maintain button - by moving the focus onto that button with Tab keyboard button and pressing F1.
+*The creation of new Transaction Codes is carried out in SE93 transaction. I need to provide the name and the short description. I should choose
+*the last of the options in the Start Object section ("Transaction with parameters (parameter transaction)") - it is the correct choice for the
+*Transaction Code for the table maintenance.
+*In the next screen in the "Default values for" section, I need to add SM30 to the "Transaction" box and mark the "Skip initial screen" checkbox.
+*Furthermore, in the "GUI support" section, I need to mark the "SAPGUI for Windows" checkbox. Since I am skipping the initial screen, I need
+*to provide my transaction with the information that I was providing in SM30 - the name of my database table and the pressing of the Maintain
+*button. In the "Default Values" I need to provide the names of the screen fields I require - the input box and the button.
+*The input box most likely is "VIEWNAME" and the Value is the name of my table.
+*The second row should have "UPDATE" as Name of screen field and "X" as Value. "UPDATE" is the name of the Maintain's function call and "X" informs
+*it's the button that's being pressed. Technically F1-ing the Maintain button in SM30 will give me "UPD", but I need to provide "UPDATE" here
+*anyway.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
