@@ -8241,6 +8241,10 @@ START-OF-SELECTION.
 *               Data Type, a Domain or a Reference Type. I can see this in the Data Type sheet of the Data Element screen.
 *               - a Domain - a reusable dictionary object which stores technical properties of the field like the data type or size. E.g. MANDT
 *                            is associated with the domain also named MANDT - the name can be the same but doesn't have to.
+*                            A domain allows me to make my variables retain the exact way they were stored instead of converting all letters to
+*                            the uppercase. In the Definition sheet if I select Lower Case checkbox, it will do just that - retain the way the
+*                            data was provided. Thus, when I create my own Data Elements, I can use a Domain for CHAR fields (to have them retain
+*                            how they were stored) and use a Predefined Type for numeric fields since they don't have either uppercase or lowercase.
 *               - a Predefined Type. 
 *               - Object Oriented Interfaces of classes (Reference Type).
 
