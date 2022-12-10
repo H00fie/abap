@@ -8232,6 +8232,18 @@ START-OF-SELECTION.
 *it's the button that's being pressed. Technically F1-ing the Maintain button in SM30 will give me "UPD", but I need to provide "UPDATE" here
 *anyway.
 
+*--------------------------------------------------------------------*
+*It is recommended to declare the table's fields using Data Elements and Domains instead of direct data types.
+
+*A Data Element is a reusable dictionary object which provides a description for the field. Which means I can maintain the descriptions when I
+*               create Data Elements. These descriptions, specified in the Field Label sheet of the Data Element screen (when I double-click one)
+*               appear automatically in the screens wherever the Data Element is referred to. Any Data Element can be associated with a direct
+*               Data Type, a Domain or a Reference Type. I can see this in the Data Type sheet of the Data Element screen.
+*               - a Domain - a reusable dictionary object which stores technical properties of the field like the data type or size. E.g. MANDT
+*                            is associated with the domain also named MANDT - the name can be the same but doesn't have to.
+*               - a Predefined Type. 
+*               - Object Oriented Interfaces of classes (Reference Type).
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
