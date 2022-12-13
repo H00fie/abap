@@ -8245,6 +8245,7 @@ START-OF-SELECTION.
 *                            the uppercase. In the Definition sheet if I select Lower Case checkbox, it will do just that - retain the way the
 *                            data was provided. Thus, when I create my own Data Elements, I can use a Domain for CHAR fields (to have them retain
 *                            how they were stored) and use a Predefined Type for numeric fields since they don't have either uppercase or lowercase.
+*                            A Domain allows me to create a set of possible values that can be selected for the Data Element associated.
 *               - a Predefined Type. 
 *               - Object Oriented Interfaces of classes (Reference Type).
 
