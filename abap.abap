@@ -8149,9 +8149,9 @@ START-OF-SELECTION.
 *                                      "Display/Maintenance Not Allowed" - I cannot perform any of the operations.
 * - Fields:
 *               Also called columns. Just like with internal tables. Names, data types, sizes. I can create my fields either basing them on
-*               direct data types or data elements/domains. There are limitations to using direct data types here - the fields' values are always 
+*               direct data types or data elements/domains. There are limitations to using direct data types here - the fields' values are always
 *               captured in the upper case, I cannot impose any validation on the data, it doesn't support reusability and I cannot maintain field's
-*               labels. E.g. I might want to have my column Designation provide only four possible values. I cannot impose any validation on what's 
+*               labels. E.g. I might want to have my column Designation provide only four possible values. I cannot impose any validation on what's
 *               being provided if the data type is a simple string.
 * - Technical settings:
 *               Data class needs to be specified because the SAP database is partitioned into multiple schemas. There is a master schema which
@@ -8231,6 +8231,9 @@ START-OF-SELECTION.
 *The second row should have "UPDATE" as Name of screen field and "X" as Value. "UPDATE" is the name of the Maintain's function call and "X" informs
 *it's the button that's being pressed. Technically F1-ing the Maintain button in SM30 will give me "UPD", but I need to provide "UPDATE" here
 *anyway.
+*Whenever there are changes made to the database table - I need to generate the table maintenance again. In order to do so, I need to open my table
+*in SE11 in the Change mode. The reason for change does not matter much, I can mark all the checkboxes. Then I need to tell SAP which screen
+*I want generated again - in case I chose the Two Steps maintenance type - I should mark both checkboxes (Overview screen and Single screen).
 
 *--------------------------------------------------------------------*
 *It is recommended to declare the table's fields using Data Elements and Domains instead of direct data types.
@@ -8246,7 +8249,7 @@ START-OF-SELECTION.
 *                            data was provided. Thus, when I create my own Data Elements, I can use a Domain for CHAR fields (to have them retain
 *                            how they were stored) and use a Predefined Type for numeric fields since they don't have either uppercase or lowercase.
 *                            A Domain allows me to create a set of possible values that can be selected for the Data Element associated.
-*               - a Predefined Type. 
+*               - a Predefined Type.
 *               - Object Oriented Interfaces of classes (Reference Type).
 
 *---------------------------------------------------------------------------------------------------------------------------------
