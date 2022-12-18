@@ -8267,6 +8267,18 @@ START-OF-SELECTION.
 *Overview Screen will show only a handful of fields. If I select New Entries option, all the fields should be visible. If I want to display all the
 *data for the particular records - I need to select it and choose Details option from the Application Toolbar.
 
+*---Events as part of Table Maintenance---
+*I can define events as part of Table Maintenance in order to e.g. have my Table Maintenance set the date and time fields to the current date and
+*time in case the user has not provided actual values for these fields.
+*I should open the database table in SE11, go to Utilities, Table Maintenance Generator, then go to Environment, Modification and select Events.
+*There I should select New Entries and choose the value of 'T' (a table/time event). This is to specify when the subroutine I am going to specify
+*should be triggered. For example, the number '05' stands for 'Creating a new entry' - I can use it to write a subroutine assigning values to
+*specific fields at the time of the creation of a new record. I should also provide the name of my subroutine. Upon hitting Enter, the Editor button
+*to the right should change and allow me to select it - doing so will take me to the editor.
+*Whenever I implement events as part of table level, I need to reactivate the function group, so that all the objects are adjusted. When all that
+*is done, adding a new record in my Table Maintenance with omitting the date and time fields and saving the record will make the current date and
+*time be inserted into their respective fields automatically.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
