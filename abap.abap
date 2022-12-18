@@ -8252,6 +8252,21 @@ START-OF-SELECTION.
 *               - a Predefined Type.
 *               - Object Oriented Interfaces of classes (Reference Type).
 
+*---Reusable fields (as structures)---
+*If I want to add new fields to the table, I can do it directly within the table unless I want to have them reusable - possible to use by other
+*structures or other dictionary objects as well.
+*A dictionary structure is essentially a work area, but on a database level. I can declare it, have it as many fields as I want and include that
+*structure in different dictionary objects, e.g. database tables.
+*After having created my structure, I should specify the enhancement category for it, just like with tables.
+*When I want my custom structure included in a particular database table, I need to type '.include' as a new field of the table and provide the
+*name of the structure as a Data Element field. Upon hitting Enter, the Data Type field will be filled with 'STRU' - indicating that it's indeed
+*a structure being included in the database table.
+*I need to keep in mind, I will need to generate the table maintenance for my table again! Whenever I add additional fields, modify existing ones
+*or modify the labels - these changes will not be reflected in the existing table maintenance - it needs to be remade.
+*I also need to remember that in the custom transaction code standing for the table maintenance for my custom table, the Two Step mainetance's
+*Overview Screen will show only a handful of fields. If I select New Entries option, all the fields should be visible. If I want to display all the
+*data for the particular records - I need to select it and choose Details option from the Application Toolbar.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
