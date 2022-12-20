@@ -8279,6 +8279,32 @@ START-OF-SELECTION.
 *is done, adding a new record in my Table Maintenance with omitting the date and time fields and saving the record will make the current date and
 *time be inserted into their respective fields automatically.
 
+
+
+*---Indexes in database tables---
+*An index is a process of arranging data in a specifc order. If data is sorted, the searching is faster. The purpose of indexes is to increase
+*the searching speed. If I want to search for a specifc record among a huge amount of data, I should sort the data and then search - like using
+*the READ statement with internal tables - first I should sort the internal table based on the search field.
+*There are two types of indexes:
+*- primary - I don't have any control over it. It is automatically created by SAP. Internally it is going to arrange the table data in an order
+*            based on the primary key fields. Whenever I search for a record based on a primary key field, SAP will make use of a primary index
+*            to look for the record.
+*- secondary - should be created by me and created on non-primary key fields. It increases the performance. There are two types of a secondary
+*              index.
+*            a) unique - if I create it on a field, it will not accept duplicate values for that field.
+*            b) non-unique.
+
+*If I want to create a secondary index, I need to open my database table in SE11 and select 'Indexes...' option from the application toolbar.
+*Then I should select 'Create' and 'Create index'. I should provide my custom index' name, e.g. 'ID1'. Then I ought to provide a short description
+*for the secondary index I am creating.
+*Then I can choose what kind of an index I want to create - a uniqe or non-unique. I can choose 'Table fields' button to choose the field on
+*which I want the index created. If my database table is not client-independent (has MANDT), MANDT needs to be included in the index and has to be
+*selected alongside my chosen field.
+*If I am trying to create a unique secondary index on a field with duplicate values - SAP will refuse to do so. Blanks are also counted as
+*duplicates! If at least two records have a blank space in the field on which I want my unique secondary index - it will not come to pass.
+*When a unique secondary index is created on a field, I won't be able to insert a new record with the same value as held in that field by one
+*of the other records.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
