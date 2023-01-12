@@ -8152,7 +8152,7 @@ START-OF-SELECTION.
 *               direct data types or data elements/domains. There are limitations to using direct data types here - the fields' values are always
 *               captured in the upper case, I cannot impose any validation on the data, it doesn't support reusability and I cannot maintain field's
 *               labels. E.g. I might want to have my column Designation provide only four possible values. I cannot impose any validation on what's
-*               being provided if the data type is a simple string.
+*               being provided if the data type is a simple string. Thus it is better to use Data Elements - see line 9668.
 * - Technical settings:
 *               Data class needs to be specified because the SAP database is partitioned into multiple schemas. There is a master schema which
 *                              stores master tables that have more read operations than others. There is a transaction schema with transaction
@@ -8235,7 +8235,7 @@ START-OF-SELECTION.
 *in SE11 in the Change mode. The reason for change does not matter much, I can mark all the checkboxes. Then I need to tell SAP which screen
 *I want generated again - in case I chose the Two Steps maintenance type - I should mark both checkboxes (Overview screen and Single screen).
 
-*--------------------------------------------------------------------*
+*---Data Elements---
 *It is recommended to declare the table's fields using Data Elements and Domains instead of direct data types.
 
 *A Data Element is a reusable dictionary object which provides a description for the field. Which means I can maintain the descriptions when I
@@ -8279,8 +8279,6 @@ START-OF-SELECTION.
 *is done, adding a new record in my Table Maintenance with omitting the date and time fields and saving the record will make the current date and
 *time be inserted into their respective fields automatically.
 
-
-
 *---Indexes in database tables---
 *An index is a process of arranging data in a specifc order. If data is sorted, the searching is faster. The purpose of indexes is to increase
 *the searching speed. If I want to search for a specifc record among a huge amount of data, I should sort the data and then search - like using
@@ -8293,6 +8291,10 @@ START-OF-SELECTION.
 *              index.
 *            a) unique - if I create it on a field, it will not accept duplicate values for that field.
 *            b) non-unique.
+
+*I can improve the performance of SELECT queries that utilize non-primary key fields in their WHERE clause by creating a secondary index
+*on a non-primary key field. If I am making a SELECT comparing non-primary key fields that had a secondary index created, SAP will make
+*use of that secondary index and thus make the query faster.
 
 *If I want to create a secondary index, I need to open my database table in SE11 and select 'Indexes...' option from the application toolbar.
 *Then I should select 'Create' and 'Create index'. I should provide my custom index' name, e.g. 'ID1'. Then I ought to provide a short description
