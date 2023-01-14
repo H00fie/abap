@@ -8307,6 +8307,16 @@ START-OF-SELECTION.
 *When a unique secondary index is created on a field, I won't be able to insert a new record with the same value as held in that field by one
 *of the other records.
 
+*---Type group in SE11---
+*A reusable dictionary object which is a collection of global types and global constants. Much like I can have types and constant variables locally
+*in my programs, I can create a Type Group if many dictionary objects will share the same types or constants and have them global and reusable.
+*If I want to use variables of an include program, I need to type 'INCLUDE program'. In the same manner, but only until SAP GUI 6.0 -  if I wanted
+*to use components of a type group, I needed to declare that type group. It was done by typing 'TYPE-POOL my_type_group'.
+*In the newer versions, I no longer need to explicitly declare the type group. SAP will recognize I am using the components of a particular type
+*group.
+*Whatever the components I declare in my type group, these components have to have the name of the type group as a prefix, e.g. a type group going
+*by the name of 'NezukoBestGirl' needs to have all of its components have a prefix of 'nezukobestgirl_'.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
