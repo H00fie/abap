@@ -8317,6 +8317,31 @@ START-OF-SELECTION.
 *Whatever the components I declare in my type group, these components have to have the name of the type group as a prefix, e.g. a type group going
 *by the name of 'NezukoBestGirl' needs to have all of its components have a prefix of 'nezukobestgirl_'.
 
+*---Lock objects---
+*A reusable dictionary object which is used for row level locking. It's purpose is to prevent two users from updating the same record. If two users
+*are trying to update the same record, it can lead to a deadlock. In operating systems a deadlock can occur when multiple users are trying to use
+*the same resource. A lock object is used to lock a particular record and perform the operation and lift the lock afterwards.
+*Row locking is performed based on the primary key column. Only one row can be locked at a time.
+
+*Similarily, object level locking is performed by SAP itself - if one user edits a particular program, the other user cannot open that program in an
+*edit mode. So only one user can edit an object at any given time. If a user opens an object, a lock is placed on top of that object automatically.
+
+*When creating lock objects, their names should start with 'e' (compulsorily, SAP will demand it) and 'z' afterwards (that SAP won't demand). Then,
+*I should provide a short description. In the 'Tables' tab I need to provide the name of the table whose row I want to have a lock for. Next, the
+*'Lock Mode' means the type of lock. The three most important ones are:
+*- Write Lock - also known as Exclusive/Acumulative Lock. In this lock only one user can read or edit the locked record. If other users request access
+*               to the locked row, the request will be rejected but stored in the queue. Once the first user releases the lock, the exclusive access
+*               is given to the user in the queue.
+*- Read Lock - also known as Shared Lock. Multiple users can read the locked record and if a user modifies the locked record, the modified data is not
+*              accessible to other users.
+*- Exclusive, not cumulative - similar to the Write Lock, but other users' request for access are not stored in the queue. They have to send a fresh
+*                              request themselves.
+*Moving forward, in the 'Lock parameter' tab, I can see the key fields of the chosen table. Save and activate.
+*When a lock object is created, SAP creates two function modules:
+*- 'ENQUEUE_<LOCK_OBJECT_NAME>' - used for locking the row.
+*- 'DEQUEUE_<LOCK_OBJECT_NAME>' - used for releasing the row.
+*I can see these function modules if I open my lock object, select Goto and pcik Lock Modules. Both of the created FMs will be displayed.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
