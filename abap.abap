@@ -8342,6 +8342,92 @@ START-OF-SELECTION.
 *- 'DEQUEUE_<LOCK_OBJECT_NAME>' - used for releasing the row.
 *I can see these function modules if I open my lock object, select Goto and pcik Lock Modules. Both of the created FMs will be displayed.
 
+*---In order to use a lock object---:
+*In the case below, two separate users could access the same KUNNR. It might lead to a deadlock situation. If one user tries to modify
+*the record and the other tries to access it, the second one might get invalid data. The record needs to be locked once a user has already
+*accessed that record.
+******************************************************************
+*PARAMETERS: p_kunnr TYPE kna1-kunnr.
+*DATA: v_name1 TYPE kna1-name1,
+*      v_ort01 TYPE kna1-ort01.
+*SELECT SINGLE name1 ort01
+*  FROM kna1
+*    INTO (v_name1, v_ort01)
+*      WHERE kunnr = p_kunnr.
+*IF sy-subrc = 0.
+*  WRITE: / 'Customer found.'.
+*  WRITE: / 'Customer name:', v_name1.
+*  WRITE: / 'Customer city:', v_ort01.
+*ELSE.
+*  WRITE: / 'Customer not found.'.
+*ENDIF.
+******************************************************************
+*In order to have a lock object put onto a record, I need to add 'SET PF-STATUS'. It is used to define my own GUI STATUS. As part of the
+*GUI STATUS, I can add my own buttons to the application toolbar or enable or disable standard ones.
+*To do this, I need to provide a preferred name ('ABC' in this case) and double-click the name to create the object. Then I need to provide
+*a short description which can be just the status' name. The status type can remain as 'Normal Screen' which is a default. Now the Menu Painter
+*(SE41) is open. Since I want to add custom buttons to the Application Toolbar, I need to select the button to the right of the Application
+*Toolbar box. There I should provide the function call of my button (e.g. 'FC1') in one of the boxes available (I think they refer to the position
+*of the button on the Application Toolbar), press Enter and continue (the default Static Text is good). Here I need to provide the text my button
+*will display (e.g. Leave, Unlock, etc). Then I need to assign my function the function key. It is a shortcut - much like F3 means "go back". Only
+*the available buttons are displayed as options. This is why I cannot choose F3 because it's reserved by SAP. If I create one button and assign it
+*e.g. F2 and then create a second one, F2 will no longer be available, because the first button reserved it. I will still need to define the functions
+*for my custom made buttons.
+*Whenever I define my own GUI STATUS, SAP will lose the functionality of the standard back button. I thus need to create my own.
+*My custom buttons are components of the Application Toolbar of the List Processing Screen. If I click any of the buttons on the selection screen's
+*Application Toolbar, AT-SELECTION-SCREEN event is triggered, but my custom made buttons are placed in the Application Toolbar of the LPS and they
+*trigger another event - AT USER-COMMAND.
+*In order to finally lock the record, when I created my Lock Object, two function modules were created. ENQUEUE to lock the record and DEQUEUE to
+*unlock.
+******************************************************************
+PARAMETERS: p_kunnr TYPE kna1-kunnr.
+DATA: v_name1 TYPE kna1-name1,
+      v_ort01 TYPE kna1-ort01.
+*My custom GUI STATUS.
+SET PF-STATUS 'ABC'.
+*To lock the record, I need to call the automatically created ENQUEUE FM. 'MODE_KNA1 = 'E'' refers to the 'exclusive lock' or 'write lock'. If
+*'sy-subrc' equals one, that means the record is locked.
+CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
+ EXPORTING
+   MODE_KNA1            = 'E'
+   MANDT                = SY-MANDT
+   KUNNR                = p_kunnr
+ EXCEPTIONS
+   FOREIGN_LOCK         = 1
+   SYSTEM_FAILURE       = 2
+   OTHERS               = 3.
+IF sy-subrc = 1.
+  MESSAGE 'The record is currently locked.' TYPE 'I'.
+ENDIF.
+
+SELECT SINGLE name1 ort01
+  FROM kna1
+    INTO (v_name1, v_ort01)
+      WHERE kunnr = p_kunnr.
+IF sy-subrc = 0.
+  WRITE: / 'Customer found.'.
+  WRITE: / 'Customer name:', v_name1.
+  WRITE: / 'Customer city:', v_ort01.
+ELSE.
+  WRITE: / 'Customer not found.'.
+ENDIF.
+*I created a 'FC1' button and called it 'Leave' in my custom GUI STATUS. 'FC2' is assigned to my custom button named 'Unlock'. Pressing this
+*button should unlock the record. These are defined within the boundaries of AT USER-COMMAND event as these buttons are part of the Application
+*Toolbar of the List Processing Screen and AT USER-COMMAND is the go-to event here. If the user pressed a button back in the Application
+*Toolbar of the selection screen, then AT SELECTION-SCREEN would be triggered instead.
+AT USER-COMMAND.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      LEAVE PROGRAM.
+    WHEN 'FC2'.
+      CALL FUNCTION 'DEQUEUE_EZBMIERZWILOCK'
+       EXPORTING
+         MODE_KNA1       = 'E'
+         MANDT           = SY-MANDT
+         KUNNR           = p_kunnr.
+  ENDCASE.
+******************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
