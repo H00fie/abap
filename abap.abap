@@ -8392,6 +8392,8 @@ SET PF-STATUS 'ABC'.
 *type 'E'. If it's 'I', it will still proceed to display the record after the pop-up window!
 *It is recommended to lock a record before performing an operation. Thus, the ENQUEUE function module is called before any operation is performed.
 *The operation locks only the particular record, all other records will be free to be accessed by another user.
+*I should lock the record even if I am just reading because there is a possibility that other users might seek to modify the record and I would
+*be seeing outdated data.
 CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
  EXPORTING
    MODE_KNA1            = 'E'
