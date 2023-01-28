@@ -8387,6 +8387,9 @@ DATA: v_name1 TYPE kna1-name1,
 SET PF-STATUS 'ABC'.
 *To lock the record, I need to call the automatically created ENQUEUE FM. 'MODE_KNA1 = 'E'' refers to the 'exclusive lock' or 'write lock'. If
 *'sy-subrc' equals one, that means the record is locked.
+*Upon executing the program (F8) the record will be locked first and then retrieved. While this session is active, if another user tries to
+*access the same record - they will receive an error message informing them that the record is locked. It's important that the message is of
+*type 'E'. If it's 'I', it will still proceed to display the record after the pop-up window!
 CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
  EXPORTING
    MODE_KNA1            = 'E'
@@ -8397,7 +8400,7 @@ CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
    SYSTEM_FAILURE       = 2
    OTHERS               = 3.
 IF sy-subrc = 1.
-  MESSAGE 'The record is currently locked.' TYPE 'I'.
+  MESSAGE 'The record is currently locked.' TYPE 'E'.
 ENDIF.
 
 SELECT SINGLE name1 ort01
