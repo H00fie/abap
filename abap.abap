@@ -8390,6 +8390,8 @@ SET PF-STATUS 'ABC'.
 *Upon executing the program (F8) the record will be locked first and then retrieved. While this session is active, if another user tries to
 *access the same record - they will receive an error message informing them that the record is locked. It's important that the message is of
 *type 'E'. If it's 'I', it will still proceed to display the record after the pop-up window!
+*It is recommended to lock a record before performing an operation. Thus, the ENQUEUE function module is called before any operation is performed.
+*The operation locks only the particular record, all other records will be free to be accessed by another user.
 CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
  EXPORTING
    MODE_KNA1            = 'E'
@@ -8418,6 +8420,7 @@ ENDIF.
 *button should unlock the record. These are defined within the boundaries of AT USER-COMMAND event as these buttons are part of the Application
 *Toolbar of the List Processing Screen and AT USER-COMMAND is the go-to event here. If the user pressed a button back in the Application
 *Toolbar of the selection screen, then AT SELECTION-SCREEN would be triggered instead.
+*Leaving the program will also unlock the record.
 AT USER-COMMAND.
   CASE sy-ucomm.
     WHEN 'FC1'.
