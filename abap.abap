@@ -8235,7 +8235,11 @@ START-OF-SELECTION.
 *in SE11 in the Change mode. The reason for change does not matter much, I can mark all the checkboxes. Then I need to tell SAP which screen
 *I want generated again - in case I chose the Two Steps maintenance type - I should mark both checkboxes (Overview screen and Single screen).
 
-*---Data Elements---
+*----------------------------------------------------------------------*
+*       DATA ELEMENTS
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 *It is recommended to declare the table's fields using Data Elements and Domains instead of direct data types.
 
 *A Data Element is a reusable dictionary object which provides a description for the field. Which means I can maintain the descriptions when I
@@ -8252,7 +8256,11 @@ START-OF-SELECTION.
 *               - a Predefined Type.
 *               - Object Oriented Interfaces of classes (Reference Type).
 
-*---Reusable fields (as structures)---
+*----------------------------------------------------------------------*
+*       REUSABLE FIELDS (AS STRUCTURES)
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 *If I want to add new fields to the table, I can do it directly within the table unless I want to have them reusable - possible to use by other
 *structures or other dictionary objects as well.
 *A dictionary structure is essentially a work area, but on a database level. I can declare it, have it as many fields as I want and include that
@@ -8267,7 +8275,11 @@ START-OF-SELECTION.
 *Overview Screen will show only a handful of fields. If I select New Entries option, all the fields should be visible. If I want to display all the
 *data for the particular records - I need to select it and choose Details option from the Application Toolbar.
 
-*---Events as part of Table Maintenance---
+*----------------------------------------------------------------------*
+*       EVENTS AS PART OF TABLE MAINTENANCE
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 *I can define events as part of Table Maintenance in order to e.g. have my Table Maintenance set the date and time fields to the current date and
 *time in case the user has not provided actual values for these fields.
 *I should open the database table in SE11, go to Utilities, Table Maintenance Generator, then go to Environment, Modification and select Events.
@@ -8279,7 +8291,11 @@ START-OF-SELECTION.
 *is done, adding a new record in my Table Maintenance with omitting the date and time fields and saving the record will make the current date and
 *time be inserted into their respective fields automatically.
 
-*---Indexes in database tables---
+*----------------------------------------------------------------------*
+*       INDEXES IN DATABASE TABLES
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 *An index is a process of arranging data in a specifc order. If data is sorted, the searching is faster. The purpose of indexes is to increase
 *the searching speed. If I want to search for a specifc record among a huge amount of data, I should sort the data and then search - like using
 *the READ statement with internal tables - first I should sort the internal table based on the search field.
@@ -8307,7 +8323,11 @@ START-OF-SELECTION.
 *When a unique secondary index is created on a field, I won't be able to insert a new record with the same value as held in that field by one
 *of the other records.
 
-*---Type group in SE11---
+*----------------------------------------------------------------------*
+*       TYPE GROUP IN SE11
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 *A reusable dictionary object which is a collection of global types and global constants. Much like I can have types and constant variables locally
 *in my programs, I can create a Type Group if many dictionary objects will share the same types or constants and have them global and reusable.
 *If I want to use variables of an include program, I need to type 'INCLUDE program'. In the same manner, but only until SAP GUI 6.0 -  if I wanted
@@ -8317,11 +8337,15 @@ START-OF-SELECTION.
 *Whatever the components I declare in my type group, these components have to have the name of the type group as a prefix, e.g. a type group going
 *by the name of 'NezukoBestGirl' needs to have all of its components have a prefix of 'nezukobestgirl_'.
 
-*---Lock objects---
+*----------------------------------------------------------------------*
+*       LOCK OBJECTS
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 *A reusable dictionary object which is used for row level locking. It's purpose is to prevent two users from updating the same record. If two users
 *are trying to update the same record, it can lead to a deadlock. In operating systems a deadlock can occur when multiple users are trying to use
 *the same resource. A lock object is used to lock a particular record and perform the operation and lift the lock afterwards.
-*Row locking is performed based on the primary key column. Only one row can be locked at a time.
+*Row locking is performed based on the primary key column. The key fields are the lock object's parameters. Only one row can be locked at a time.
 
 *Similarily, object level locking is performed by SAP itself - if one user edits a particular program, the other user cannot open that program in an
 *edit mode. So only one user can edit an object at any given time. If a user opens an object, a lock is placed on top of that object automatically.
@@ -8380,60 +8404,60 @@ START-OF-SELECTION.
 *In order to finally lock the record, when I created my Lock Object, two function modules were created. ENQUEUE to lock the record and DEQUEUE to
 *unlock.
 ******************************************************************
-PARAMETERS: p_kunnr TYPE kna1-kunnr.
-DATA: v_name1 TYPE kna1-name1,
-      v_ort01 TYPE kna1-ort01.
-*My custom GUI STATUS.
-SET PF-STATUS 'ABC'.
-*To lock the record, I need to call the automatically created ENQUEUE FM. 'MODE_KNA1 = 'E'' refers to the 'exclusive lock' or 'write lock'. If
-*'sy-subrc' equals one, that means the record is locked.
-*Upon executing the program (F8) the record will be locked first and then retrieved. While this session is active, if another user tries to
-*access the same record - they will receive an error message informing them that the record is locked. It's important that the message is of
-*type 'E'. If it's 'I', it will still proceed to display the record after the pop-up window!
-*It is recommended to lock a record before performing an operation. Thus, the ENQUEUE function module is called before any operation is performed.
-*The operation locks only the particular record, all other records will be free to be accessed by another user.
-*I should lock the record even if I am just reading because there is a possibility that other users might seek to modify the record and I would
-*be seeing outdated data.
-CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
- EXPORTING
-   MODE_KNA1            = 'E'
-   MANDT                = SY-MANDT
-   KUNNR                = p_kunnr
- EXCEPTIONS
-   FOREIGN_LOCK         = 1
-   SYSTEM_FAILURE       = 2
-   OTHERS               = 3.
-IF sy-subrc = 1.
-  MESSAGE 'The record is currently locked.' TYPE 'E'.
-ENDIF.
-
-SELECT SINGLE name1 ort01
-  FROM kna1
-    INTO (v_name1, v_ort01)
-      WHERE kunnr = p_kunnr.
-IF sy-subrc = 0.
-  WRITE: / 'Customer found.'.
-  WRITE: / 'Customer name:', v_name1.
-  WRITE: / 'Customer city:', v_ort01.
-ELSE.
-  WRITE: / 'Customer not found.'.
-ENDIF.
-*I created a 'FC1' button and called it 'Leave' in my custom GUI STATUS. 'FC2' is assigned to my custom button named 'Unlock'. Pressing this
-*button should unlock the record. These are defined within the boundaries of AT USER-COMMAND event as these buttons are part of the Application
-*Toolbar of the List Processing Screen and AT USER-COMMAND is the go-to event here. If the user pressed a button back in the Application
-*Toolbar of the selection screen, then AT SELECTION-SCREEN would be triggered instead.
-*Leaving the program will also unlock the record.
-AT USER-COMMAND.
-  CASE sy-ucomm.
-    WHEN 'FC1'.
-      LEAVE PROGRAM.
-    WHEN 'FC2'.
-      CALL FUNCTION 'DEQUEUE_EZBMIERZWILOCK'
-       EXPORTING
-         MODE_KNA1       = 'E'
-         MANDT           = SY-MANDT
-         KUNNR           = p_kunnr.
-  ENDCASE.
+*PARAMETERS: p_kunnr TYPE kna1-kunnr.
+*DATA: v_name1 TYPE kna1-name1,
+*      v_ort01 TYPE kna1-ort01.
+**My custom GUI STATUS.
+*SET PF-STATUS 'ABC'.
+**To lock the record, I need to call the automatically created ENQUEUE FM. 'MODE_KNA1 = 'E'' refers to the 'exclusive lock' or 'write lock'. If
+**'sy-subrc' equals one, that means the record is locked.
+**Upon executing the program (F8) the record will be locked first and then retrieved. While this session is active, if another user tries to
+**access the same record - they will receive an error message informing them that the record is locked. It's important that the message is of
+**type 'E'. If it's 'I', it will still proceed to display the record after the pop-up window!
+**It is recommended to lock a record before performing an operation. Thus, the ENQUEUE function module is called before any operation is performed.
+**The operation locks only the particular record, all other records will be free to be accessed by another user.
+**I should lock the record even if I am just reading because there is a possibility that other users might seek to modify the record and I would
+**be seeing outdated data.
+*CALL FUNCTION 'ENQUEUE_EZBMIERZWILOCK'
+* EXPORTING
+*   MODE_KNA1            = 'E'
+*   MANDT                = SY-MANDT
+*   KUNNR                = p_kunnr
+* EXCEPTIONS
+*   FOREIGN_LOCK         = 1
+*   SYSTEM_FAILURE       = 2
+*   OTHERS               = 3.
+*IF sy-subrc = 1.
+*  MESSAGE 'The record is currently locked.' TYPE 'E'.
+*ENDIF.
+*
+*SELECT SINGLE name1 ort01
+*  FROM kna1
+*    INTO (v_name1, v_ort01)
+*      WHERE kunnr = p_kunnr.
+*IF sy-subrc = 0.
+*  WRITE: / 'Customer found.'.
+*  WRITE: / 'Customer name:', v_name1.
+*  WRITE: / 'Customer city:', v_ort01.
+*ELSE.
+*  WRITE: / 'Customer not found.'.
+*ENDIF.
+**I created a 'FC1' button and called it 'Leave' in my custom GUI STATUS. 'FC2' is assigned to my custom button named 'Unlock'. Pressing this
+**button should unlock the record. These are defined within the boundaries of AT USER-COMMAND event as these buttons are part of the Application
+**Toolbar of the List Processing Screen and AT USER-COMMAND is the go-to event here. If the user pressed a button back in the Application
+**Toolbar of the selection screen, then AT SELECTION-SCREEN would be triggered instead.
+**Leaving the program will also unlock the record.
+*AT USER-COMMAND.
+*  CASE sy-ucomm.
+*    WHEN 'FC1'.
+*      LEAVE PROGRAM.
+*    WHEN 'FC2'.
+*      CALL FUNCTION 'DEQUEUE_EZBMIERZWILOCK'
+*       EXPORTING
+*         MODE_KNA1       = 'E'
+*         MANDT           = SY-MANDT
+*         KUNNR           = p_kunnr.
+*  ENDCASE.
 ******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
