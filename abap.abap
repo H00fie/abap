@@ -8467,8 +8467,27 @@ START-OF-SELECTION.
 *----------------------------------------------------------------------*
 *The foreign key relationship is created between two tables in order to maintain the data consistency as this relationship is to be created when
 *the data within one table is dependant on the data from the second table. The prerequisite is that the tables have at least one field of the
-*same domain and in one of these tables that field has to be a primary key field. The table that has this field as a primary key field is called
-*a Check Table. It contains unique data. The second table houses the foreign key and is called a Foreign Key Table.
+*same domain (data element can be different!) and in one of these tables that field has to be a primary key field. The table that has this field
+*as a primary key field is called a Check Table. It contains unique data. The second table houses the foreign key and is called a Foreign Key Table.
+
+*---In order to create the foreign key relationship---
+*Say I have a table that houses the department data and the field with the department number is the primary key field and a second table with the
+*employee data that also has a department number field but not as a primary key field.
+*These fields need to have a common domain. The department table is a check table because it stores all the unique department numbers. Thus it stores
+*all the master records, unique values (in terms of the logically related field - the department number).
+
+*The foreign key is to be created in the other table. I need to select the proper field (in the example it's the department number in the employee
+*data table) and select the 'Foreign Keys' button above the tables' fields' list. I should provide the 'Short text' explaining what tables are
+*being joined. In the 'Check table' I need to provide the name of the parent table - the one that houses the field I am making into a foreign key
+*and has it as the primary key field. When I press 'Generate proposal' button, SAP will show me all the fields of the parent table that share the
+*domain with the field I selected in the foreign key table where I am performing the operation. I need to select 'Copy' (essentially 'Continue') to
+*proceed. I should activate the table now.
+*When I create the foreing key, the records that were already present will not be checked but from now on the newly added records will be. Whenever
+*I create the foreign key relationship between two tables, SAP will maintain the referential integrity between them. According to the referential
+*integrity, I will not be allowed to insert a child row in the foreign key table if there is no corresponding parent record in the check table, e.g.
+*I will not be able to add a new employee to the employee table unless the department number I want them to have already exists in the department
+*table. When adding a new record to the employee table, the department number field will have the F4 help available and it will display the values
+*I can choose from. They are loaded from my department table.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
