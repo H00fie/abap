@@ -8460,6 +8460,16 @@ START-OF-SELECTION.
 *  ENDCASE.
 ******************************************************************
 
+*----------------------------------------------------------------------*
+*       FOREIGN KEY RELATIONSHIP BETWEEN TWO TABLES
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+*The foreign key relationship is created between two tables in order to maintain the data consistency as this relationship is to be created when
+*the data within one table is dependant on the data from the second table. The prerequisite is that the tables have at least one field of the
+*same domain and in one of these tables that field has to be a primary key field. The table that has this field as a primary key field is called
+*a Check Table. It contains unique data. The second table houses the foreign key and is called a Foreign Key Table.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
