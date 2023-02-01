@@ -8508,6 +8508,69 @@ START-OF-SELECTION.
 
 *If I want to use the same internal table across many repository objects (programs), I can create a Table Type instead of a regular internal
 *table every time separately.
+*Below are two blocks of code, the first creates an internal table locally and uses it, the second uses a Table Type (so a "global" internal
+*table) created as described above. It is a Table Type with a Predefined Type of CHAR of the length of 20.
+******************************************************************
+*This is a "regular" way of declaring and using an internal table. It is created locally.
+*A local types declaration.
+TYPES: BEGIN OF t_abc,
+  f1(20) TYPE c,
+END OF t_abc.
+
+*A local internal table and a work area based on a local types declaration.
+DATA: lt_abc  TYPE TABLE OF t_abc,
+      lwa_abc TYPE t_abc.
+
+CLEAR lwa_abc.
+lwa_abc-f1 = 'Hasani'.
+APPEND lwa_abc TO lt_abc.
+CLEAR lwa_abc.
+lwa_abc-f1 = 'Narsani'.
+APPEND lwa_abc TO lt_abc.
+CLEAR lwa_abc.
+lwa_abc-f1 = 'Balisani'.
+APPEND lwa_abc TO lt_abc.
+
+FORMAT COLOR 5.
+WRITE: / 'Data of the local internal table:'.
+FORMAT COLOR OFF.
+ULINE.
+LOOP AT lt_abc INTO lwa_abc.
+  WRITE: / lwa_abc-f1.
+ENDLOOP.
+ULINE.
+
+*This block of code utilizes a "global" internal table, a table type.
+*When creating a local internal table, I am using TYPE TABLE OF keywords. Below a simple TYPE is enough because 'zbmierzwi_test_tt' already
+*is an internal table, just global. When creating a Table Type's version of a work area, I can use LIKE LINE OF keywords, because each line
+*of 'lt_abc2' is a work area.
+*Trying to use 'TYPE lt_abc2' wouldn't work as SAP requires a TYPES declaration to be the target of the TYPE for the work area. Here it would
+*suggest that 't_abc' is available. Since using TYPE 'zbmierzwi_test_tt' would yield an internal table, instead of a work area, LIKE LINE OF
+*is used instead.
+DATA: lt_abc2  TYPE zbmierzwi_test_tt,
+      lwa_abc2 LIKE LINE OF lt_abc2.
+
+*I do not need to specify which field of the work area I am assigning a value to because 'zbmierzwi_test_tt' is of the Predefined Type and
+*only has one field (CHAR of the length of 20).
+CLEAR lwa_abc2.
+lwa_abc2 = 'Dalisani'.
+APPEND lwa_abc2 TO lt_abc2.
+CLEAR lwa_abc2.
+lwa_abc2 = 'Numisani'.
+APPEND lwa_abc2 TO lt_abc2.
+CLEAR lwa_abc2.
+lwa_abc2 = 'Erisani'.
+APPEND lwa_abc2 TO lt_abc2.
+
+FORMAT COLOR 5.
+WRITE: / 'Data of the Table Type internal table:'.
+FORMAT COLOR OFF.
+ULINE.
+LOOP AT lt_abc2 INTO lwa_abc2.
+  WRITE: / lwa_abc2.
+ENDLOOP.
+ULINE.
+******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
