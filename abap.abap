@@ -8489,6 +8489,26 @@ START-OF-SELECTION.
 *table. When adding a new record to the employee table, the department number field will have the F4 help available and it will display the values
 *I can choose from. They are loaded from my department table.
 
+*----------------------------------------------------------------------*
+*       TABLE TYPE
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+*Whenever I am working with multiple records, I am using internal tables in order to avoid doing the processing on the database. Instead, I am
+*retrieving the data into a temporary table - an internal table. Within it I process the data the way I want and then I update the database. An
+*internal table is local to my program - its lifetime and scope are limited by bounds of my program. Once the program's execution is finished,
+*the internal table is destroyed.
+*A Table Type is an internal table structure created at the database level.
+*Like any other dictionary object a table type is reusable. I create it whenever I want a reusable internal table.
+*In order to create a Table Type, I need to go to SE11, choose the Data Type radiobutton, provide a name of my Table Type and select Create. I
+*should provide a short description here. A Type Table can be created in three various ways:
+*- by referring to a Line Type,
+*- by referring to a Predefined Type - a direct data type.
+*- by referring to a Reference Type - a class or an interface.
+
+*If I want to use the same internal table across many repository objects (programs), I can create a Table Type instead of a regular internal
+*table every time separately.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
