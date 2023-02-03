@@ -8620,13 +8620,40 @@ ULINE.
 *
 *----------------------------------------------------------------------*
 *A View is a reusable dictionary object which doesn't exist physically - it is a virtual (an "imaginary") table. The View is populated with the
-*data during the runtime, it does not hold any data be default. A regular table on the other hand exists physically and strores the data physically. 
+*data during the runtime, it does not hold any data be default. A regular table on the other hand exists physically and strores the data physically.
 *Views are used for hiding the original tables' names, fields' names, restricting access to a table's data or to read data from multiple tables.
 *A View allows me to get the dprvifiv fields from different tables and put them in a single object, but it can also refer to just a single table.
 *Once a View is created, it is a reusable dictionary object and I can use it my repository objects (programs). E.g. in order to fetch the data from
 *multiple tables, I need to use a Select Statement with a Join. Using Joins is complex and using too many of them will degrade the performance of
 *the program. Creating a View on top of multiple tables allows me to avoid using Joins - I select the data from the View which functions as as
-*table that stores all the fields from different tables I would need to use a Join to get without a View. 
+*table that stores all the fields from different tables I would need to use a Join to get without a View.
+*There are four kinds of Views in ABAP dictionary:
+*1) Database View - can be created either on a single or on multiple tables. It supports both the projection and the selection. The projection is
+*                   a process of selecting only the required fields - if I have a table with 200 fields and I only want 4 of them exposed, I can
+*                   create a View for that - that's projection. The selection is a process of imposing conditions on accessing the table's
+*                   data. If that View is created on a single table, then the maintenance status can either be "Read only" (the only database
+*                   operation I can perform is read) or "Read and Change" (all database operations are allowed). The changes made to the data at the
+*                   level of the View will be automatically reflected in the corresponding database table. If the View is created on multiple
+*                   tables, it is always "Read only". A Table Maintenance cannot be generated for a Database View. Whenever I create a View based
+*                   on multiple tables, I need to provide the Join conditions - I need to compare logically related fields, just like with a regular
+*                   Join. Failing to do so will result in a "Cartesian product'.
+*
+*                   ---Implementation example - a View on one Table---
+*                   In order to create a Database View, I need to go to SE11 and check the 'View' radiobutton, provide the name of my View and 'Create'.
+*                   Here I need to select the 'Database view' option and proceed. A short description should be given now. In the 'Table/Join Conditions'
+*                   tab I need to supply the name of the table within the 'Tables' section to the left. If I am making a View on just a single
+*                   database table, say, KNA1, I do not need to give any Join conditions in the section to the right.
+*                   Now I should proceed to the 'View Flds' tab and name the required fields. This process of called Projection - I am providing the
+*                   full list of fields I want my View to have. I don't need to write all the desired fields manually, I can push the 'Table fields'
+*                   button and SAP will give me a complete list of all the fields of the table/s I named previously to choose from. It is recommended
+*                   (not compulsory) I select all the key fields. After choosing the desired fields, I am welcome to change their names - these changes
+*                   are limited to the View and do not translate to the table it has come from. Moving on I should go to the 'Selection Conditions' tab
+*                   in order to decide what kind of records I want loaded into my View (e.g. only the records with the country code of Japan). I should
+*                   provide the name of the table on whose field the condition will be placed, the field itself, the oparator deciding what kind of a
+*                   comparison will be used, the value of the comparison and I can also specify the AND/OR values in case I want more than a single
+*                   condition. It essentially works like a WHERE clause of a SELECT statement.
+*                   In the 'Maint.Status' tab I can see the radiobuttons 'read only' and 'read and change'. Changes made to the data within my View
+*                   will be reflected in the base table. 
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
