@@ -8614,6 +8614,20 @@ ENDLOOP.
 ULINE.
 ******************************************************************
 
+*----------------------------------------------------------------------*
+*       VIEWS
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+*A View is a reusable dictionary object which doesn't exist physically - it is a virtual (an "imaginary") table. The View is populated with the
+*data during the runtime, it does not hold any data be default. A regular table on the other hand exists physically and strores the data physically. 
+*Views are used for hiding the original tables' names, fields' names, restricting access to a table's data or to read data from multiple tables.
+*A View allows me to get the dprvifiv fields from different tables and put them in a single object, but it can also refer to just a single table.
+*Once a View is created, it is a reusable dictionary object and I can use it my repository objects (programs). E.g. in order to fetch the data from
+*multiple tables, I need to use a Select Statement with a Join. Using Joins is complex and using too many of them will degrade the performance of
+*the program. Creating a View on top of multiple tables allows me to avoid using Joins - I select the data from the View which functions as as
+*table that stores all the fields from different tables I would need to use a Join to get without a View. 
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
