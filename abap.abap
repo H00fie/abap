@@ -8508,6 +8508,8 @@ START-OF-SELECTION.
 
 *If I want to use the same internal table across many repository objects (programs), I can create a Table Type instead of a regular internal
 *table every time separately.
+
+*---Predefined Type---
 *Below are two blocks of code, the first creates an internal table locally and uses it, the second uses a Table Type (so a "global" internal
 *table) created as described above. It is a Table Type with a Predefined Type of CHAR of the length of 20.
 ******************************************************************
@@ -8568,6 +8570,46 @@ FORMAT COLOR OFF.
 ULINE.
 LOOP AT lt_abc2 INTO lwa_abc2.
   WRITE: / lwa_abc2.
+ENDLOOP.
+ULINE.
+
+*---Line Type---
+*If I want to create a Table Type (a "global" internal table) with multiple fields, I need to select the Line Type option. The Line Type is a
+*Structure. I can provide the name of the Structure here and double click it in order to create it - I will be redirected to the panel of a Structure's
+*creation. I should create it as usual. After adding all the necessary fields, I should (as usual) provide the Enhancement Category. I should go to
+*Extras -> Enhancement Category... -> "Can be enhanced (character-type or numeric)" is a good option!
+*When declaring a work area I can either make it LIKE LINE OF the local implementation of my global internal table or TYPE of the Structure I
+*created to be the Line Type of my Table Type (the global internal table).
+DATA: lt_abc3 TYPE zbmierzwi_test_tt2,
+*      lwa_abc3 LIKE LINE OF lt_abc3
+      lwa_abc3 TYPE zsbmierzwinski.
+
+CLEAR lwa_abc3.
+lwa_abc3-empno = 1.
+lwa_abc3-ename = 'Sylasani'.
+lwa_abc3-empdesig = 'Junior Developer'.
+APPEND lwa_abc3 TO lt_abc3.
+
+CLEAR lwa_abc3.
+lwa_abc3-empno = 2.
+lwa_abc3-ename = 'Elusani'.
+lwa_abc3-empdesig = 'Developer'.
+APPEND lwa_abc3 TO lt_abc3.
+
+CLEAR lwa_abc3.
+lwa_abc3-empno = 3.
+lwa_abc3-ename = 'Measani'.
+lwa_abc3-empdesig = 'Senior Developer'.
+APPEND lwa_abc3 TO lt_abc3.
+
+FORMAT COLOR 5.
+WRITE: / 'Data of the Table Type internal table of the Line Type:'.
+FORMAT COLOR OFF.
+ULINE.
+LOOP AT lt_abc3 INTO lwa_abc3.
+  WRITE: / lwa_abc3-empno,
+           lwa_abc3-ename,
+           lwa_abc3-empdesig.
 ENDLOOP.
 ULINE.
 ******************************************************************
