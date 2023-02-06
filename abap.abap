@@ -8654,6 +8654,12 @@ ULINE.
 *                   condition. It essentially works like a WHERE clause of a SELECT statement.
 *                   In the 'Maint.Status' tab I can see the radiobuttons 'read only' and 'read and change'. Changes made to the data within my View
 *                   will be reflected in the base table. 
+*                   
+*                   ---Implementation example - a View on multiple Tables---
+*                   If the data I am interested in is stored in many tables, I can have my View combine the required fields from all these tables into
+*                   a single object. The way of creating such a View is almost the same as described above, for a database View on one table, but in the
+*                   'Table/Join Conditions' tab I need to supply the names of all the tables I will be taking the data from complete with Join conditions
+*                   for these tables.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
