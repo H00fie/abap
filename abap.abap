@@ -8659,7 +8659,17 @@ ULINE.
 *                   If the data I am interested in is stored in many tables, I can have my View combine the required fields from all these tables into
 *                   a single object. The way of creating such a View is almost the same as described above, for a database View on one table, but in the
 *                   'Table/Join Conditions' tab I need to supply the names of all the tables I will be taking the data from complete with Join conditions
-*                   for these tables.
+*                   for these tables. Failing to provide the Join conditions would result in a 'Cartesian product' which is a collection of all possible
+*                   pairs, e.g. if I have a table A with values {1, 2 } and a table B with values {3, 4, 5}, then the 'Cartesian product' of A and B is
+*                   {(1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)}.
+*                   A database View created on multiple tables utilizes an inner join. Each entry of the left hand side table will be compared with the
+*                   row of the right hand side table. If the matching is found - only then that entry will be included.
+*                   Since the View here is being created on multiple tables, the only possible 'Maint.Status' is 'Read only'. I cannot change the content
+*                   of the tables my View is created on if it's not just a single table.
+*                   When I am providing conditions in the "WHERE clause" ('Selection Conditions' tab), I need to make sure I am providing the 'Comparison
+*                   Value' correctly - e.g. if I want a VBELN here, I need to make sure the value has enough leading 0s added to it so that there is exactly
+*                   10 digits. That means '0000000666' instead of '666'. This wouldn't be a problem in a SELECTION-SCREEN, as '666' would be accepted and
+*                   understood, but here I need to be specific.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
