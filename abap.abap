@@ -8671,6 +8671,70 @@ ULINE.
 *                   10 digits. That means '0000000666' instead of '666'. This wouldn't be a problem in a SELECTION-SCREEN, as '666' would be accepted and
 *                   understood, but here I need to be specific.
 
+******************************************************************
+*The below piece of code with a select with an inner join works exactly the same as the piece of code below it, with the structure that includes the
+*View that has been created. The View is on tables VBAK and VBAP joined by MANDT and VBELN. The list of fields included is the same as the list of
+*fields included in 't_sales'.
+*A piece of code with a join.
+TYPES: BEGIN OF t_sales,
+  vbeln TYPE vbak-vbeln,
+  erdat TYPE vbak-erdat,
+  erzet TYPE vbak-erzet,
+  ernam TYPE vbak-ernam,
+  posnr TYPE vbap-posnr,
+  matnr TYPE vbap-matnr,
+END OF t_sales.
+
+DATA: lt_sales TYPE STANDARD TABLE OF t_sales,
+      lwa_sales TYPE t_sales.
+
+SELECT vbak~vbeln vbak~erdat vbak~erzet vbak~ernam posnr matnr
+  FROM vbak INNER JOIN vbap
+    ON vbak~vbeln = vbap~vbeln
+      INTO TABLE lt_sales
+        WHERE vbak~vbeln IN ( '2770200001', '2770200002' ). "The values are exemplary and may vary depending on the system.
+
+IF sy-subrc = 0.
+  WRITE: / 'Number of records: ',sy-dbcnt.
+  LOOP AT lt_sales INTO lwa_sales.
+    WRITE: / lwa_sales-vbeln,
+             lwa_sales-erdat,
+             lwa_sales-erzet,
+             lwa_sales-ernam,
+             lwa_sales-posnr,
+             lwa_sales-matnr.
+  ENDLOOP.
+ENDIF.
+ULINE.
+
+*A piece of code without a join, utilizing a View. The TYPES declaration is a little bit different when I want to INCLUDE a structure within. There
+*should be a point, not a comma, preceding the INCLUDE keyword and there needs to be a point afterwards. If the end of the TYPES occurs after the
+*INCLUDE, then I need to add TYPES again.
+*In the SELECT itself I do not need to add the conditions (the WHERE clause) as it is already defined in the View itself in the 'Selection Conditions'
+*tab. They are the same as used in the piece of code above.
+TYPES: BEGIN OF t_sales2.
+  INCLUDE TYPE zbmviewtest2.
+TYPES END OF t_sales2.
+
+DATA: lt_sales2 TYPE STANDARD TABLE OF t_sales2,
+      lwa_sales2 TYPE t_sales2.
+
+SELECT * FROM zbmviewtest2 INTO TABLE lt_sales2.
+
+IF sy-subrc = 0.
+  WRITE: / 'Number of records: ',sy-dbcnt.
+  LOOP AT lt_sales2 INTO lwa_sales2.
+    WRITE: / lwa_sales2-vbeln,
+             lwa_sales2-erdat,
+             lwa_sales2-erzet,
+             lwa_sales2-ernam,
+             lwa_sales2-posnr,
+             lwa_sales2-matnr.
+  ENDLOOP.
+ENDIF.
+ULINE.
+******************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
