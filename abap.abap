@@ -8627,6 +8627,8 @@ ULINE.
 *multiple tables, I need to use a Select Statement with a Join. Using Joins is complex and using too many of them will degrade the performance of
 *the program. Creating a View on top of multiple tables allows me to avoid using Joins - I select the data from the View which functions as as
 *table that stores all the fields from different tables I would need to use a Join to get without a View.
+*SE11 Views are being replaced by CDS Views. For the advantages of the latter over the former refer to:
+*https://answers.sap.com/questions/13027498/what-is-the-difference-between-cds-view-database-v.html
 *There are four kinds of Views in ABAP dictionary:
 *1) Database View - can be created either on a single or on multiple tables. It supports both the projection and the selection. The projection is
 *                   a process of selecting only the required fields - if I have a table with 200 fields and I only want 4 of them exposed, I can
@@ -8735,6 +8737,15 @@ ENDIF.
 ULINE.
 ******************************************************************
 
+*2) Projection View - the main idea behind Projection Views is to hide the original table's fields. A Projection View can be created only on one table.
+*                     It does not support Selection which means I cannot limit the number of the base table's records that will be included in the View.
+*                     All of the table's data will be available. Essentially, the Projection Views do not allow their version of the WHERE clause. A 
+*                     Projection View can be used if I want to expose all of the table's data but with the limited number of fields displayed.
+*                     If I want to create a Projection View and have already provided the ever present short description, I need to supply the name of
+*                     the 'Basis Table' in the 'View Fields' tab and select the desired fields via 'Table fields' button.
+*                     Since the Projection Views are created on a single table, they can be either 'Read only' or 'Read and change' in the 
+*                     'Maintenance Status' tab. The changes to the data through the Projection View will be reflected in the base table.
+*                     I cannot generate Table Maintenance for a Projection View.
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
