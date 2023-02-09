@@ -8746,6 +8746,25 @@ ULINE.
 *                     Since the Projection Views are created on a single table, they can be either 'Read only' or 'Read and change' in the 
 *                     'Maintenance Status' tab. The changes to the data through the Projection View will be reflected in the base table.
 *                     I cannot generate Table Maintenance for a Projection View.
+*
+*3) Maintenance View - can be created on one or multiple tables. The main purpose of the Maintenance View is to grant access to multiple tables' data
+*                      through a single object (the Maintenance View being that object). The difference between the Maintenance View and the
+*                      Database View is that the Maintenance View allows for the generation of the Table Maintenance while the Database View does not.
+*                      Moreover, the Database View requires me to provide the Join condition if I am creating it on multiple tables. In case of the
+*                      Maintenance View I can select multiple tables which have a foreign key relationship and this the Join condition will be
+*                      provided by SAP itself. For example, if I created a Maintenance View on VBAK and wanted to add more tables to the list, I cannot
+*                      do so manually. After having provided the first table's name in the 'Tables' section in the 'Table/Join Conditions' tab, I can
+*                      only press the 'Relationships' pushbutton below the section. SAP will provide me with a complete list of all tables with
+*                      which VBAK has a foreign key relationship. When I select a table, Join conditions will be provided for me, e.g. if I selected
+*                      KNA1, SAP would join the two tables by MANDT and KNA1's KUNNR being compared with VBAK's KNKLI.
+*                      Both the Projection and the Selection are supported.
+*                      In case of the Maintenance View, even if I am creating the View on multiple tables, both reading and modifying the data is
+*                      possible which means the changes made to the data through the View will be reflected in the base tables. In the 'Maint.Status'
+*                      tab I have four 'Access' options to choose from. 'Read only' allows for reading alone, 'Read, change, delete and insert' allows
+*                      for all four of the database operations, 'Read and change' lets me read and modify the data. The fourth is not relevant at the
+*                      moment.
+*                      For the Maintenance View it is mandatory to generate the Table Maintenance.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
