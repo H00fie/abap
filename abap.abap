@@ -8763,7 +8763,9 @@ ULINE.
 *                      tab I have four 'Access' options to choose from. 'Read only' allows for reading alone, 'Read, change, delete and insert' allows
 *                      for all four of the database operations, 'Read and change' lets me read and modify the data. The fourth is not relevant at the
 *                      moment.
-*                      For the Maintenance View it is mandatory to generate the Table Maintenance.
+*                      For the Maintenance View it is mandatory to generate the Table Maintenance. Maintenance View cannot be used in SELECT queries.
+*                      It is to be used from the Table Maintenance level. Maintenance View is used to link all the dependent tables and maintain them
+*                      as a single object. This is called a 'View Cluster'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
