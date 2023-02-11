@@ -8110,7 +8110,7 @@ START-OF-SELECTION.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*PROUDLY ABAPER. CREATING CUSTOM DATABASE TABLES.
+*PROUDLY ABAPER. CREATING CUSTOM DATABASE TABLES. DICTIONARY OBJECTS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *There are many standard database tables provided by SAP itself. To maintain data within them, one uses standard transactions also
