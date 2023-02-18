@@ -8774,6 +8774,45 @@ ULINE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*F4 SEARCH HELP AS A REUSABLE DICTIONARY OBJECT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Search help is used for providing the custom F4 help. Once the Search Help as a reusable dictionary object is created, it can
+*be utilized at various levels in SAP.
+*There are two types of Search Help.
+*1. Elementary Search Help.
+*2. Collective Search Help.
+
+*In case of below parameters, I will automatically receive F4 Help for KUNNR and LAND1, but not for NAME1. If I double-click,
+*say, KUNNR and then double-click its Data Element (also KUNNR) I will be transported to the Data Element panel. Then I can click
+*'Further Characteristics' tab and I will see 'Search Help' box. KUNNR Data Element has Search Help attached to it. So does LAND1.
+*NAME1 on the other hand does not. Thus NAME1's Data Element does not have Search Help associated with it.
+*PARAMETERS: p_kunnr TYPE kna1-kunnr,
+*            p_land1 TYPE kna1-land1,
+*            p_name1 TYPE kna1-name1.
+*If I wanted NAME1 to have F4 Help attached to it, I could define it locally by using the event AT SELECTION-SCREEN ON VALUE REQUEST
+*FOR p_name1. Within that event I'd have to call a Function Module F4IF_INT_TABLE_VALUE_REQUEST. If I defined it for KUNNR on LAND1
+*as well, SAP will use my definitions instead of its standard ones because local definitions have priority over global ones.
+*I can also define my own custom Search Help that can be used outside of my local program if I define it in SE11. Just like I have
+*standard Database Tables, Structures, Type Groups, I also have standard Search Helps provided by SAP.
+*I have a custom Database Table ('zbmierzwitest7' in this case) with three fields:
+*- MANDT    - Data Element MANDT, Data Type CLNT, Length 3,
+*- EMP_ID   - Data Element ZEMP_ID, Data Type INT2, Length 5,
+*- EMP_NAME - Data Element ZEMP_NAME, Data Type CHAR, Length 20.
+*If I wanted the Search Help to be available only in this particular program, I could handle this in the event AT SELECTION-SCREEN
+*ON VALUE REQUEST FOR by calling the Function Module 'F4IF_INT_TABLE_VALUE_REQUEST'. Before that I would create an Internal Table
+*containing all the F4 values and that table would be passed into the Function Module.
+*But I want my custom F4 values attached to the 'emp_name' to be available wherever I refer to 'emp_name' including different programs.
+*The requirement is global so I need to create the Search Help and attach it to the field on the Data Element level.
+PARAMETERS: p_ename TYPE zbmierzwitest7-emp_name.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
