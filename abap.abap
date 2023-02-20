@@ -8804,6 +8804,32 @@ ULINE.
 *containing all the F4 values and that table would be passed into the Function Module.
 *But I want my custom F4 values attached to the 'emp_name' to be available wherever I refer to 'emp_name' including different programs.
 *The requirement is global so I need to create the Search Help and attach it to the field on the Data Element level.
+*When I create the Search Help, I should decide whether I want to provide one input path or multiple input path. When clicking on the
+*F4 Help next to the input box, a window will appear. If it has multiple tabs - that's the multiple input path. E.g. if I the KNA1's KUNNR's
+*Data Element - KUNNR, in the 'Further Characteristics' tab it has a Search Help attached - C_KUNNR. If I double click it, it says, to the
+*left of its name, that it's of the type 'Collective srch hlp' (Collective Search Help). That provides the Data Element with the multiple
+*input path type of the Search Help.
+*If I want my Data Element to have the Search Help with just a one input path, I should attach the Elementary Search Help to the Data Type.
+
+*---The creation of the global Search Help---
+*In order to create a global Search Help, I need to go to SE11, and provide the name within the input box next to the Search Help radiobutton.
+*When the Create button is clicked, I should choose which type of the Search Help I would prefer. In this scenario I am selecting the
+*Elementary Search Help as I want just one input path. After providing the usual Short Description, I need to move to the 'Selection Method'
+*within the 'Definition' tab. A Selection Method is the source I want the values of my F4 Help to come from can be a Database Table,
+*a Database View or a Help View. If I want the values to come from a single table, I can provide a Database Table here. If I want the values
+*of my Search Help to come from multiple tables, I need to select a Database View or a Help View. A Database View will use the inner join and
+*a Help View will use a left outer join. In my Search Help (named zbm_test_srch_hlp) I am using my custom Database Table (zbmierzwitest7)
+*described above. Then I should move down to the 'Parameter' box and provide the 'Search help parameter'. I can use F4 Help here to browse the
+*possibilities - it will show me the fields available in the source I provided in the 'Selection Method'. I am choosing the values of which
+*column of the source should be suggested to the user. I need to check the 'IMP' box and 'EXP' box. 'IMP' means that when F4 is pressed, a list
+*of values is to be displayed and 'EXP' means that when I select a value it is to be provided to the field in the Selection Screen. 'LPos' and
+*'SPos' should both have the value of 1. They will be explained in the section about the multiple input path type of the Search Help.
+*Now I need to attach the Search Help I created to the Data Element I want to have it. In the example, I want the Data Element of the 'emp_name'
+*field to have it. That Data Element is 'zemp_name'. I should open the table and navigate to the Data Element itself and go to the 'Further
+*Characteristics' tab. Here, in the 'Search Help' box I should provide the name of my Search Help and provide the parameters. It should suffice
+*to F4 the field and select the option. In this case it's 'emp_name'.
+*The white sheet button will not be visible next to my field in the Selection Screen, but if I press F4 while the cursor is in the input box of
+*the field, I will get the list of possible values.
 PARAMETERS: p_ename TYPE zbmierzwitest7-emp_name.
 
 *---------------------------------------------------------------------------------------------------------------------------------
