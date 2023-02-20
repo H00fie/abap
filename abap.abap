@@ -8832,6 +8832,11 @@ ULINE.
 *the field, I will get the list of possible values.
 PARAMETERS: p_ename TYPE zbmierzwitest7-emp_name.
 
+*If the global Search Help I created wasn't attached to the Data Element of 'emp_name' I could still use it freely, but I would need to add
+*the addition of MATCHCODE OBJECT <search_help_name> to the parameter.
+*Even if 'emp_name' didn't have the Search Help attached to its Data Element, the below code would still work exactly like the above one.
+*PARAMETERS: p_ename TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch_hlp.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
