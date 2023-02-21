@@ -8812,6 +8812,7 @@ ULINE.
 *If I want my Data Element to have the Search Help with just a one input path, I should attach the Elementary Search Help to the Data Type.
 
 *---The creation of the global Search Help---
+*1) Elementary Search Help.
 *In order to create a global Search Help, I need to go to SE11, and provide the name within the input box next to the Search Help radiobutton.
 *When the Create button is clicked, I should choose which type of the Search Help I would prefer. In this scenario I am selecting the
 *Elementary Search Help as I want just one input path. After providing the usual Short Description, I need to move to the 'Selection Method'
@@ -8835,7 +8836,32 @@ PARAMETERS: p_ename TYPE zbmierzwitest7-emp_name.
 *If the global Search Help I created wasn't attached to the Data Element of 'emp_name' I could still use it freely, but I would need to add
 *the addition of MATCHCODE OBJECT <search_help_name> to the parameter.
 *Even if 'emp_name' didn't have the Search Help attached to its Data Element, the below code would still work exactly like the above one.
-*PARAMETERS: p_ename TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch_hlp.
+PARAMETERS: p_ename2 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch_hlp.
+
+*2) Collective Search Help.
+*I should select the Collective Search Help whenever I want my custom Search Help to have multiple input paths/sets of values.
+*A Collective Search Help is made out of multiple Elementary Search Helps. I have two custom Database Tables and two Elementary Search Helps
+*created for the sake of the example:
+*- Database Table 'zbmierzwitest7' with 'zbm_test_srch_hlp' Search Help,
+*- Database Table 'zbmierzwitest8' with 'zbm_test_srch_hlp3' Search Help
+*Both the Database Tables and the Search Helps are the same but the Database Tables contain different values.
+*I need to start creating the Search Help much like in the case of the Elementary one, but choose the 'Collective search help' radiobutton
+*after having pressed 'Create'. In the 'Parameter' section below I need to provide the parameters for my Search Help object. The 'Search help
+*parameter' is the name of the parameter and I can call it whatever I desire. I should have 'IMP' and 'EXP' checkboxes checked to make sure that
+*pressing F4 will make the list of values be displayed and that clicking a chosen value will provide it to the parameter's input box. I need to
+*suppy the Data Element as well. In the case of my Collective Search Help (zbm_test_srch_hlp2) it is 'zemp_name' (from my custom Database Table -
+*'zbmierzwitest7/8'). Then I need to go to the 'Included search helps' tab and provide the names of the Elementary Search Helps I want included
+*in my Collective Search Help. In my case I am adding 'zbm_test_srch_hlp' and 'zbm_test_srch_hlp3' here. At this stage, if I activated my
+*Collective Search Help, SAP will give me the warning of 'No parameter assignment maintained for included search help <name>'. I need to link
+*the parameter I provided in the 'Definition' tab with a field from the included Search Helps. In order to do this, I need to move to the
+*'Included search helps' tab, select the row with a Search Help and press the 'Param.assignment' button. There I need to browse (the white sheet
+*button) the possibilities for the 'Reference parameter' and choose which field should be linked with the Collective Search Help's paramater. I
+*think the options are provided based on the Data Element.
+*There are three way to use a Collective Search Help:
+*- I can attach it on the Data Element's level (provide it within the 'Search Help' box of the Data Element),
+*- I can attach it on the Selection Screen's input level (MATCHCODE OBJECT added to the parameter),
+*- I can attach it on the Module Pool's level.
+PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch_hlp2.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
