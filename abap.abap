@@ -8870,6 +8870,34 @@ PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*DESIGNING A NEW TRANSACTION WITH THE SCREEN PAINTER.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A Transaction is a collection of one or more screens. Let's say I want a single screen Transaction with three fields - the client,
+*employee's ID and the employee's name. I want some initial validations - the client field should be disabled and the employee's ID
+*field should have a custom Search Help attached to it.
+*Designing a new Transaction is called "Module Pool programming". To design a Transaction, I need to use the Screen Painter Tool
+*(SE51).
+*Firstly, I need to provide the program's name and the 'Screen number'. A Transaction might contain one or more screens and every
+*screen should be uniquely identified. All Selection Screen's screen number is 1000. If I wanted to press the 'Create' button now, I
+*would be told that the program does not exist.
+*Instead, I should go to the Object Navigator (SE80). It is here that I need to start. Developping a new Transaction is Module Pool
+*Programming. Whenever I want to engage in Module Pool Programming, in SE80, from the drop-down menu I should choose the 'Program'
+*option and provide the name (in my example it's 'z_bm_test_mpp'). I should include the TOP Include when prompted about it. The name
+*should be the name of the program the Include is being made for with the addition of '_TOP'. I can just save it now, because the
+*type should remain with its default value of 'Module Pool'.
+*Now I should create a screen. In order to do it, I need to open the Screen Painter Tool. To do it, I should right-click the program's
+*name (in my case it's 'z_bm_test_mpp') -> Create -> Screen. Here SAP asks for the number of the screen. Any number between 1 and 9999
+*is valid. Mine has 100. I now need to provide the short description and deicde the 'Screen Type'. The Normal one is good for now.
+*Now I need to press the 'Layout' blue arrow in the Application Toolbar.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
