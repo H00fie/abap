@@ -8890,6 +8890,25 @@ PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch
 *name (in my case it's 'z_bm_test_mpp') -> Create -> Screen. Here SAP asks for the number of the screen. Any number between 1 and 9999
 *is valid. Mine has 100. I now need to provide the short description and deicde the 'Screen Type'. The Normal one is good for now.
 *Now I need to press the 'Layout' blue arrow in the Application Toolbar.
+*Now I am in the Screen Painter tool.
+*On the left hand side I have a toolbox. I can paint the 'Input/Output Field' with the third button from the top or the 'Text Field'
+*with the second one from the top. After choosing an option, I need to click and draw the desired shape of the box. When I draw the
+*'Text Fields' they will initially be filled with stars (the Fëanorian ones no doubt). In the Screen Painter, every Screen Element
+*should contain a name. I need to double click on a created box, e.g. a 'Text Field' and provide the name, e.g. 'T1' and the text,
+*e.g. 'Client' (if the field is supposed to contain MANDT).
+*If I want the fields in my screen to come from a Database Table, I do not need to design all of it manually. Instead, I can choose
+*the 'Goto' from the menu, go to 'Secondary Windows' and choose the 'Dictionary/Program Fields' option. Here I need to provide the
+*name of the Database Table I want the fields to come from and either press Enter on my keyboard or the 'Get from Dictionary' button
+*to the right. The list of the fields available in the Database Table will appear. For every field I can pick the 'Text' - the options
+*depend on the labels specified for the specific Data Element. I can also choose what do I want the fields to be copied as - be it
+*'Text', 'ChkB' (Checkbox) or 'RadB' (Radiobutton). I can either pick all fields I desire manually or, If I want all of them, I can
+*click on the button in the upper-left corner of the list - it will select all fields at once.
+*After I have made my choice, I need to select 'Continue' (the green check mark button) and I can decide the location of the boxes
+*in my screen. I can move the generated screen elements manually and separately from one another.
+*If I create a Pushbutton (another option from the toolbox), apart from the 'Name' and the 'Text', I also need to provide the Function
+*Code as every button requires a Function Code. In a report I would attach a Function Code to a button with a USER-COMMAND, but in the
+*Screen Painter I have the 'FctCode' option in the panel of my screen element, below 'Name' and 'Text'. It is here that I need to provide
+*the Function Code of my choosing, e.g. 'FC1'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
