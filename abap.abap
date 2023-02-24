@@ -8909,6 +8909,19 @@ PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch
 *Code as every button requires a Function Code. In a report I would attach a Function Code to a button with a USER-COMMAND, but in the
 *Screen Painter I have the 'FctCode' option in the panel of my screen element, below 'Name' and 'Text'. It is here that I need to provide
 *the Function Code of my choosing, e.g. 'FC1'.
+*While report programs can be executed by pressing F8 in SE38, if I tried to execute my Module Pool Program in a similar fashion (right click
+*the name of the program in SE80 -> Execute -> Direct Processing), I would get an error asking me to choose an executable object. This
+*because Module Pool Programs require a Transaction Code to be executed. I can create one in SE93 and I can get there from SE80 by
+*right clicking the name of my program, choosing 'Create' and then 'Transaction'. I need to provide the name of the transaction while
+*remembering all custom ones should begin with a letter 'z'. After a mandatory Short Text swoops in, I need to choose the 'Initial Object'.
+*If I am creating a Table Maintenance, I need to choose the 'Transaction with parameters' option. If I am creating a Transaction Code
+*for an executable program (a report), I need to choose the 'Program and selection screen' option (the selection screen's number is always
+*1000). When I am creating a Transaction Code for a Module Pool Program, I need to choose the first option - 'Program and screen'. Afterwards
+*I need to provide the name of the program the Transaction Code is supposed to be for. I also should supply the screen number - I can
+*browse this option because I defined the screen for my program previously (in my case it's the number of 100).
+*Whenever I create a Transaction Code, I should also check the 'SAPGUI for Windows' checkbox in the 'GUI support' block at the bottom.
+*If now I tried to execute my Module Pool Program in SE80 by right clicking the name of the program, choosing the 'Execute' and 'Direct
+*Processing' options, it would work correctly.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
