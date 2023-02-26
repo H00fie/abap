@@ -8922,6 +8922,38 @@ PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch
 *Whenever I create a Transaction Code, I should also check the 'SAPGUI for Windows' checkbox in the 'GUI support' block at the bottom.
 *If now I tried to execute my Module Pool Program in SE80 by right clicking the name of the program, choosing the 'Execute' and 'Direct
 *Processing' options, it would work correctly.
+Whenever I create my own screen, the back button (F3) is disabled. I coukd to enable it manually by defining my own GUI Status with
+the SET PF-STATUS statement.
+I can instead write the logic for my 'Exit' button. If the button is in the Selection Screen (Report Programs) and I click on it, the
+event of AT SELECTION-SCREEN is triggered. This is Module Pool Programming though and the event triggered is PAI (Process After Input).
+In order to create the logic for my button, I need to double click my screen (in my case it's '0100' within the 'Screens' folder). The
+'Element List' tab contains information about my screen's elements. It shows me the names of the elements, their type, coordinates and
+others. The 'Flow Logic' tab is the place where I can handle the logic of my button.
+When a button is clicked on my screen, the PROCESS AFTER INPUT event is triggered. Every event in the Module Pool Programming is
+associated with one or more Modules. Within these Modules, I write the business logic of the events (it's like PERFORMS/FORMS). After
+providing the name of the Module (I am using the one suggested by SAP and provided by default - 'MODULE USER_COMMAND_0100') I should
+double click it and create it, preferably inside a TOP INCLUDE program.
+The code thus created for my 'Exit' button looks as follows:
+*****************************************************************
+*&---------------------------------------------------------------------*
+*& Include Z_BM_TEST_MPP_TOP                                 Pula mod.        Z_BM_TEST_MPP
+*&
+*&---------------------------------------------------------------------*
+PROGRAM Z_BM_TEST_MPP.
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+*The Function Code is held within 'sy-ucomm' and in the Screen Painter Tool
+*I assigned the code of 'FC1' to my 'Exit' button.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+*****************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
