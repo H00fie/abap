@@ -8962,6 +8962,33 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. FIELDS - DISABLING AND ENABLING, MAKING VISIBLE AND INVISIBLE.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*I would like to have a MP program loading the data of an employee from 'ZBMIERZWITEST4'. The screen should contain the field of
+*the Database Table (I am leaving out MANDT).
+*I would like the ID to be the only visible field by default and to be a mandatory one. In the runtime, after the value has been
+*provided and a 'Get data' button has been pushed, I want the corresponding data of an employee to be displayed within the remaining
+*fields complete with making them visible and the ID made invisible.
+*In order to create an MP program, I need to go to SE80, choose 'Program' option in the upper input field and provide the name of
+*my program in the lower input field. I should create my program complete with the TOP INCLUDE. The program's type should be set
+*to a default 'Module Pool' and I don't need to add anything here. Save and continue.
+*I need to design a screen in the Screen Painter. Right-click the program's name -> 'Create' -> 'Screen'. The number of the screen
+*if for me to choose (e.g. 100). Now I need to go to 'Layout' and within it select 'Goto' -> 'Secondary Window' -> 'Dictionary/Program
+*Fields' because I want the fields to be loaded from my Database Table of ZBMIERZWITEST4.
+*I should provide the name of the Database Table and press the 'Get from dictionary' button. Now I need to select the fields I want
+*in my screen and Continue. The labels of the fields will be picked from the Data Element level. Now I need to create two pushbuttons
+*by selecting a correct option from the toolbox to the left and dragging and drawing the buttons. I need to set the properties for
+*my pushbuttons. I need to double click one, give it a 'Name' (e.g. 'B1'), a 'Text' (e.g. 'Get data') to be displayed on it and
+*the Function Code (e.g. 'FC1'). The second is 'B2', 'Exit' and 'FC2'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
