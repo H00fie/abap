@@ -8870,7 +8870,7 @@ PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*DESIGNING A NEW TRANSACTION WITH THE SCREEN PAINTER.
+*MPP. DESIGNING A NEW TRANSACTION WITH THE SCREEN PAINTER.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *A Transaction is a collection of one or more screens. Let's say I want a single screen Transaction with three fields - the client,
