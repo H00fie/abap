@@ -8980,7 +8980,61 @@ ENDMODULE.
 *in my screen and Continue. The labels of the fields will be picked from the Data Element level. Now I need to create two pushbuttons
 *by selecting a correct option from the toolbox to the left and dragging and drawing the buttons. I need to set the properties for
 *my pushbuttons. I need to double click one, give it a 'Name' (e.g. 'B1'), a 'Text' (e.g. 'Get data') to be displayed on it and
-*the Function Code (e.g. 'FC1'). The second is 'B2', 'Exit' and 'FC2'.
+*the Function Code (e.g. 'FC1'). The second is 'B2', 'Exit' and 'FC2'. I now need to save and activate the screen.
+*For a Module Pool program to work - it requires a transaction. Right-click the name of the program in SE80 -> 'Create' -> 'Transaction'.
+*The name I gave is 'ZBMI4' and, like all Module Pool Programming transactions - I need to select the first radiobutton
+*('Program and screen (dialog transaction)'). Now I need to supply the name of my program and the screen I created previously as
+*well as check the 'GUI for Windows' radiobutton. Now I should save and right click the name of my program and activate it.
+*My MP program is now executable which can be done either by opening a newly created transaction or by right-clicking the name of my
+*program, choosing 'Execute' and 'Direct Processing'.
+*Whenever I design a custom transaction, SAP will not provide the back button (F3). I either need to enble it or make my custom button
+*for exitting.
+*In case of the Selection Screen (report programs), two events are triggered before one is displayed - INITIALIZATION and
+*AT SELECTION-SCREEN OUTPUT. In case of the Module Pool programs before showing the screen for the first time, the PBO (Process Before
+*Output) event is triggered. It is in PBO where I need to write the logic of my exitting button.
+*In order to do it, I need to double-click the screen I've created in SE80 and go to the 'Flow logic' tab. Under the PROCESS BEFORE
+*OUTPUT event I should see a greyout out Module suggestion by SAP - I should create a Module here (with whatever name I prefer). I can
+*place my newly created Module in the previously created TOP INCLUDE. *Whenever I create my own screen, the back button (F3) is disabled.
+*I can to enable it manually by defining my own GUI Status with the SET PF-STATUS statement and that is why it is automatically suggested
+*in the Module I've just created.
+*The Module created looks like this:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*All PBO Modules have the OUTPUT addition while the PAI ones have the
+*INPUT one.
+MODULE status_0100 OUTPUT.
+  SET PF-STATUS 'ABC'.
+*  SET TITLEBAR 'xxx'.
+ENDMODULE.
+******************************************************************
+*I provided my PF-STATUS the name of 'ABC' and created it with a short description. The 'Status type' should remain as the default option
+*('Normal Screen'). A Menu Painter is opened now (SE41). I want to enable the 'Back' button so I need to open the 'Function Keys' section
+*and provide a Function Code above the icon of the standard SAP's 'Back' button (the Function Code I assigned is 'BACK'). Now I need to save
+*and activate everything.
+*When my MP program is executed, the PBO event is triggered at first. Within it I have a Module that "declares" my custom GUI Status. Within
+*that status I have a Function Code assigned to the 'Back' button. At this stage, if I execute my MP program, the 'Back' button will be
+*enabled, but still greyed out. The button itself has been enabled, but not the functionality.
+*In case of the Selection Screen (report programs) when a button is clicked, the event of AT SELECTION-SCREEN is triggered. In case of MPP,
+*the event is PROCESS AFTER INPUT (PAI). Within the 'Flow logic' tab of my screen, below the PROCESS BEFORE OUTPUT section, I also have
+*the PROCESS AFTER INPUT section. I can use the suggested Module of 'USER_COMMAND_0100'.
+*The Module created looks like this:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'BACK'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
