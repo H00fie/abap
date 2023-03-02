@@ -9035,6 +9035,36 @@ MODULE user_command_0100 INPUT.
   ENDCASE.
 ENDMODULE.
 ******************************************************************
+*Now I would like all the input fields save for the 'Employ no' to be invisible to begin with. In order to do it I need to loop through
+*the Screen Structure. During the runtime in every program the Internal Table of 'Screen' is available and it contains all the screen's
+*elements allowing me to modify them. Since I want a few screen elements invisible by default, the logic is to be written in PBO. It can
+*be done within the same Module I have already created previously ('STATUS_0100') by creating a PERFORM therein whose FORM is defined
+*within the same TOP INCLUDE.
+*In case of my program, the FORM itself looks like this:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Form  MAKE_FIELDS_INVISIBLE
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM make_fields_invisible .
+  LOOP AT SCREEN.
+*The names of the fields I can check within the Screen Painter tool - the 'Name' part
+*I can see after double-clicking an element.
+    IF screen-name = 'ZBMIERZWITEST4-ENAME' OR
+       screen-name = 'ZBMIERZWITEST4-EMPDESIG' OR
+       screen-name = 'ZBMIERZWITEST4-EMPSAL' OR
+       screen-name = 'ZBMIERZWITEST4-JDATE' OR
+       screen-name = 'ZBMIERZWITEST4-JTIME'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
