@@ -9042,6 +9042,13 @@ ENDMODULE.
 *within the same TOP INCLUDE.
 *In case of my program, the FORM itself looks like this:
 ******************************************************************
+*Now I would like all the input fields save for the 'Employ no' to be invisible to begin with. In order to do it I need to loop through
+*the Screen Structure. During the runtime in every program the Internal Table of 'Screen' is available and it contains all the screen's
+*elements allowing me to modify them. Since I want a few screen elements invisible by default, the logic is to be written in PBO. It can
+*be done within the same Module I have already created previously ('STATUS_0100') by creating a PERFORM therein whose FORM is defined
+*within the same TOP INCLUDE.
+*In case of my program, the FORM itself looks like this:
+******************************************************************
 *&---------------------------------------------------------------------*
 *&      Form  MAKE_FIELDS_INVISIBLE
 *&---------------------------------------------------------------------*
@@ -9060,6 +9067,10 @@ FORM make_fields_invisible .
        screen-name = 'ZBMIERZWITEST4-JDATE' OR
        screen-name = 'ZBMIERZWITEST4-JTIME'.
       screen-invisible = '1'.
+*If I left it at that the chosen fields would be encrypted but not invisible (they would have stars as input). In order to actually make the
+*fields invisible, I also need to add a part about the 'input'. For the rest of the screen elements, it would not be necessary, but it's
+*required for the input fields.
+      screen-input = '0'.
       MODIFY SCREEN.
     ENDIF.
   ENDLOOP.
