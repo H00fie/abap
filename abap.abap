@@ -9069,6 +9069,38 @@ FORM make_fields_invisible .
   ENDLOOP.
 ENDFORM.
 ******************************************************************
+*Now I would like for the remaining fields to become visible and filled with data retrieved from the database upon clicking the 'Get Data'
+*button. When the button is pressed, the PAI event is triggered (the MPP's equivalent of the selection screen program's AT SELECTION-SCREEN)
+*and so it's within it I need to define the business logic for fetching the data from the database. I need to link the Function Code of the
+*'Get Data' button ('FC1' - defined in the Screen Painter tool) to the particular action.
+*My module in PAI now looks like this:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'BACK'.
+      LEAVE PROGRAM.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+*SINGLE is used because in the WHERE clause the comparison is based on the primary key field so there will
+*only be a single record.
+      SELECT SINGLE ename empdesig empsal jdate jtime
+        FROM  zbmierzwitest8
+*These are the names of input fields created in the Screen Painter tool.
+          INTO (zbmierzwitest4-ename,
+                zbmierzwitest4-empdesig,
+                zbmierzwitest4-empsal,
+                zbmierzwitest4-jdate,
+                zbmierzwitest4-jtime)
+            WHERE empno = zbmierzwitest4-empno.
+  ENDCASE.
+ENDMODULE.
+******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
