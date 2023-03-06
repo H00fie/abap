@@ -9101,6 +9101,24 @@ MODULE user_command_0100 INPUT.
   ENDCASE.
 ENDMODULE.
 ******************************************************************
+*If I left it at that, I would get the error telling me "until runtime, you cannot specify a field list." In order to prevent it, I need
+*to explicitly declare the screen fields of my program if I want to refer to them.
+*Thus, at the top of my TOP INCLUDE, I added:
+******************************************************************
+DATA: lv_ename    TYPE zbmierzwitest4-ename,
+      lv_empdesig TYPE zbmierzwitest4-empdesig,
+      lv_empsal   TYPE zbmierzwitest4-empsal,
+      lv_jdate    TYPE zbmierzwitest4-jdate,
+      lv_jtime    TYPE zbmierzwitest4-jtime,
+      lv_empno    TYPE zbmierzwitest4-empno.
+******************************************************************
+*And the SELECT is turned to:
+******************************************************************
+SELECT SINGLE ename empdesig empsal jdate jtime
+        FROM  zbmierzwitest8
+          INTO (lv_ename, lv_empdesig, lv_empsal, lv_jdate, lv_jtime)
+            WHERE empno = lv_empno.
+******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
