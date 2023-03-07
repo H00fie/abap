@@ -9114,17 +9114,6 @@ DATA: zbmierzwitest4-ename    TYPE zbmierzwitest4-ename,
       zbmierzwitest4-jtime    TYPE zbmierzwitest4-jtime,
       zbmierzwitest4-empno    TYPE zbmierzwitest4-empno.
 ******************************************************************
-*And the SELECT is turned to:
-******************************************************************
-SELECT SINGLE ename empdesig empsal jdate jtime
-        FROM  zbmierzwitest8
-          INTO (zbmierzwitest4-ename,
-                zbmierzwitest4-empdesig,
-                zbmierzwitest4-empsal,
-                zbmierzwitest4-jdate,
-                zbmierzwitest4-jtime)
-            WHERE empno = zbmierzwitest4-empno.
-******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
