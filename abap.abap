@@ -9103,21 +9103,27 @@ ENDMODULE.
 ******************************************************************
 *If I left it at that, I would get the error telling me "until runtime, you cannot specify a field list." In order to prevent it, I need
 *to explicitly declare the screen fields of my program if I want to refer to them.
-*Thus, at the top of my TOP INCLUDE, I added:
+*Thus, at the top of my TOP INCLUDE, I added the below. Regardless of how ridiculous it looks. I think that if I want my SELECT query to
+*insert the values into the screen fields, I need to provide their names (e.g. 'zbmierzwitest8-ename') and, since they need to be declared
+*explicitly... I need to declare their names like that.
 ******************************************************************
-DATA: lv_ename    TYPE zbmierzwitest4-ename,
-      lv_empdesig TYPE zbmierzwitest4-empdesig,
-      lv_empsal   TYPE zbmierzwitest4-empsal,
-      lv_jdate    TYPE zbmierzwitest4-jdate,
-      lv_jtime    TYPE zbmierzwitest4-jtime,
-      lv_empno    TYPE zbmierzwitest4-empno.
+DATA: zbmierzwitest4-ename    TYPE zbmierzwitest4-ename,
+      zbmierzwitest4-empdesig TYPE zbmierzwitest4-empdesig,
+      zbmierzwitest4-empsal   TYPE zbmierzwitest4-empsal,
+      zbmierzwitest4-jdate    TYPE zbmierzwitest4-jdate,
+      zbmierzwitest4-jtime    TYPE zbmierzwitest4-jtime,
+      zbmierzwitest4-empno    TYPE zbmierzwitest4-empno.
 ******************************************************************
 *And the SELECT is turned to:
 ******************************************************************
 SELECT SINGLE ename empdesig empsal jdate jtime
         FROM  zbmierzwitest8
-          INTO (lv_ename, lv_empdesig, lv_empsal, lv_jdate, lv_jtime)
-            WHERE empno = lv_empno.
+          INTO (zbmierzwitest4-ename,
+                zbmierzwitest4-empdesig,
+                zbmierzwitest4-empsal,
+                zbmierzwitest4-jdate,
+                zbmierzwitest4-jtime)
+            WHERE empno = zbmierzwitest4-empno.
 ******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
