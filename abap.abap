@@ -9032,6 +9032,10 @@ MODULE user_command_0100 INPUT.
   CASE sy-ucomm.
     WHEN 'BACK'.
       LEAVE PROGRAM.
+*The 'FC2' is the Function Code I assigned to my custom 'Exit' button in the Screen Painter tool. It does the same thing as the one above,
+*but the 'BACK' Function Code is related to re-activating the standard SAP 'Back' button while 'FC2' to my own new custom button.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
   ENDCASE.
 ENDMODULE.
 ******************************************************************
@@ -9068,6 +9072,18 @@ FORM make_fields_invisible .
     ENDIF.
   ENDLOOP.
 ENDFORM.
+******************************************************************
+*And the PBO's module looks like that:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE status_0100 OUTPUT.
+  SET PF-STATUS 'ABC'.
+  PERFORM make_fields_invisible.
+ENDMODULE.
 ******************************************************************
 *Now I would like for the remaining fields to become visible and filled with data retrieved from the database upon clicking the 'Get Data'
 *button. When the button is pressed, the PAI event is triggered (the MPP's equivalent of the selection screen program's AT SELECTION-SCREEN)
@@ -9113,6 +9129,94 @@ DATA: zbmierzwitest4-ename    TYPE zbmierzwitest4-ename,
       zbmierzwitest4-jdate    TYPE zbmierzwitest4-jdate,
       zbmierzwitest4-jtime    TYPE zbmierzwitest4-jtime,
       zbmierzwitest4-empno    TYPE zbmierzwitest4-empno.
+******************************************************************
+*Now, when the data has been fetched from the database, I need to make the fields holding that data visible, so I create the FORM for this.
+*The PERFORM is placed at the end of the SELECT - the fields are to be made visible only if the data has been fetched successfully.
+*The FORM that makes the fields visible needs to be called within PBO even though the logic that fetches the data from the database is located
+*within PAI. That is because PBO serves as MPP's equivalent of selection-screen programs' AT SELECTION-SCREEN OUTPUT event and thus the logic
+*that refreshes the screen, needs to be put here.
+*PBO, like AT SELECTION-SCREEN OUTPUT is always the final event processed before displaying the screen/refreshing the screen.
+*In report programs, the user performs an action while in the selection-screen, e.g. pushing a pushbutton and thus SAP triggers
+*AT SELECTION-SCREEN event and then AT SELECTION-SCREEN OUTPUT event afterwards. In an MPP when a user e.g. pushes a pushbutton, SAP triggers
+*PAI and then PBO afterwards to refresh the screen. So when the data is fetched from the database within PAI, PBO will automatically be
+*processed again. I need PBO to perform different actions depending on what has been requested. If a user wants to 'Get Data', I need to fetch
+*said data and make the fields visible. So my data fetching logic needs to inform the PBO what needs to happen during its following processing.
+*For this reason I am creating a flag. If its value is the default one, PBO makes all the fields invisible and if the value is changed, the fields
+*are made visible - that is because the value can be changed only by the SELECT in PAI so if the value is changed that means this is the
+*processing of PBO following the PAI during which the data has been requested.
+*I am adding the flag at the top of the TOP INCLUDE, below the magnificently named screen fields:
+******************************************************************
+*It will be 0 by default.
+DATA: lv_flag TYPE i.
+******************************************************************
+*The PBO's module looks like that:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  STATUS_0100  OUTPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE status_0100 OUTPUT.
+  IF lv_flag = 0.
+    SET PF-STATUS 'ABC'.
+    PERFORM make_fields_invisible.
+  ENDIF.
+    PERFORM make_fields_visible.
+ENDMODULE.
+******************************************************************
+*The module in PAI now looks as follows. If the data is fetched properly from the database, the flag is changed. Like AT SELECTION-SCREEN
+*OUTPUT in case of report programs, PBO will be triggered again in case of MPP and, due to the switch case based on that flag -
+*'make_fields_visible' will trigger instead of 'make_fields_invisible'.
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'BACK'.
+      LEAVE PROGRAM.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+      SELECT SINGLE ename empdesig empsal jdate jtime
+        FROM  zbmierzwitest8
+          INTO (zbmierzwitest4-ename,
+                zbmierzwitest4-empdesig,
+                zbmierzwitest4-empsal,
+                zbmierzwitest4-jdate,
+                zbmierzwitest4-jtime)
+            WHERE empno = zbmierzwitest4-empno.
+      IF sy-subrc = 0.
+        lv_flag = 1.
+      ENDIF.
+  ENDCASE.
+ENDMODULE.
+******************************************************************
+*And the FORM itself:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Form  MAKE_FIELDS_VISIBLE
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM make_fields_visible .
+  LOOP AT SCREEN.
+    IF screen-name = 'ZBMIERZWITEST4-ENAME' OR
+       screen-name = 'ZBMIERZWITEST4-EMPDESIG' OR
+       screen-name = 'ZBMIERZWITEST4-EMPSAL' OR
+       screen-name = 'ZBMIERZWITEST4-JDATE' OR
+       screen-name = 'ZBMIERZWITEST4-JTIME'.
+      screen-invisible = '0'.
+      screen-input = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
 ******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
