@@ -9011,6 +9011,7 @@ MODULE status_0100 OUTPUT.
 *  SET TITLEBAR 'xxx'.
 ENDMODULE.
 ******************************************************************
+
 *I provided my PF-STATUS the name of 'ABC' and created it with a short description. The 'Status type' should remain as the default option
 *('Normal Screen'). A Menu Painter is opened now (SE41). I want to enable the 'Back' button so I need to open the 'Function Keys' section
 *and provide a Function Code above the icon of the standard SAP's 'Back' button (the Function Code I assigned is 'BACK'). Now I need to save
@@ -9039,6 +9040,7 @@ MODULE user_command_0100 INPUT.
   ENDCASE.
 ENDMODULE.
 ******************************************************************
+
 *Now I would like all the input fields save for the 'Employ no' to be invisible to begin with. In order to do it I need to loop through
 *the Screen Structure. During the runtime in every program the Internal Table of 'Screen' is available and it contains all the screen's
 *elements allowing me to modify them. Since I want a few screen elements invisible by default, the logic is to be written in PBO. It can
@@ -9073,6 +9075,7 @@ FORM make_fields_invisible .
   ENDLOOP.
 ENDFORM.
 ******************************************************************
+
 *And the PBO's module looks like that:
 ******************************************************************
 *&---------------------------------------------------------------------*
@@ -9085,6 +9088,7 @@ MODULE status_0100 OUTPUT.
   PERFORM make_fields_invisible.
 ENDMODULE.
 ******************************************************************
+
 *Now I would like for the remaining fields to become visible and filled with data retrieved from the database upon clicking the 'Get Data'
 *button. When the button is pressed, the PAI event is triggered (the MPP's equivalent of the selection screen program's AT SELECTION-SCREEN)
 *and so it's within it I need to define the business logic for fetching the data from the database. I need to link the Function Code of the
@@ -9117,6 +9121,7 @@ MODULE user_command_0100 INPUT.
   ENDCASE.
 ENDMODULE.
 ******************************************************************
+
 *If I left it at that, I would get the error telling me "until runtime, you cannot specify a field list." In order to prevent it, I need
 *to explicitly declare the screen fields of my program if I want to refer to them.
 *Thus, at the top of my TOP INCLUDE, I added the below. Regardless of how ridiculous it looks. I think that if I want my SELECT query to
@@ -9130,6 +9135,7 @@ DATA: zbmierzwitest4-ename    TYPE zbmierzwitest4-ename,
       zbmierzwitest4-jtime    TYPE zbmierzwitest4-jtime,
       zbmierzwitest4-empno    TYPE zbmierzwitest4-empno.
 ******************************************************************
+
 *Now, when the data has been fetched from the database, I need to make the fields holding that data visible, so I create the FORM for this.
 *The PERFORM is placed at the end of the SELECT - the fields are to be made visible only if the data has been fetched successfully.
 *The FORM that makes the fields visible needs to be called within PBO even though the logic that fetches the data from the database is located
@@ -9149,6 +9155,7 @@ DATA: zbmierzwitest4-ename    TYPE zbmierzwitest4-ename,
 *It will be 0 by default.
 DATA: lv_flag TYPE i.
 ******************************************************************
+
 *The PBO's module looks like that:
 ******************************************************************
 *&---------------------------------------------------------------------*
@@ -9164,6 +9171,7 @@ MODULE status_0100 OUTPUT.
     PERFORM make_fields_visible.
 ENDMODULE.
 ******************************************************************
+
 *The module in PAI now looks as follows. If the data is fetched properly from the database, the flag is changed. Like AT SELECTION-SCREEN
 *OUTPUT in case of report programs, PBO will be triggered again in case of MPP and, due to the switch case based on that flag -
 *'make_fields_visible' will trigger instead of 'make_fields_invisible'.
@@ -9194,6 +9202,7 @@ MODULE user_command_0100 INPUT.
   ENDCASE.
 ENDMODULE.
 ******************************************************************
+
 *And the FORM itself:
 ******************************************************************
 *&---------------------------------------------------------------------*
