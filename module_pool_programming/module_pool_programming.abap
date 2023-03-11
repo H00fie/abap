@@ -357,6 +357,118 @@ FORM make_fields_visible .
 ENDFORM.
 ******************************************************************
 
+*At this stage, I would still not get any data... because of the names of my screen fields. Due to them being created automatically
+*by the Screen Painter tool, their names consist of the table's name and the field's name joined by a hyphen. So, if I want my SELECT
+*to populate these screen fields, I need to refer to them by their names. And if I attempt to do that, I would get no results because
+*if a field's name contains a hyphen, it will just not work and my 'zbmierziwtest8-empno' will hold the value of 0 regardless of what
+*value I actually provide.
+*So I need to go back to the Screen Painter tool and change the names of the fields manually. After that change I also need to change
+*the names of the fields within my code itself.
+*The explicitly declared screen fields now look like that:
+******************************************************************
+DATA: lv_ename    TYPE zbmierzwitest4-ename,
+      lv_empdesig TYPE zbmierzwitest4-empdesig,
+      lv_empsal   TYPE zbmierzwitest4-empsal,
+      lv_jdate    TYPE zbmierzwitest4-jdate,
+      lv_jtime    TYPE zbmierzwitest4-jtime,
+      lv_empno    TYPE zbmierzwitest4-empno.
+******************************************************************
+
+*The form making fields invisible now has more elements because the ones prefixed with 'zbmierzwitest8' are labels and the ones 
+*prefixed with 'lv' are the actualy screen fields. It now looks like this:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Form  MAKE_FIELDS_INVISIBLE
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM make_fields_invisible .
+  LOOP AT SCREEN.
+    IF screen-name = 'ZBMIERZWITEST4-ENAME' OR
+       screen-name = 'ZBMIERZWITEST4-EMPDESIG' OR
+       screen-name = 'ZBMIERZWITEST4-EMPSAL' OR
+       screen-name = 'ZBMIERZWITEST4-JDATE' OR
+       screen-name = 'ZBMIERZWITEST4-JTIME' OR
+       screen-name = 'LV_ENAME' OR
+       screen-name = 'LV_EMPDESIG' OR
+       screen-name = 'LV_EMPSAL' OR
+       screen-name = 'LV_JDATE' OR
+       screen-name = 'LV_JTIME'.
+      screen-invisible = '1'.
+      screen-input = '0'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+******************************************************************
+
+*The PAI's Module, which, among others, contains the SELECT query looks like that:
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'BACK'.
+      LEAVE PROGRAM.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+      SELECT SINGLE ename empdesig empsal jdate jtime
+        FROM  zbmierzwitest8
+          INTO (lv_ename,
+                lv_empdesig,
+                lv_empsal,
+                lv_jdate,
+                lv_jtime)
+            WHERE empno = lv_empno.
+      IF sy-subrc = 0.
+        lv_flag = 1.
+      ENDIF.
+  ENDCASE.
+ENDMODULE.
+******************************************************************
+
+*The form making the fields visible looks as below. I am also making sure that, if the other fields
+*are made visible, the 'empno' one is locked.
+******************************************************************
+*&---------------------------------------------------------------------*
+*&      Form  MAKE_FIELDS_VISIBLE
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*  -->  p1        text
+*  <--  p2        text
+*----------------------------------------------------------------------*
+FORM make_fields_visible .
+  LOOP AT SCREEN.
+    IF screen-name = 'ZBMIERZWITEST4-ENAME' OR
+       screen-name = 'ZBMIERZWITEST4-EMPDESIG' OR
+       screen-name = 'ZBMIERZWITEST4-EMPSAL' OR
+       screen-name = 'ZBMIERZWITEST4-JDATE' OR
+       screen-name = 'ZBMIERZWITEST4-JTIME' OR
+       screen-name = 'LV_ENAME' OR
+       screen-name = 'LV_EMPDESIG' OR
+       screen-name = 'LV_EMPSAL' OR
+       screen-name = 'LV_JDATE' OR
+       screen-name = 'LV_JTIME'.
+      screen-invisible = '0'.
+      screen-input = '1'.
+      MODIFY SCREEN.
+*When the fields are being made visible, I want the 'empno' field to be greyed out.
+    ELSEIF screen-name = 'LV_EMPNO'.    
+      screen-input = 0.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+******************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
