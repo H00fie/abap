@@ -9305,7 +9305,8 @@ MODULE user_command_0100 INPUT.
 ENDMODULE.
 ******************************************************************
 
-*The form making the fields visible looks like that:
+*The form making the fields visible looks as below. I am also making sure that, if the other fields
+*are made visible, the 'empno' one is locked.
 ******************************************************************
 *&---------------------------------------------------------------------*
 *&      Form  MAKE_FIELDS_VISIBLE
@@ -9329,6 +9330,10 @@ FORM make_fields_visible .
        screen-name = 'LV_JTIME'.
       screen-invisible = '0'.
       screen-input = '1'.
+      MODIFY SCREEN.
+*When the fields are being made visible, I want the 'empno' field to be greyed out.
+    ELSEIF screen-name = 'LV_EMPNO'.    
+      screen-input = 0.
       MODIFY SCREEN.
     ENDIF.
   ENDLOOP.
