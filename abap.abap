@@ -9347,6 +9347,28 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. A MODULE POOL PROGRAM CONTAINING THE TABLE CONTROL COMPONENT.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*When I generate the Table Maintenance, I need to specify the Maintenance Type - either One Step or Two Step. The Two Step means
+*that two screens will be generated - the Overview Screen and the Single Screen. In the Overview Screen I can perfom operations
+*like View, Delete and Update and in the Single Screen I can Insert the data.
+*If I open SM30 transaction, provide a table's name and click the 'Maintain' button, the Overview Screen will be displayed. If
+*I select 'New Entries', the Single Screen will be displayed.
+*In the Overview Screen I can see the records displayed. This section is called Table Control. My transactions might contain the
+*screen element called Table Control. Its purpose is to display the records in the form of rows and columns. In the Single Screen
+*I can see only Input Fields. Input Fields can show only one value.
+*I want to create a program which takes the sales document's number as a parameter and when Enter is pressed, the corresponding
+*header and item data should be provided and displayed. The header data needs to be displayed in separate fields and the item
+*data needs to be displayed in Table Control.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
