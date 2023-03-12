@@ -9361,6 +9361,22 @@ ENDFORM.
 *I want to create a program which takes the sales document's number as a parameter and when Enter is pressed, the corresponding
 *header and item data should be provided and displayed. The header data needs to be displayed in separate fields and the item
 *data needs to be displayed in Table Control.
+*I need to go to SE80, pick the 'Program' option and provide the name of my program. In my case it's 'Z_BM_TEST_MPP3'. Now I am
+*to press Enter and create the object with the TOP INCLUDE. The 'Type' is the 'Module Pool'. I need to create a Screen now. In
+*order to do it, I should right-click my program's name, select Create and then Screen. A short description and the number of the
+*screen should be provided (100 in my case). In the Layout I will be using the fields of the VBAK and VBAP tables. I could refer
+*to these tables directly, but I will require only four fields from each table so for the sake of performance I elect to trade
+*the entire tables for my custom structures each of whom contains the aforementioned four fields - one from VBAK and one from VBAP.
+*1) The structure containing VBAK's fields is called: 'ZBMIERZWI_TEST_VBAK_STRUCT' and its field are:
+*- VBELN type VBELN_VA,
+*- ERDAT type ERDAT,
+*- ERZET type ERZET,
+*- ERNAM type ERNAM.
+*2) The structure containing VBAP's fields is called: 'ZBMIERZWI_TEST_VBAP_STRUCT' and its field are:
+*- VBELN type VBELN_VA,
+*- POSNR type POSNR_VA,
+*- MATNR type MATNR,
+*- NETWR type NETWR_AP.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
