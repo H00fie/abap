@@ -9358,6 +9358,7 @@ ENDFORM.
 *In the Overview Screen I can see the records displayed. This section is called Table Control. My transactions might contain the
 *screen element called Table Control. Its purpose is to display the records in the form of rows and columns. In the Single Screen
 *I can see only Input Fields. Input Fields can show only one value.
+
 *I want to create a program which takes the sales document's number as a parameter and when Enter is pressed, the corresponding
 *header and item data should be provided and displayed. The header data needs to be displayed in separate fields and the item
 *data needs to be displayed in Table Control.
@@ -9377,6 +9378,14 @@ ENDFORM.
 *- POSNR type POSNR_VA,
 *- MATNR type MATNR,
 *- NETWR type NETWR_AP.
+*I should go to the Screen Painter tool now by pressing the 'Layout' button. I now need to go to Goto (hehe) -> Secondary Window ->
+*Dictionary/Program Fields. In the input box that takes the tables' names I can also provide the names of the structures, so I can
+*type in 'ZBMIERZWI_TEST_VBAK_STRUCT' and push the 'Get from Dictionary' button. Now I should press the book icon in the upper left
+*hand corner of the list of the displayed fields and proceed with that. I would now like to make the EMPNO field a mandatory one.
+*In the SELECTION-SCREEN kind of a program, I would use the addition of OBLIGATORY. In an MPP, I need to double click the input field,
+*go to the 'Program' tab of the 'Attributes' section and next to the 'Input' label I can see a drop-down list - I need to select the
+*'required' option. An MPP indicated that a field is mandatory by having a question mark placed within its input box in the Screen
+*Painter tool.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
