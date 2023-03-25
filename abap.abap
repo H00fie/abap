@@ -9400,6 +9400,11 @@ MODULE user_command_0100 INPUT.
 ENDMODULE.
 *******************************************************************
 
+*Now to create the transaction. I need to right-click the name of my program in SE80, select 'Create' and then select 'Transaction'.
+*The name I gave is 'ZBMI5' and the 'Start object' is 'Program and screen (dialog transaction)' as it always the case for MPP. I then
+*need to provide the name of the program the transaction is for, the screen number (100) and check the 'SAPGUI for Windows' checkbox
+*in the 'GUI Support' section.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
