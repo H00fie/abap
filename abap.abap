@@ -9386,6 +9386,19 @@ ENDFORM.
 *go to the 'Program' tab of the 'Attributes' section and next to the 'Input' label I can see a drop-down list - I need to select the
 *'required' option. An MPP indicated that a field is mandatory by having a question mark placed within its input box in the Screen
 *Painter tool.
+*Now I proceed to create the 'Exit' button. Within the Screen Painter tool I need to select the 'Button' option and draw my button
+*in my preferred place in the screen. I name the button 'B1', the text is 'Exit' and the function code is 'FC1'. Now I write the
+*logic for the 'Exit' button. I move to the Screen in SE80, uncomment the 'MODULE USER_COMMAND_0100' and create the object within the
+*TOP INCLUDE.
+*The logic looks as follows:
+*******************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+*******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
