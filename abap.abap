@@ -9405,6 +9405,22 @@ ENDMODULE.
 *need to provide the name of the program the transaction is for, the screen number (100) and check the 'SAPGUI for Windows' checkbox
 *in the 'GUI Support' section.
 
+*I want all the screen fields to be filled with data associated with the provided sales document's number upon pressing Enter. In case
+*of selection screen programs, pressing the Enter key in the selection screen input field the AT SELECTION-SCREEN ON <field> event is
+*triggered and then followed by AT SELECTION-SCREEN and AT SELECTION-SCREEN OUTPUT. In case of MP, the PAI comes first and the PBO comes
+*afterwards. Since PAI comes first when Enter is pressed it is within PAI that I should write the logic for fetching the data for all
+*input fields.
+*To request that SAP triggers that piece of code when Enter is pressed in the particular input field, I need to name that field (the name
+*comes from the Screen Painter tool) before specifying the module that should be triggered.
+*The syntax looks as below:
+*******************************************************************
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0100.
+ FIELD zbmierzwi_test_vbak_struct-vbeln MODULE get_sales_header_data.
+*******************************************************************
+ 
+*The module needs to be double-clicked and created within the TOP INCLUDE.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
