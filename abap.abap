@@ -9419,7 +9419,37 @@ PROCESS AFTER INPUT.
  FIELD zbmierzwi_test_vbak_struct-vbeln MODULE get_sales_header_data.
 *******************************************************************
  
-*The module needs to be double-clicked and created within the TOP INCLUDE.
+*The module needs to be double-clicked and created within the TOP INCLUDE. Now, based on the value of VBELN, I should get the rest of
+*the data. The sales document (VBELN) is a primary key field in VBAK so I will get only one record's data as a result of my query, thus
+*I use SELECT SINGLE.
+*The module looks as follows:
+*******************************************************************
+ MODULE get_sales_header_data INPUT.
+  SELECT SINGLE vbeln erdat erzet ernam
+    FROM vbak
+      INTO (zbmierzwi_test_vbak_struct-vbeln,
+            zbmierzwi_test_vbak_struct-erdat,
+            zbmierzwi_test_vbak_struct-erzet,
+            zbmierzwi_test_vbak_struct-ernam)
+        WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
+ENDMODULE.
+*******************************************************************
+
+*Whenever I am using screen fields in a program, I need to declare them explicitly. I need to add the below at the top of the INCLUDE:
+*******************************************************************
+DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
+      zbmierzwi_test_vbak_struct-erdat TYPE zbmierzwi_test_vbak_struct-erdat,
+      zbmierzwi_test_vbak_struct-erzet TYPE zbmierzwi_test_vbak_struct-erzet,
+      zbmierzwi_test_vbak_struct-ernam TYPE zbmierzwi_test_vbak_struct-ernam.
+*******************************************************************
+
+*The names of the fields seem bizzare because they need to be the same as the screen fields' names created in the Screen Painter tool
+*and this is what they look like.
+*If I want to use the screen fields in my program, I need to declare them in my program but I cannot have a variable name containing
+*a hyphen and if the data for the fields in the Screen Painter is loaded from the database, then SAP automatically gives the fields
+*names consisting of the database's name and the field's name joined by a hyphen. Thus, I won't be able to refer to that field
+*because my declared field cannot be named e.g. 'kna1-kunnr' and such will be the screen field's name is the data was loaded from
+*KNA1.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
