@@ -9450,6 +9450,18 @@ DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
 *names consisting of the database's name and the field's name joined by a hyphen. Thus, I won't be able to refer to that field
 *because my declared field cannot be named e.g. 'kna1-kunnr' and such will be the screen field's name is the data was loaded from
 *KNA1.
+*I can either change the names of the screen fields in the Screen Painter or I can utilize the TABLES declaration. The TABLES declaration 
+*counts as the explicit declaration of the screen fields. The TABLES statement will create a work area with all the table's/structure's
+*fields. I could declare VBAK here... but that would create a work area with over 200 fields which is unnecessary. My structure has only
+*the four fields that I require and is thus perfect here.
+*Thus the top part of my TOP INCLUDE looks like that:
+*******************************************************************
+*DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
+*      zbmierzwi_test_vbak_struct-erdat TYPE zbmierzwi_test_vbak_struct-erdat,
+*      zbmierzwi_test_vbak_struct-erzet TYPE zbmierzwi_test_vbak_struct-erzet,
+*      zbmierzwi_test_vbak_struct-ernam TYPE zbmierzwi_test_vbak_struct-ernam.
+TABLES: zbmierzwi_test_vbak_struct.
+*******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
