@@ -9463,6 +9463,21 @@ DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
 TABLES: zbmierzwi_test_vbak_struct.
 *******************************************************************
 
+*Now I need to design the Table Control component. I need to go to the Screen Painter tool and in the panel with tools on the left hand 
+*side of the window I will see the 'Table Control' button. I need to draw it on the screen. When that's done, I double-click the newly
+*created component and name it 'TBCTRL' (there's no convention). The colour of the Table Control doesn't change yet because there's still
+*no fields associated with it. As much as the fields above the Table Control contain the header data of a sales document, I want my
+*Table Control to contain the item data of that document. The data I want is this in VBAP and I could take the data from there but
+*I have created my own structure and populated it beforehand so that SAP would need to handle only a few columns instead of lots. I need
+*to go to Goto -> Secondary Window -> Dictionary/Program Fields, provide the name of my structure ('ZBMIERZWI_TEST_VBAP_STRUCT'), select
+*the 'Get from Dictionary' button, click the button in the upper left hand side of the window with the columns to select everything that's
+*just been displayed and proceed.
+*Now I need to drop it on the Table Control and the proper columns will appear there. I can reduce the size of the Table Control to fit
+*the columns just right. I can now double-click the Table Control (e.g. the space in the bottom right hand corner in front of the two
+*arrows at the ends of the sliders - I need to make sure I am double-clicking the Table Control and not the columns and it can be a little
+*bit tricky) and in the 'Attributes' section check the 'Vertical' and 'Horizontal' checkboxes. Due to that the fields in my Table Control
+*will be neatly separated and thus the readability will be improved.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
