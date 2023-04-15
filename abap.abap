@@ -9463,20 +9463,34 @@ DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
 TABLES: zbmierzwi_test_vbak_struct.
 *******************************************************************
 
-*Now I need to design the Table Control component. I need to go to the Screen Painter tool and in the panel with tools on the left hand 
+*Now I need to design the Table Control component. I need to go to the Screen Painter tool and in the panel with tools on the left hand
 *side of the window I will see the 'Table Control' button. I need to draw it on the screen. When that's done, I double-click the newly
 *created component and name it 'TBCTRL' (there's no convention). The colour of the Table Control doesn't change yet because there's still
 *no fields associated with it. As much as the fields above the Table Control contain the header data of a sales document, I want my
 *Table Control to contain the item data of that document. The data I want is this in VBAP and I could take the data from there but
-*I have created my own structure and populated it beforehand so that SAP would need to handle only a few columns instead of lots. I need
-*to go to Goto -> Secondary Window -> Dictionary/Program Fields, provide the name of my structure ('ZBMIERZWI_TEST_VBAP_STRUCT'), select
-*the 'Get from Dictionary' button, click the button in the upper left hand side of the window with the columns to select everything that's
-*just been displayed and proceed.
+*I have created my own structure and populated it beforehand so that SAP would need to handle only a few columns instead of lots. I can
+*have the Screen Painter tool use my Structure's structure to create its own columns' structure (hehe). 
+*I need to go to Goto -> Secondary Window -> Dictionary/Program Fields, provide the name of my structure ('ZBMIERZWI_TEST_VBAP_STRUCT'), 
+*select the 'Get from Dictionary' button, click the button in the upper left hand side of the window with the columns to select everything 
+*that's just been displayed and proceed.
 *Now I need to drop it on the Table Control and the proper columns will appear there. I can reduce the size of the Table Control to fit
 *the columns just right. I can now double-click the Table Control (e.g. the space in the bottom right hand corner in front of the two
 *arrows at the ends of the sliders - I need to make sure I am double-clicking the Table Control and not the columns and it can be a little
 *bit tricky) and in the 'Attributes' section check the 'Vertical' and 'Horizontal' checkboxes. Due to that the fields in my Table Control
 *will be neatly separated and thus the readability will be improved.
+*If I tried to activate my MP program now, I would get an error saying that "the field ZBMIERZWI_TEST_VBAK_STRUCT-VBELN is not assigned to
+*a loop. 'LOOP ... ENDLOPP' must appear in 'PBO' and 'PAI'." Whenever my screen contains a Table Control component, the loop is required
+*in both PAI and PBO. Even simply declaring "LOOP. ENDLOOP" below both of these will do and the program will activate... but if I try to
+*execute it, a runtime error will occur. That is because whenever my screen contains a Table Control component, that component needs to be
+*declared explicitly within my program.
+*This needs to be done within my TOP INCLUDE program (good practice, it could be declared elsewhere if I didn't want my Code Clean. Hehe)
+*by using the CONTROLS keyword. Special controls like Table Control need to be declared using the CONTROLS and not DATA keyword. The data
+*type for Table Control is 'tableview' and 'using screen' indicated on which screen the Table Control will be displayed.
+*The upper part of my TOP INCLUDE program now looks like this:
+*******************************************************************
+TABLES: zbmierzwi_test_vbak_struct.
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
+*******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
