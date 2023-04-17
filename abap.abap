@@ -9492,6 +9492,54 @@ TABLES: zbmierzwi_test_vbak_struct.
 CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
 *******************************************************************
 
+*Now I need to populate my Table Control with item data for the sales document. Of course, only if the sales document has been found and
+*its header data has been thus placed in the input boxes above the Table Control. So - if the 'sy'-subrc' after the SELECT fetching the header
+*data yields 0. I need to declare the internal table for storing the item data.
+*In this case I am first declaring a type and instead of mentioning every field separately, I am using the INCLUDE TYPE syntax, so all the
+*fields present in my custom structures that is being thus included will become part of the new type. Here the TYPES keyword also needs to
+*appear in front of the END OF because there's a full stop before it and that full stop is required because I am using the INCLUDE keyword
+*as part of the TYPES I am creating. Instead of INCLUDE TYPE I could also use INCLUDE STRUCTURE but this syntax is obsolete in OOP.
+*It's worth noting that the TYPES declaration is optional, it's just another level of abstraction, I could declare my internal table and
+*work area directly on my custom structure instead (ZBMIERZWI_TEST_VBAP_STRUCT).
+*The upper part of my TOP INCLUDE now looks as below:
+*******************************************************************
+TABLES: zbmierzwi_test_vbak_struct.
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
+TYPES: BEGIN OF t_items.
+  INCLUDE TYPE zbmierzwi_test_vbap_struct.
+TYPES END OF t_items.
+DATA: lt_items  TYPE TABLE OF t_items,
+      lwa_items TYPE t_items.
+*******************************************************************
+
+*The module for getting the data - adhering to the idea of the item data being fetched only if the header data has been found, looks like that:
+*******************************************************************
+MODULE get_sales_header_data INPUT.
+  SELECT SINGLE vbeln erdat erzet ernam
+    FROM vbak
+      INTO (zbmierzwi_test_vbak_struct-vbeln,
+            zbmierzwi_test_vbak_struct-erdat,
+            zbmierzwi_test_vbak_struct-erzet,
+            zbmierzwi_test_vbak_struct-ernam)
+        WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
+*If the header data is found, I need to populate the Table Control with
+*all the item data for that sales document.
+  IF sy-subrc = 0.
+    SELECT vbeln posnr matnr netwr
+      FROM vbap
+        INTO TABLE lt_items
+          WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
+  ENDIF.
+ENDMODULE.
+*******************************************************************
+
+*Now I need to move the data from the internal table (lt_items) to the table control. After executing PAI, PBO comes. The data is fetched
+*in PAI. The screen refreshing logic should always be written in the final event that is being triggered. That is PBO in MP programs.
+*That is why there has to be a LOOP within a MP program that contains a table control. I need to loop through the internal table that
+*contains the item data (lt_items) and, obviously, into a work area as that is the way of ABAP. In order to have my table control populated
+*I also need to add WITH CONTROL <table_control_name> at the end. That syntax means that while I am looping through the internal table, I
+*also want to loop through the table control at the same time.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
