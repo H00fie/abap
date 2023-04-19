@@ -9538,7 +9538,17 @@ ENDMODULE.
 *That is why there has to be a LOOP within a MP program that contains a table control. I need to loop through the internal table that
 *contains the item data (lt_items) and, obviously, into a work area as that is the way of ABAP. In order to have my table control populated
 *I also need to add WITH CONTROL <table_control_name> at the end. That syntax means that while I am looping through the internal table, I
-*also want to loop through the table control at the same time.d
+*also want to loop through the table control at the same time. That syntax can ONLY in the PBO event in the flow logic section so I cannot
+*move the loop itself in a module to modularize it, but I can modularize the logic happening for every iteration of the loop instead. I
+*cannot write the entirety of the logic within the flow logic section as only a few keywords (e.g. loop, field, module) will be recognised
+*here.
+*The PBO part of my flow logic section looks like that:
+*******************************************************************
+PROCESS BEFORE OUTPUT.
+LOOP AT lt_items INTO lwa_items WITH CONTROL tbctrl.
+  MODULE transfer_item_data.
+ENDLOOP.
+*******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
