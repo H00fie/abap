@@ -9538,8 +9538,8 @@ ENDMODULE.
 *That is why there has to be a LOOP within a MP program that contains a table control. I need to loop through the internal table that
 *contains the item data (lt_items) and, obviously, into a work area as that is the way of ABAP. In order to have my table control populated
 *I also need to add WITH CONTROL <table_control_name> at the end. That syntax means that while I am looping through the internal table, I
-*also want to loop through the table control at the same time. That syntax can ONLY in the PBO event in the flow logic section so I cannot
-*move the loop itself in a module to modularize it, but I can modularize the logic happening for every iteration of the loop instead. I
+*also want to loop through the table control at the same time. That syntax can ONLY be in the PBO event in the flow logic section so I cannot
+*move the loop itself into a module to modularize it, but I can modularize the logic happening for every iteration of the loop instead. I
 *cannot write the entirety of the logic within the flow logic section as only a few keywords (e.g. loop, field, module) will be recognised
 *here.
 *The PBO part of my flow logic section looks like that:
@@ -9548,6 +9548,72 @@ PROCESS BEFORE OUTPUT.
 LOOP AT lt_items INTO lwa_items WITH CONTROL tbctrl.
   MODULE transfer_item_data.
 ENDLOOP.
+*******************************************************************
+
+*Now, in the 'transfer_item_data' module I will be referring to the table control fields and they, much like all the screen fields, need to
+*be declared explicitly in my MP program.
+*Thus, the upper part of my TOP INCLUDE now looks like that:
+*******************************************************************
+TABLES: zbmierzwi_test_vbak_struct,
+        zbmierzwi_test_vbap_struct.
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
+TYPES: BEGIN OF t_items.
+  INCLUDE TYPE zbmierzwi_test_vbap_struct.
+TYPES END OF t_items.
+DATA: lt_items  TYPE TABLE OF t_items,
+      lwa_items TYPE t_items.
+*******************************************************************
+
+*The 'transfer_item_data' module itself looks like shown below. Within the flow logic I am looping through the internal table ('lt_items') that
+*holds the previously fetched data. With every loop, a new record appears in the work area. For every record the below module is executed. Data is
+*here assigned to the table control's fields. Whenever I am referring to the screen fields, I should declare them (that includes the table control
+*fields) - they are declared with the TABLES keyword (instead of mentioning every field separately after the DATA and having to worry about the
+*name containing a hyphen as that's how the Screen Painter tool names the screen fields). Using the TABLES keyword also creates a work area, hence
+*when I type 'CLEAR zbmierzwi_test_vbap_struct' - it will clear the work area of that structure.
+*This works despite the actual table control not being mentioned by its name ('tbctrl') because the screen fields created in the Screen Painter
+*tool are called 'zbmierzwi_test_vbap_struct-vbeln', 'zbmierzwi_test_vbap_struct-posnr', 'zbmierzwi_test_vbap_struct-matnr' and
+*'zbmierzwi_test_vbap_struct-netwr' and so when I mention them, from my program's perspective, I am talking about my table control's fields.
+*******************************************************************
+MODULE transfer_item_data OUTPUT.
+  CLEAR zbmierzwi_test_vbap_struct. "Clearing a work area.
+  zbmierzwi_test_vbap_struct-vbeln = lwa_items-vbeln.
+  zbmierzwi_test_vbap_struct-posnr = lwa_items-posnr.
+  zbmierzwi_test_vbap_struct-matnr = lwa_items-matnr.
+  zbmierzwi_test_vbap_struct-netwr = lwa_items-netwr.
+ENDMODULE.
+*******************************************************************
+
+*Now, when I provide the sales document's number and press Enter, the PAI event will be executed. The 'get_sales_header_data' module will be triggered
+*and the data will be fetched - the header data will be put directly into the screen fields and, if that happens, the item data will land in an
+*internal table. When that is finished the control goes to the PBO event. Here I have written the logic to populate the table control component. This is
+*the only place where this action can occur. The item data from the internal table is assigned to the table control component in a loop.
+
+*The data should now be displayed in the table control component. At this moment I have the ability to scroll horizontally through the table control
+*component but not vertically. SAP does not provide the vertical scrolling by default and it needs to be enabled programatically. I am going to do
+*it in the data fetching module because extending the length (height?) of the table control component is dependent on the number of lines it will
+*contain. If any data has been found, so if the 'sy-subrc' variable equals 0, I refer to my table control component's 'line' property and set it
+*to the number of records that has been found. The 'sy-dbcnt' variable contains the number of records that have been retrieved by the previous SELECT
+*statement.
+*The data fetching module in the PAI event now looks like this:
+*******************************************************************
+MODULE get_sales_header_data INPUT.
+  SELECT SINGLE vbeln erdat erzet ernam
+    FROM vbak
+      INTO (zbmierzwi_test_vbak_struct-vbeln,
+            zbmierzwi_test_vbak_struct-erdat,
+            zbmierzwi_test_vbak_struct-erzet,
+            zbmierzwi_test_vbak_struct-ernam)
+        WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
+  IF sy-subrc = 0.
+    SELECT vbeln posnr matnr netwr
+      FROM vbap
+        INTO TABLE lt_items
+          WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
+    IF sy-subrc = 0.
+      tbctrl-lines = sy-dbcnt.
+    ENDIF.
+  ENDIF.
+ENDMODULE.
 *******************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
