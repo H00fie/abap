@@ -9623,6 +9623,25 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. VALIDATIONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*There are three ways a Module Pool transaction (program?) can be validated:
+*1. Automatic field validation.
+*2. Flow logic validation.
+*3. Module pool validation.
+*Every transaction I design has to be validated before any data is processed.
+
+*I am now creating an MP program named 'Z_BM_TEST_MPP4'. I create a new screen for it (100) and move to the layout access the Screen Painter
+*tool. I choose GoTo -> Secondary Window -> Dictionary/Program field and provide the 'KNA1' table from which I take KUNNR, LAND1 and ERDAT.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
