@@ -9634,6 +9634,22 @@ ENDMODULE.
 
 *I am now creating an MP program named 'Z_BM_TEST_MPP4'. I create a new screen for it (100) and move to the layout access the Screen Painter
 *tool. I choose GoTo -> Secondary Window -> Dictionary/Program field and provide the 'KNA1' table from which I take KUNNR, LAND1 and ERDAT.
+*After having placed the chosen fields in the layout of my screen I choose the Box option from the tool panel on the left hand side and
+*draw the box around my previously placed fields. I double click the box, set the Name to 'BX1' and the text to 'Automatic_field_validations'.
+*The underscores are added automatically when I press Space. Then I choose the Pushbutton option from the panel on the left and draw a
+*button for exiting my application. I double click it, set the Name to 'B1', text 'Exit' and the Function Code to 'FC1'.
+*Now I write the logic for my Exit button. Whenever a Module Pool button is clicked, the PAI event is triggered - so it's here that the
+*mentioned logic needs to be placed. I go to my screen 100, the Flow Logic tab, uncomment the 'MODULE_USER_COMMAND_0100' in PAI and
+*double click it. I place it within the TOP INCLUDE.
+*The module looks like that so far:
+********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+  	WHEN 'FC1'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
