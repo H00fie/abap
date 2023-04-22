@@ -9664,6 +9664,32 @@ ENDMODULE.
 *The Automatic Field Validations are triggered thus either due to certain properties being set at the screen level or properties of the field
 *maintained at the database level. If these validations do not pass, I cannot exit the transaction.
 
+*If I want to be able to exit the transaction if the the Automatic Field Validations do not pass - there is a way to do it. I go to the layout
+*of my screen (the Screen Painter tool) and draw a second button. Its 'Name' is 'B2' and its 'Text' is 'Cancel'. The 'FctCode' is 'FC2' and I
+*additionally set the 'FctType' to 'E Exit command'. This is a property that I need to set if I want my button to be able to take me out of
+*the transaction even if the Automatic Field Validations did not pass.
+*Apart from doing that I also need to define a dedicated 'AT EXIT COMMAND' module if I want my button to work correctly. Whenever a button is
+*clicked, the PAI event is triggered and so its there that said module needs to be placed.
+*My screen 100 so far looks like this:
+********************************************************************
+PROCESS BEFORE OUTPUT.
+* MODULE STATUS_0100.
+*
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0100.
+ MODULE super_cancel AT EXIT-COMMAND.
+********************************************************************
+   
+*And the newly created in the TOP INCLUDE module looks like that:
+********************************************************************
+MODULE super_cancel INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
