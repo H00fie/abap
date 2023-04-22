@@ -9651,6 +9651,19 @@ MODULE user_command_0100 INPUT.
 ENDMODULE.
 ********************************************************************
 
+*Now I create the transaction for my program. The transaction's name is 'ZBMI6', the 'Start object', as always is the case with MP programs,
+*is 'Program and dynpro (dialog transaction)' and the 'GUI support' is 'SAP GUI for Windows' which is also a standard. I would also like to
+*make the 'Customer' screen field an obligatory one so I go to the Screen Painter tool, double-click the field and in the 'Attributes' section,
+*in the 'Program' tab, nex to 'Input' I select the 'required' option.
+*If I now push my 'Exit' button after having executed my program, I will get an error message - a validation message. It is a standard message
+*provided by SAP. It is thus validation stemming from a property being set at a screen's level. It is the Automatic Field Validation.
+*If I provided my 'Country' screen field with a country key that does not exist and tried to exit my program, I would get a message telling me
+*that this country code does not exist in T005. This is also the Automatic Field Validation. SAP is looking for the value within a database
+*table - this is maintained at the database level. 
+*If I provided a wrong date, e.g. 19/26/2018, I would get the 'Invalid date' validation message. This is, yet again, the Automatic Field Validation.
+*The Automatic Field Validations are triggered thus either due to certain properties being set at the screen level or properties of the field
+*maintained at the database level. If these validations do not pass, I cannot exit the transaction.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
