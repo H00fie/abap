@@ -9694,6 +9694,7 @@ ENDMODULE.
 
 *FLOW LOGIC VALIDATION
 **********************
+*In case of the Flow Logic Validation, the validation is defined on the flow logic level.
 *I go to the Screen Painter tool, create another box with database table's fields. The database table is MARA and the fields chosen are
 *MATNR, MTART and MATKL. I draw a 'Box' around the fields box and name it 'BX2'. The text says 'Flow logic validations'.
 *I want to make sure that the MTART (material type) field only accept the values of COUP (Coupons), FERT (Finished Product) and FRIP
@@ -9715,6 +9716,22 @@ PROCESS AFTER INPUT.
 *Otherwise I will get an error message 'Enter a valid value'. In such a scenario, the field has failed the Flow Logic Validation. All the
 *other input fields get disabled as a result - no values can be provided at this point. Thus if a field fails the Flow Logic Validation,
 *all other input fields are disabled.
+
+*If I want to avoid the disabling of all the input fields in case of the material type field failing the Flow Logic Validation, I need
+*to group the fields I want to remain enabled within a CHAIN. All the fields enclosed within it will always remain enabled even if a field
+*fails the Flow Logic Validation. This needs to be done within the PAI event. In my case, I want the customer number, the material number
+*and the material type to always remain enabled.
+*Hence, my PAI event looks as below:
+********************************************************************
+PROCESS AFTER INPUT.
+ CHAIN.
+  FIELD kna1-kunnr.
+  FIELD mara-matnr.
+  FIELD mara-mtart VALUES ('COUP', 'FERT', 'FRIP').
+ ENDCHAIN.
+ MODULE USER_COMMAND_0100.
+ MODULE super_cancel AT EXIT-COMMAND.
+********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
