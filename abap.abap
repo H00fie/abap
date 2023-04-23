@@ -9632,6 +9632,8 @@ ENDMODULE.
 *3. Module pool validation.
 *Every transaction I design has to be validated before any data is processed.
 
+*AUTOMATIC FIELD VALIDATION
+***************************
 *I am now creating an MP program named 'Z_BM_TEST_MPP4'. I create a new screen for it (100) and move to the layout access the Screen Painter
 *tool. I choose GoTo -> Secondary Window -> Dictionary/Program field and provide the 'KNA1' table from which I take KUNNR, LAND1 and ERDAT.
 *After having placed the chosen fields in the layout of my screen I choose the Box option from the tool panel on the left hand side and
@@ -9689,6 +9691,30 @@ MODULE super_cancel INPUT.
   ENDCASE.
 ENDMODULE.
 ********************************************************************
+
+*FLOW LOGIC VALIDATION
+**********************
+*I go to the Screen Painter tool, create another box with database table's fields. The database table is MARA and the fields chosen are
+*MATNR, MTART and MATKL. I draw a 'Box' around the fields box and name it 'BX2'. The text says 'Flow logic validations'.
+*I want to make sure that the MTART (material type) field only accept the values of COUP (Coupons), FERT (Finished Product) and FRIP
+*(Perishables). Right now, there's a very long list of possible values available due to the data element of the MTART having an F4 Help
+*attached by default.
+*I can ensure such a restriction by implementing a Flow Logic Validation. I need to add the restriction to the PAI event within my MP
+*program. 
+*The PAI section within my flow logic now looks as below (it works despite the VALUES keyword beign marked as wrong).
+********************************************************************
+PROCESS AFTER INPUT.
+ FIELD mara-mtart VALUES ('COUP', 'FERT', 'FRIP').
+ MODULE USER_COMMAND_0100.
+ MODULE super_cancel AT EXIT-COMMAND.
+********************************************************************
+   
+*Right now in my MP program, the Exit button will not allow me to leave the application unless all the required fields are filled
+*correctly. Without my new restriction for the material type, the Exit button would work only if there was any value provided to the
+*customer input field. With my new restriction the material type input field also needs to be filled - with one of three possible values.
+*Otherwise I will get an error message 'Enter a valid value'. In such a scenario, the field has failed the Flow Logic Validation. All the
+*other input fields get disabled as a result - no values can be provided at this point. Thus if a field fails the Flow Logic Validation,
+*all other input fields are disabled.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
