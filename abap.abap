@@ -9733,6 +9733,48 @@ PROCESS AFTER INPUT.
  MODULE super_cancel AT EXIT-COMMAND.
 ********************************************************************
 
+*MODULE POOL VALIDATIONS
+************************
+*If I want user defined validation messages I should define a Module Pool Validation implementation. The messages of the Automatic Field
+*Validations and the Flow Logic Validations are always provided by SAP itself.
+*I move back to the Screen Painter tool and draw a fields box of the VBAK database table taking VBELN, ERDAT, ERZET and ERNAM fields. I draw
+*a 'Box' around it, name it 'BX3' and set its text to 'Module_pool_validations'.
+*I would like all the input fields of that section to be filled automatically with data upon providing the VBELN and pressing Enter. Pressing
+*the Enter key in the input field triggers the PAI event and it is here where I need to define my desired logic. To have such an action be
+*carried out upon pressing Enter in a particular field, I need to utilize the syntax of 'FIELD <field_name> MODULE <module_name>' and thus
+*define a separate module for the action.
+*The PAI event's section within the flow logic of my MP program now looks like this:
+********************************************************************
+PROCESS AFTER INPUT.
+ CHAIN.
+  FIELD kna1-kunnr.
+  FIELD mara-matnr.
+  FIELD mara-mtart VALUES ('COUP', 'FERT', 'FRIP').
+ ENDCHAIN.
+ MODULE USER_COMMAND_0100.
+ MODULE super_cancel AT EXIT-COMMAND.
+ FIELD vbak-vbeln MODULE get_data.
+********************************************************************
+ 
+*The 'get_data' module is created within the TOP INCLUDE and looks like this:
+********************************************************************
+MODULE get_data INPUT.
+  IF vbak-vbeln IS NOT INITIAL.
+    SELECT erdat erzet ernam
+      FROM vbak
+        INTO (vbak-erdat, vbak-erzet, vbak-ernam)
+          WHERE vbeln = vbak-vbeln.
+    IF sy-subrc = 0.
+      MESSAGE 'The sales document has been found' TYPE 'S'.
+    ELSE.
+      MESSAGE 'The sales document has not been found' TYPE 'S'.
+    ENDIF.
+  ELSE.
+    MESSAGE 'Please enter a sales document' TYPE 'S'.
+  ENDIF.
+ENDMODULE.
+********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
