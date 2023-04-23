@@ -9760,10 +9760,61 @@ PROCESS AFTER INPUT.
 ********************************************************************
 MODULE get_data INPUT.
   IF vbak-vbeln IS NOT INITIAL.
-    SELECT erdat erzet ernam
+*I am using a key field in the WHERE clause so SELECT SINGLE it is.
+    SELECT SINGLE erdat erzet ernam
       FROM vbak
         INTO (vbak-erdat, vbak-erzet, vbak-ernam)
           WHERE vbeln = vbak-vbeln.
+    IF sy-subrc = 0.
+      MESSAGE 'The sales document has been found' TYPE 'S'.
+    ELSE.
+      MESSAGE 'The sales document has not been found' TYPE 'S'.
+    ENDIF.
+  ELSE.
+    MESSAGE 'Please enter a sales document' TYPE 'S'.
+  ENDIF.
+ENDMODULE.
+********************************************************************
+
+*The above will so far not work because if I want to use screen fields in my program, I need to declare them explicitly. I am using four
+*fields of the VBAK table and I could use the TABLES keyword complete with the VBAK addition but that would decrease the performance given
+*the large number of fields in VBAK itself (TABLES creates a work area and thus a work area with around 200 fields would be made). I could 
+*create a structure containing only the four fields of my choosing instead and use it side by side with the TABLES keyword.
+*I can also simply declare the fields separately with the DATA keyword but I need to change the names of the fields within the Screen Painter
+*tool so that they no longer contain a hyphen. I thus change 'vbak-vbeln' into 'v_vbeln' and all other fields similarly. All mentions of
+*the fields need to be amended. I am choosing this method this time.
+
+*The PAI event's section in the flow logic now looks like this:
+********************************************************************
+PROCESS AFTER INPUT.
+ CHAIN.
+  FIELD kna1-kunnr.
+  FIELD mara-matnr.
+  FIELD mara-mtart VALUES ('COUP', 'FERT', 'FRIP').
+ ENDCHAIN.
+ MODULE USER_COMMAND_0100.
+ MODULE super_cancel AT EXIT-COMMAND.
+ FIELD v_vbeln MODULE get_data.
+********************************************************************
+ 
+*The top part of my TOP INCLUDE looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP4.
+
+DATA: v_vbeln TYPE vbak-vbeln,
+      v_erdat TYPE vbak-erdat,
+      v_erzet TYPE vbak-erzet,
+      v_ernam TYPE vbak-ernam.
+********************************************************************
+
+*The 'get_data' module looks like this:
+********************************************************************
+MODULE get_data INPUT.
+  IF v_beln IS NOT INITIAL.
+    SELECT SINGLE erdat erzet ernam
+      FROM vbak
+        INTO (v_erdat, v_erzet, v_ernam)
+          WHERE vbeln = v_vbeln.
     IF sy-subrc = 0.
       MESSAGE 'The sales document has been found' TYPE 'S'.
     ELSE.
