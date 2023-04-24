@@ -9833,6 +9833,41 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. TABSTRIP CONTROL.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Tabstrip control is a collection of tab buttons. E.g. if I went to SE11 and opened the KNA1 database table, all the tabs I could see -
+*'Attributes', 'Fields' etc constitute the tabstrip control. Selecting each tab results in a different screen being displayed - these are
+*called subscreens. At any given time one of the tabs has to be the active tab. A subscreen cannot be positioned directly on the "main"
+*screen, it always needs to be placed within the bounds of a subscreen area. A subscreen area is thus a container of subscreens. One
+*subscreen area can contain multiple subscreens.
+*Tabstrip control can be used if instead of grouping all fields together in one screen I want to logically separate them, e.g. Tab 1
+*could display the employee fields, Tab 2 could display the department fields, Tab 3 could display the address fields.
+
+*I want to design a screen with the tabstrip control with two tabs each of which associated with a subscreen. I want the second tab to
+*be active by default. Thus my MP program will consist of three screens - a normal screen and two subscreens.
+*I go to SE80, create a program 'Z_BM_TEST_MPP5' with the TOP INCLUDE. Now I create the screen (100) and go to the Layout. First, I design
+*the normal screen - here the tabstrip control will reside. The panel on the left hand side of the screen contains the 'Tabstrip Control'
+*button - it's the seventh button from the top. I draw the element in the screen and double click it (every element in the screen needs
+*its own name). The name I give is 'TBSTR'. In the 'Attributes' section down below There's a 'Tab Title' option with an input box to
+*the right. That box contains a number and it represents the number of tabs my tabstrip control contains. Whatever number I provide here,
+*that many tabs will appear as part of my tabstrip control.
+*I need to set the properties of my tabs separately. In case of pushbuttons I need to set the name, text and function code. All of these
+*also need to be set in case of tabbuttons but they also require the setting of the 'Ref. Field' property. It should contain the name
+*of the subscreen area.
+*I double click the first tabbutton and set its name to 'T1', text to 'Nezuko', function code to 'FC1' and reference field to 'SAREA1'.
+*Now I choose the fifth button from the bottom from the panel on the left hand side of the Screen Painter tool ('Subscreen Area') and draw
+*the subscreen area under the 'Nezuko' tabbutton. I double click it and realize the subscreen's name is automatically set to 'SAREA1'.
+*Now I move to the second tab. I set its name to 'T2', text to 'Halibel', function code to 'FC2' and reference field is again 'SAREA1'.
+*My tabbuttons share the same subscreen area.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
