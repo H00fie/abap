@@ -9861,6 +9861,22 @@ ENDMODULE.
 *Now I move to the second tab. I set its name to 'T2', text to 'Halibel', function code to 'FC2' and reference field is again 'SAREA1'.
 *My tabbuttons share the same subscreen area.
 
+*I now move on to create the Exit button. The name is 'B1', text 'Exit' and function code 'FC3'. Clicking a pushbutton triggers the PAI
+*event - it's here I will write the logic for my button. As for now I only have one screen so it's obvious in which flow logic section
+*I need to write the code for my button. I uncomment the 'Module USER_COMMAND_0100' and create it within the TOP INCLUDE.
+*The logic looks like that:
+********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC3'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+********************************************************************
+
+*Now I need a transaction. I name it 'ZBMI7'. The screen number for it is '0100' (the main screen of my program), and GUI support is
+*'SAP GUI for Windows'.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
