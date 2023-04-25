@@ -9877,6 +9877,16 @@ ENDMODULE.
 *Now I need a transaction. I name it 'ZBMI7'. The screen number for it is '0100' (the main screen of my program), and GUI support is
 *'SAP GUI for Windows'.
 
+*My program now activates without problems but trying to run it results in a runtime error. When a screen contains a table control
+*component, it needs to be explicitly declared using the keyword CONTROLS. The tabstrip control works in the same manner - it needs to
+*be declared explicitly with CONTROLS. The data type of a tabstrip control is TABSTRIP.
+*The top of my TOP INCLUDE now looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP5.
+
+CONTROLS: tbstr TYPE TABSTRIP.
+********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
