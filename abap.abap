@@ -9921,6 +9921,69 @@ PROCESS BEFORE OUTPUT.
 CALL SUBSCREEN saera1 INCLUDING sy-repid v_scrno.
 ********************************************************************
 
+*The subscreen '300' is now called by default but I still cannot change between the tabs. I cannot move to subscreen '200' yet. PBO
+*is triggered both to begin with and every time after PAI. So I can have the variable that holds the number of the subscreen to display
+*contain '300' (the second subscreen I want displayed) and have a function that will trigger only once in PBO and change the value of
+*the active tab to the second one by setting a correct (FC2 in this case) function code (tabs and subscreens needs to be managed separately!).
+*In order to achieve this one time occurence, I declare a flag variable whose value is changed within the function next to the setting of
+*the active tab to 'FC2'). The condition says that the code within is to be executed only if 'v_flag' is equal to 0... which it will be
+*only at the very execution of the program and there it will be changed for good immediately so that logic will never trigger again. Thus,
+*I am making the 'Halibel' tab the default one.
+*The upper part of my TOP INCLUDE (housing the flag variable from now on) looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP5.
+
+CONTROLS: tbstr TYPE TABSTRIP.
+
+DATA: v_scrno TYPE sy-dynnr VALUE '300'.
+
+DATA: v_flag TYPE i.
+********************************************************************
+
+*The PBO event of my screen 100's flow logic looks like this:
+********************************************************************
+PROCESS BEFORE OUTPUT.
+MODULE change_flag_if_default.
+CALL SUBSCREEN saera1 INCLUDING sy-repid v_scrno.
+********************************************************************
+
+*And the module responsible for handling the default behaviour (placed in the TOP INCLUDE) looks like this:
+********************************************************************
+MODULE change_flag_if_default OUTPUT.
+  IF v_flag = 0.
+    v_flag = 1.
+    tbstr-activetab = 'FC2'.
+  ENDIF.
+ENDMODULE.
+********************************************************************
+
+*I now need the logic to allow for switching between the tabs and screens associated with them. I can change tabs themselves directly here
+*by referring to my tabstrip control's property but the CALL SUBSCREEN syntax for the changing of the subscreens can only be written within
+*the flow logic, so every time a particular tab is selected (a particular function code is passed into the function), my CALL SUBSCREEN
+*function needs to be informed what subscreen is to be called. The 'v_scrno' variable is the messanger. The CALL SUBSCREEN function will
+*trigger every time the PBO event triggers which happens after every iteration of the PAI event and it will set the currently displayed
+*subscreen to the one whose number is currently stored within the 'v_scrno' variable. So by pairing the changing of the value of that
+*variable with the changing of the function code I ensure that the subscreen will change alongside the tab which changes according to the
+*function codes passed into the function. What function code is passed into the function depends on which tabbutton has been clicked.
+*Whenever a tabbutton is clicked, the PAI event is triggered. The tabbuttons are part of the tabstrip control which is in the main screen
+*(100). I can create that logic by expanding the 'USER_COMMAND_0100' module as it already handles what actions are to be performed depending
+*on the function code stored within 'sy-ucomm' (so far it handled only the exitting functionality).
+*The 'USER_COMMAND_0100' module now looks like this:
+********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC3'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+      tbstr-activetab = 'FC1'.
+      v_scrno = '200'.
+    WHEN 'FC2'.
+      tbstr-activetab = 'FC2'.
+      v_scrno = '300'.
+  ENDCASE.
+ENDMODULE.
+********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
