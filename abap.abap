@@ -9887,6 +9887,15 @@ PROGRAM Z_BM_TEST_MPP5.
 CONTROLS: tbstr TYPE TABSTRIP.
 ********************************************************************
 
+*By default the first tab is active. Every tabbutton needs to be associated with a subscreen so I need to create these two subscreens.
+*In order to do that I double click the name of my MP program, select Create and pick Screen. I provide the number '200' and set
+*the 'Screen Type' radiobutton to 'Subscreen'. I immediately go to Layout (the Screen Painter tool, quite obviously, is separate for
+*every screen of my program) and lower the size of the screen - I can grab its corner and resize it. I draw a 'Text field', name it
+*'T1' and give it the text of 'Nezuko best girl'. I could design it differently, of course, for instance I could place database table's
+*fields here if I so desired.
+*Now I create the second subscreen. Its number is '300' and its 'Text field' goes by the name of 'T2' and displays the text
+*'Halibel best girl'.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
