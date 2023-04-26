@@ -9896,6 +9896,31 @@ CONTROLS: tbstr TYPE TABSTRIP.
 *Now I create the second subscreen. Its number is '300' and its 'Text field' goes by the name of 'T2' and displays the text
 *'Halibel best girl'.
 
+*I now have a normal screen and two subscreens. The first tab of the two is active and I want the second to be. The '200' subscreen
+*is to be assigned to 'Nezuko' and '300' to 'Halibel'.
+*In my TOP INCLUDE I declare a variable ('v_scrno') that's to hold the screen number. It's value is '300' to begin with so that the second tab
+*might be the default one.
+*The upper part of my TOP INCLUDE now looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP5.
+
+CONTROLS: tbstr TYPE TABSTRIP.
+
+DATA: v_scrno TYPE sy-dynnr VALUE '300'.
+********************************************************************
+
+*My transaction code is linked to the normal screen of my MP program and whenever a MP screen is called, the first event triggered is PBO.
+*I can have the subscreen of my choosing be called at this stage and thus have it as the default subscreen displayed. The following
+*syntax is recognised only within the flow logic and cannot be written anywhere else. The keywords CALL SUBSCREEN are followed by the
+*name of the subscreen area. The INCLUDING keyword comes afterwards with the name of the subscreen's program (the program in which the
+*subscreen is designed. So in my case it's the program I am currently working on so its name is stored in the system variable) and the
+*number of the subscreen (stored in a custom variable).
+*The PBO section in the flow logic of my screen '100' now looks like this:
+********************************************************************
+PROCESS BEFORE OUTPUT.
+CALL SUBSCREEN saera1 INCLUDING sy-repid v_scrno.
+********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
