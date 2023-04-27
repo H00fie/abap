@@ -1,272 +1,154 @@
 *---------------------------------------------------------------------------------------------------------------------------------
-*A PROGRAM CONTAINING THE TABLE CONTROL COMPONENT.
+*TABSTRIP CONTROL.
 *---------------------------------------------------------------------------------------------------------------------------------
 
-*When I generate the Table Maintenance, I need to specify the Maintenance Type - either One Step or Two Step. The Two Step means
-*that two screens will be generated - the Overview Screen and the Single Screen. In the Overview Screen I can perfom operations
-*like View, Delete and Update and in the Single Screen I can Insert the data.
-*If I open SM30 transaction, provide a table's name and click the 'Maintain' button, the Overview Screen will be displayed. If
-*I select 'New Entries', the Single Screen will be displayed.
-*In the Overview Screen I can see the records displayed. This section is called Table Control. My transactions might contain the
-*screen element called Table Control. Its purpose is to display the records in the form of rows and columns. In the Single Screen
-*I can see only Input Fields. Input Fields can show only one value.
+*Tabstrip control is a collection of tab buttons. E.g. if I went to SE11 and opened the KNA1 database table, all the tabs I could see -
+*'Attributes', 'Fields' etc constitute the tabstrip control. Selecting each tab results in a different screen being displayed - these are
+*called subscreens. At any given time one of the tabs has to be the active tab. A subscreen cannot be positioned directly on the "main"
+*screen, it always needs to be placed within the bounds of a subscreen area. A subscreen area is thus a container of subscreens. One
+*subscreen area can contain multiple subscreens.
+*Tabstrip control can be used if instead of grouping all fields together in one screen I want to logically separate them, e.g. Tab 1
+*could display the employee fields, Tab 2 could display the department fields, Tab 3 could display the address fields.
 
-*I want to create a program which takes the sales document's number as a parameter and when Enter is pressed, the corresponding
-*header and item data should be provided and displayed. The header data needs to be displayed in separate fields and the item
-*data needs to be displayed in Table Control.
-*I need to go to SE80, pick the 'Program' option and provide the name of my program. In my case it's 'Z_BM_TEST_MPP3'. Now I am
-*to press Enter and create the object with the TOP INCLUDE. The 'Type' is the 'Module Pool'. I need to create a Screen now. In
-*order to do it, I should right-click my program's name, select Create and then Screen. A short description and the number of the
-*screen should be provided (100 in my case). In the Layout I will be using the fields of the VBAK and VBAP tables. I could refer
-*to these tables directly, but I will require only four fields from each table so for the sake of performance I elect to trade
-*the entire tables for my custom structures each of whom contains the aforementioned four fields - one from VBAK and one from VBAP.
-*1) The structure containing VBAK's fields is called: 'ZBMIERZWI_TEST_VBAK_STRUCT' and its field are:
-*- VBELN type VBELN_VA,
-*- ERDAT type ERDAT,
-*- ERZET type ERZET,
-*- ERNAM type ERNAM.
-*2) The structure containing VBAP's fields is called: 'ZBMIERZWI_TEST_VBAP_STRUCT' and its field are:
-*- VBELN type VBELN_VA,
-*- POSNR type POSNR_VA,
-*- MATNR type MATNR,
-*- NETWR type NETWR_AP.
-*I should go to the Screen Painter tool now by pressing the 'Layout' button. I now need to go to Goto (hehe) -> Secondary Window ->
-*Dictionary/Program Fields. In the input box that takes the tables' names I can also provide the names of the structures, so I can
-*type in 'ZBMIERZWI_TEST_VBAK_STRUCT' and push the 'Get from Dictionary' button. Now I should press the book icon in the upper left
-*hand corner of the list of the displayed fields and proceed with that. I would now like to make the EMPNO field a mandatory one.
-*In the SELECTION-SCREEN kind of a program, I would use the addition of OBLIGATORY. In an MPP, I need to double click the input field,
-*go to the 'Program' tab of the 'Attributes' section and next to the 'Input' label I can see a drop-down list - I need to select the
-*'required' option. An MPP indicated that a field is mandatory by having a question mark placed within its input box in the Screen
-*Painter tool.
-*Now I proceed to create the 'Exit' button. Within the Screen Painter tool I need to select the 'Button' option and draw my button
-*in my preferred place in the screen. I name the button 'B1', the text is 'Exit' and the function code is 'FC1'. Now I write the
-*logic for the 'Exit' button. I move to the Screen in SE80, uncomment the 'MODULE USER_COMMAND_0100' and create the object within the
-*TOP INCLUDE.
-*The logic looks as follows:
-*******************************************************************
+*I want to design a screen with the tabstrip control with two tabs each of which associated with a subscreen. I want the second tab to
+*be active by default. Thus my MP program will consist of three screens - a normal screen and two subscreens.
+*I go to SE80, create a program 'Z_BM_TEST_MPP5' with the TOP INCLUDE. Now I create the screen (100) and go to the Layout. First, I design
+*the normal screen - here the tabstrip control will reside. The panel on the left hand side of the screen contains the 'Tabstrip Control'
+*button - it's the seventh button from the top. I draw the element in the screen and double click it (every element in the screen needs
+*its own name). The name I give is 'TBSTR'. In the 'Attributes' section down below There's a 'Tab Title' option with an input box to
+*the right. That box contains a number and it represents the number of tabs my tabstrip control contains. Whatever number I provide here,
+*that many tabs will appear as part of my tabstrip control.
+*I need to set the properties of my tabs separately. In case of pushbuttons I need to set the name, text and function code. All of these
+*also need to be set in case of tabbuttons but they also require the setting of the 'Ref. Field' property. It should contain the name
+*of the subscreen area.
+*I double click the first tabbutton and set its name to 'T1', text to 'Nezuko', function code to 'FC1' and reference field to 'SAREA1'.
+*Now I choose the fifth button from the bottom from the panel on the left hand side of the Screen Painter tool ('Subscreen Area') and draw
+*the subscreen area under the 'Nezuko' tabbutton. I double click it and realize the subscreen's name is automatically set to 'SAREA1'.
+*Now I move to the second tab. I set its name to 'T2', text to 'Halibel', function code to 'FC2' and reference field is again 'SAREA1'.
+*My tabbuttons share the same subscreen area.
+
+*I now move on to create the Exit button. The name is 'B1', text 'Exit' and function code 'FC3'. Clicking a pushbutton triggers the PAI
+*event - it's here I will write the logic for my button. As for now I only have one screen so it's obvious in which flow logic section
+*I need to write the code for my button. I uncomment the 'Module USER_COMMAND_0100' and create it within the TOP INCLUDE.
+*The logic looks like that:
+********************************************************************
 MODULE user_command_0100 INPUT.
   CASE sy-ucomm.
-    WHEN 'FC1'.
+    WHEN 'FC3'.
       LEAVE PROGRAM.
   ENDCASE.
 ENDMODULE.
-*******************************************************************
+********************************************************************
 
-*Now to create the transaction. I need to right-click the name of my program in SE80, select 'Create' and then select 'Transaction'.
-*The name I gave is 'ZBMI5' and the 'Start object' is 'Program and screen (dialog transaction)' as it always the case for MPP. I then
-*need to provide the name of the program the transaction is for, the screen number (100) and check the 'SAPGUI for Windows' checkbox
-*in the 'GUI Support' section.
+*Now I need a transaction. I name it 'ZBMI7'. The screen number for it is '0100' (the main screen of my program), and GUI support is
+*'SAP GUI for Windows'.
 
-*I want all the screen fields to be filled with data associated with the provided sales document's number upon pressing Enter. In case
-*of selection screen programs, pressing the Enter key in the selection screen input field the AT SELECTION-SCREEN ON <field> event is
-*triggered and then followed by AT SELECTION-SCREEN and AT SELECTION-SCREEN OUTPUT. In case of MP, the PAI comes first and the PBO comes
-*afterwards. Since PAI comes first when Enter is pressed it is within PAI that I should write the logic for fetching the data for all
-*input fields.
-*To request that SAP triggers that piece of code when Enter is pressed in the particular input field, I need to name that field (the name
-*comes from the Screen Painter tool) before specifying the module that should be triggered.
-*The syntax looks as below:
-*******************************************************************
-PROCESS AFTER INPUT.
- MODULE USER_COMMAND_0100.
- FIELD zbmierzwi_test_vbak_struct-vbeln MODULE get_sales_header_data.
-*******************************************************************
- 
-*The module needs to be double-clicked and created within the TOP INCLUDE. Now, based on the value of VBELN, I should get the rest of
-*the data. The sales document (VBELN) is a primary key field in VBAK so I will get only one record's data as a result of my query, thus
-*I use SELECT SINGLE.
-*The module looks as follows:
-*******************************************************************
- MODULE get_sales_header_data INPUT.
-  SELECT SINGLE vbeln erdat erzet ernam
-    FROM vbak
-      INTO (zbmierzwi_test_vbak_struct-vbeln,
-            zbmierzwi_test_vbak_struct-erdat,
-            zbmierzwi_test_vbak_struct-erzet,
-            zbmierzwi_test_vbak_struct-ernam)
-        WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
-ENDMODULE.
-*******************************************************************
+*My program now activates without problems but trying to run it results in a runtime error. When a screen contains a table control
+*component, it needs to be explicitly declared using the keyword CONTROLS. The tabstrip control works in the same manner - it needs to
+*be declared explicitly with CONTROLS. The data type of a tabstrip control is TABSTRIP.
+*The top of my TOP INCLUDE now looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP5.
 
-*Whenever I am using screen fields in a program, I need to declare them explicitly. I need to add the below at the top of the INCLUDE:
-*******************************************************************
-DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
-      zbmierzwi_test_vbak_struct-erdat TYPE zbmierzwi_test_vbak_struct-erdat,
-      zbmierzwi_test_vbak_struct-erzet TYPE zbmierzwi_test_vbak_struct-erzet,
-      zbmierzwi_test_vbak_struct-ernam TYPE zbmierzwi_test_vbak_struct-ernam.
-*******************************************************************
+CONTROLS: tbstr TYPE TABSTRIP.
+********************************************************************
 
-*The names of the fields seem bizzare because they need to be the same as the screen fields' names created in the Screen Painter tool
-*and this is what they look like.
-*If I want to use the screen fields in my program, I need to declare them in my program but I cannot have a variable name containing
-*a hyphen and if the data for the fields in the Screen Painter is loaded from the database, then SAP automatically gives the fields
-*names consisting of the database's name and the field's name joined by a hyphen. Thus, I won't be able to refer to that field
-*because my declared field cannot be named e.g. 'kna1-kunnr' and such will be the screen field's name is the data was loaded from
-*KNA1.
-*I can either change the names of the screen fields in the Screen Painter or I can utilize the TABLES declaration. The TABLES declaration 
-*counts as the explicit declaration of the screen fields. The TABLES statement will create a work area with all the table's/structure's
-*fields. I could declare VBAK here... but that would create a work area with over 200 fields which is unnecessary. My structure has only
-*the four fields that I require and is thus perfect here.
-*Thus the top part of my TOP INCLUDE looks like that:
-*******************************************************************
-*DATA: zbmierzwi_test_vbak_struct-vbeln TYPE zbmierzwi_test_vbak_struct-vbeln,
-*      zbmierzwi_test_vbak_struct-erdat TYPE zbmierzwi_test_vbak_struct-erdat,
-*      zbmierzwi_test_vbak_struct-erzet TYPE zbmierzwi_test_vbak_struct-erzet,
-*      zbmierzwi_test_vbak_struct-ernam TYPE zbmierzwi_test_vbak_struct-ernam.
-TABLES: zbmierzwi_test_vbak_struct.
-*******************************************************************
+*By default the first tab is active. Every tabbutton needs to be associated with a subscreen so I need to create these two subscreens.
+*In order to do that I double click the name of my MP program, select Create and pick Screen. I provide the number '200' and set
+*the 'Screen Type' radiobutton to 'Subscreen'. I immediately go to Layout (the Screen Painter tool, quite obviously, is separate for
+*every screen of my program) and lower the size of the screen - I can grab its corner and resize it. I draw a 'Text field', name it
+*'T1' and give it the text of 'Nezuko best girl'. I could design it differently, of course, for instance I could place database table's
+*fields here if I so desired.
+*Now I create the second subscreen. Its number is '300' and its 'Text field' goes by the name of 'T2' and displays the text
+*'Halibel best girl'.
 
-*Now I need to design the Table Control component. I need to go to the Screen Painter tool and in the panel with tools on the left hand
-*side of the window I will see the 'Table Control' button. I need to draw it on the screen. When that's done, I double-click the newly
-*created component and name it 'TBCTRL' (there's no convention). The colour of the Table Control doesn't change yet because there's still
-*no fields associated with it. As much as the fields above the Table Control contain the header data of a sales document, I want my
-*Table Control to contain the item data of that document. The data I want is this in VBAP and I could take the data from there but
-*I have created my own structure and populated it beforehand so that SAP would need to handle only a few columns instead of lots. I can
-*have the Screen Painter tool use my Structure's structure to create its own columns' structure (hehe). 
-*I need to go to Goto -> Secondary Window -> Dictionary/Program Fields, provide the name of my structure ('ZBMIERZWI_TEST_VBAP_STRUCT'), 
-*select the 'Get from Dictionary' button, click the button in the upper left hand side of the window with the columns to select everything 
-*that's just been displayed and proceed.
-*Now I need to drop it on the Table Control and the proper columns will appear there. I can reduce the size of the Table Control to fit
-*the columns just right. I can now double-click the Table Control (e.g. the space in the bottom right hand corner in front of the two
-*arrows at the ends of the sliders - I need to make sure I am double-clicking the Table Control and not the columns and it can be a little
-*bit tricky) and in the 'Attributes' section check the 'Vertical' and 'Horizontal' checkboxes. Due to that the fields in my Table Control
-*will be neatly separated and thus the readability will be improved.
-*If I tried to activate my MP program now, I would get an error saying that "the field ZBMIERZWI_TEST_VBAK_STRUCT-VBELN is not assigned to
-*a loop. 'LOOP ... ENDLOPP' must appear in 'PBO' and 'PAI'." Whenever my screen contains a Table Control component, the loop is required
-*in both PAI and PBO. Even simply declaring "LOOP. ENDLOOP" below both of these will do and the program will activate... but if I try to
-*execute it, a runtime error will occur. That is because whenever my screen contains a Table Control component, that component needs to be
-*declared explicitly within my program.
-*This needs to be done within my TOP INCLUDE program (good practice, it could be declared elsewhere if I didn't want my Code Clean. Hehe)
-*by using the CONTROLS keyword. Special controls like Table Control need to be declared using the CONTROLS and not DATA keyword. The data
-*type for Table Control is 'tableview' and 'using screen' indicated on which screen the Table Control will be displayed.
-*The upper part of my TOP INCLUDE program now looks like this:
-*******************************************************************
-TABLES: zbmierzwi_test_vbak_struct.
-CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
-*******************************************************************
+*I now have a normal screen and two subscreens. The first tab of the two is active and I want the second to be. The '200' subscreen
+*is to be assigned to 'Nezuko' and '300' to 'Halibel'.
+*In my TOP INCLUDE I declare a variable ('v_scrno') that's to hold the screen number. It's value is '300' to begin with so that the second tab
+*might be the default one.
+*The upper part of my TOP INCLUDE now looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP5.
 
-*Now I need to populate my Table Control with item data for the sales document. Of course, only if the sales document has been found and
-*its header data has been thus placed in the input boxes above the Table Control. So - if the 'sy'-subrc' after the SELECT fetching the header
-*data yields 0. I need to declare the internal table for storing the item data.
-*In this case I am first declaring a type and instead of mentioning every field separately, I am using the INCLUDE TYPE syntax, so all the
-*fields present in my custom structures that is being thus included will become part of the new type. Here the TYPES keyword also needs to
-*appear in front of the END OF because there's a full stop before it and that full stop is required because I am using the INCLUDE keyword
-*as part of the TYPES I am creating. Instead of INCLUDE TYPE I could also use INCLUDE STRUCTURE but this syntax is obsolete in OOP.
-*It's worth noting that the TYPES declaration is optional, it's just another level of abstraction, I could declare my internal table and
-*work area directly on my custom structure instead (ZBMIERZWI_TEST_VBAP_STRUCT).
-*The upper part of my TOP INCLUDE now looks as below:
-*******************************************************************
-TABLES: zbmierzwi_test_vbak_struct.
-CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
-TYPES: BEGIN OF t_items.
-  INCLUDE TYPE zbmierzwi_test_vbap_struct.
-TYPES END OF t_items.
-DATA: lt_items  TYPE TABLE OF t_items,
-      lwa_items TYPE t_items.
-*******************************************************************
+CONTROLS: tbstr TYPE TABSTRIP.
 
-*The module for getting the data - adhering to the idea of the item data being fetched only if the header data has been found, looks like that:
-*******************************************************************
-MODULE get_sales_header_data INPUT.
-  SELECT SINGLE vbeln erdat erzet ernam
-    FROM vbak
-      INTO (zbmierzwi_test_vbak_struct-vbeln,
-            zbmierzwi_test_vbak_struct-erdat,
-            zbmierzwi_test_vbak_struct-erzet,
-            zbmierzwi_test_vbak_struct-ernam)
-        WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
-*If the header data is found, I need to populate the Table Control with
-*all the item data for that sales document.
-  IF sy-subrc = 0.
-    SELECT vbeln posnr matnr netwr
-      FROM vbap
-        INTO TABLE lt_items
-          WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
-  ENDIF.
-ENDMODULE.
-*******************************************************************
+DATA: v_scrno TYPE sy-dynnr VALUE '300'.
+********************************************************************
 
-*Now I need to move the data from the internal table (lt_items) to the table control. After executing PAI, PBO comes. The data is fetched
-*in PAI. The screen refreshing logic should always be written in the final event that is being triggered. That is PBO in MP programs.
-*That is why there has to be a LOOP within a MP program that contains a table control. I need to loop through the internal table that
-*contains the item data (lt_items) and, obviously, into a work area as that is the way of ABAP. In order to have my table control populated
-*I also need to add WITH CONTROL <table_control_name> at the end. That syntax means that while I am looping through the internal table, I
-*also want to loop through the table control at the same time. That syntax can ONLY be in the PBO event in the flow logic section so I cannot
-*move the loop itself into a module to modularize it, but I can modularize the logic happening for every iteration of the loop instead. I
-*cannot write the entirety of the logic within the flow logic section as only a few keywords (e.g. loop, field, module) will be recognised
-*here.
-*The PBO part of my flow logic section looks like that:
-*******************************************************************
+*My transaction code is linked to the normal screen of my MP program and whenever a MP screen is called, the first event triggered is PBO.
+*I can have the subscreen of my choosing be called at this stage and thus have it as the default subscreen displayed. The following
+*syntax is recognised only within the flow logic and cannot be written anywhere else. The keywords CALL SUBSCREEN are followed by the
+*name of the subscreen area. The INCLUDING keyword comes afterwards with the name of the subscreen's program (the program in which the
+*subscreen is designed. So in my case it's the program I am currently working on so its name is stored in the system variable) and the
+*number of the subscreen (stored in a custom variable).
+*The PBO section in the flow logic of my screen '100' now looks like this:
+********************************************************************
 PROCESS BEFORE OUTPUT.
-LOOP AT lt_items INTO lwa_items WITH CONTROL tbctrl.
-  MODULE transfer_item_data.
-ENDLOOP.
-*******************************************************************
+CALL SUBSCREEN saera1 INCLUDING sy-repid v_scrno.
+********************************************************************
 
-*Now, in the 'transfer_item_data' module I will be referring to the table control fields and they, much like all the screen fields, need to
-*be declared explicitly in my MP program.
-*Thus, the upper part of my TOP INCLUDE now looks like that:
-*******************************************************************
-TABLES: zbmierzwi_test_vbak_struct,
-        zbmierzwi_test_vbap_struct.
-CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 100.
-TYPES: BEGIN OF t_items.
-  INCLUDE TYPE zbmierzwi_test_vbap_struct.
-TYPES END OF t_items.
-DATA: lt_items  TYPE TABLE OF t_items,
-      lwa_items TYPE t_items.
-*******************************************************************
+*The subscreen '300' is now called by default but I still cannot change between the tabs. I cannot move to subscreen '200' yet. PBO
+*is triggered both to begin with and every time after PAI. So I can have the variable that holds the number of the subscreen to display
+*contain '300' (the second subscreen I want displayed) and have a function that will trigger only once in PBO and change the value of
+*the active tab to the second one by setting a correct (FC2 in this case) function code (tabs and subscreens needs to be managed separately!).
+*In order to achieve this one time occurence, I declare a flag variable whose value is changed within the function next to the setting of
+*the active tab to 'FC2'). The condition says that the code within is to be executed only if 'v_flag' is equal to 0... which it will be
+*only at the very execution of the program and there it will be changed for good immediately so that logic will never trigger again. Thus,
+*I am making the 'Halibel' tab the default one.
+*The upper part of my TOP INCLUDE (housing the flag variable from now on) looks like this:
+********************************************************************
+PROGRAM Z_BM_TEST_MPP5.
 
-*The 'transfer_item_data' module itself looks like shown below. Within the flow logic I am looping through the internal table ('lt_items') that
-*holds the previously fetched data. With every loop, a new record appears in the work area. For every record the below module is executed. Data is
-*here assigned to the table control's fields. Whenever I am referring to the screen fields, I should declare them (that includes the table control
-*fields) - they are declared with the TABLES keyword (instead of mentioning every field separately after the DATA and having to worry about the
-*name containing a hyphen as that's how the Screen Painter tool names the screen fields). Using the TABLES keyword also creates a work area, hence
-*when I type 'CLEAR zbmierzwi_test_vbap_struct' - it will clear the work area of that structure.
-*This works despite the actual table control not being mentioned by its name ('tbctrl') because the screen fields created in the Screen Painter
-*tool are called 'zbmierzwi_test_vbap_struct-vbeln', 'zbmierzwi_test_vbap_struct-posnr', 'zbmierzwi_test_vbap_struct-matnr' and
-*'zbmierzwi_test_vbap_struct-netwr' and so when I mention them, from my program's perspective, I am talking about my table control's fields.
-*******************************************************************
-MODULE transfer_item_data OUTPUT.
-  CLEAR zbmierzwi_test_vbap_struct. "Clearing a work area.
-  zbmierzwi_test_vbap_struct-vbeln = lwa_items-vbeln.
-  zbmierzwi_test_vbap_struct-posnr = lwa_items-posnr.
-  zbmierzwi_test_vbap_struct-matnr = lwa_items-matnr.
-  zbmierzwi_test_vbap_struct-netwr = lwa_items-netwr.
-ENDMODULE.
-*******************************************************************
+CONTROLS: tbstr TYPE TABSTRIP.
 
-*Now, when I provide the sales document's number and press Enter, the PAI event will be executed. The 'get_sales_header_data' module will be triggered
-*and the data will be fetched - the header data will be put directly into the screen fields and, if that happens, the item data will land in an
-*internal table. When that is finished the control goes to the PBO event. Here I have written the logic to populate the table control component. This is
-*the only place where this action can occur. The item data from the internal table is assigned to the table control component in a loop.
+DATA: v_scrno TYPE sy-dynnr VALUE '300'.
 
-*The data should now be displayed in the table control component. At this moment I have the ability to scroll horizontally through the table control
-*component but not vertically. SAP does not provide the vertical scrolling by default and it needs to be enabled programatically. I am going to do
-*it in the data fetching module because extending the length (height?) of the table control component is dependent on the number of lines it will
-*contain. If any data has been found, so if the 'sy-subrc' variable equals 0, I refer to my table control component's 'line' property and set it
-*to the number of records that has been found. The 'sy-dbcnt' variable contains the number of records that have been retrieved by the previous SELECT
-*statement.
-*The data fetching module in the PAI event now looks like this:
-*******************************************************************
-MODULE get_sales_header_data INPUT.
-  SELECT SINGLE vbeln erdat erzet ernam
-    FROM vbak
-      INTO (zbmierzwi_test_vbak_struct-vbeln,
-            zbmierzwi_test_vbak_struct-erdat,
-            zbmierzwi_test_vbak_struct-erzet,
-            zbmierzwi_test_vbak_struct-ernam)
-        WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
-  IF sy-subrc = 0.
-    SELECT vbeln posnr matnr netwr
-      FROM vbap
-        INTO TABLE lt_items
-          WHERE vbeln = zbmierzwi_test_vbak_struct-vbeln.
-    IF sy-subrc = 0.
-      tbctrl-lines = sy-dbcnt.
-    ENDIF.
+DATA: v_flag TYPE i.
+********************************************************************
+
+*The PBO event of my screen 100's flow logic looks like this:
+********************************************************************
+PROCESS BEFORE OUTPUT.
+MODULE change_flag_if_default.
+CALL SUBSCREEN saera1 INCLUDING sy-repid v_scrno.
+********************************************************************
+
+*And the module responsible for handling the default behaviour (placed in the TOP INCLUDE) looks like this:
+********************************************************************
+MODULE change_flag_if_default OUTPUT.
+  IF v_flag = 0.
+    v_flag = 1.
+    tbstr-activetab = 'FC2'.
   ENDIF.
 ENDMODULE.
-*******************************************************************
+********************************************************************
+
+*I now need the logic to allow for switching between the tabs and screens associated with them. I can change tabs themselves directly here
+*by referring to my tabstrip control's property but the CALL SUBSCREEN syntax for the changing of the subscreens can only be written within
+*the flow logic, so every time a particular tab is selected (a particular function code is passed into the function), my CALL SUBSCREEN
+*function needs to be informed what subscreen is to be called. The 'v_scrno' variable is the messanger. The CALL SUBSCREEN function will
+*trigger every time the PBO event triggers which happens after every iteration of the PAI event and it will set the currently displayed
+*subscreen to the one whose number is currently stored within the 'v_scrno' variable. So by pairing the changing of the value of that
+*variable with the changing of the function code I ensure that the subscreen will change alongside the tab which changes according to the
+*function codes passed into the function. What function code is passed into the function depends on which tabbutton has been clicked.
+*Whenever a tabbutton is clicked, the PAI event is triggered. The tabbuttons are part of the tabstrip control which is in the main screen
+*(100). I can create that logic by expanding the 'USER_COMMAND_0100' module as it already handles what actions are to be performed depending
+*on the function code stored within 'sy-ucomm' (so far it handled only the exitting functionality).
+*The 'USER_COMMAND_0100' module now looks like this:
+********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC3'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+      tbstr-activetab = 'FC1'.
+      v_scrno = '200'.
+    WHEN 'FC2'.
+      tbstr-activetab = 'FC2'.
+      v_scrno = '300'.
+  ENDCASE.
+ENDMODULE.
+********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
