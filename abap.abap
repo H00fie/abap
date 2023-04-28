@@ -9991,6 +9991,44 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. MODAL DIALOG BOX.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*A Modal Dialog Box is a pop-up window that allows me to display certain screen elements. Until a Modal Dialog Box is closed, I
+*cannot interact with other elements of the screen.
+*I want a program that takes a sales document's number as a parameter and, upon hitting Enter, displays a Modal Dialog Box that
+*contains the corresponding header data associated with that particular sales document. An Exit button should also be present
+*within the bounds of the Modal Dialog Box that takes me back to the main screen of the program.
+
+*I go to SE80 and create a new MP program named 'Z_BM_TEST_MPP6' which includes a TOP INCLUDE. I create a new screen, with the
+*number of 100 and move to the Layout. I want to process sales documents so my tables are VBAK and VBAP. I go to Goto ->
+*Secondary Window -> Dictionary/Program fields and provide 'VBAK'. I press 'Get from Dictionary' and select VBELN alone. I place
+*it somewhere on my screen on proceed to draw a 'Pushbutton' I will use to exit the program. I double click it, give it the name
+*of 'B1', text 'Exit' and function code 'FC1'. Now I move on to write the logic for the Exit button. The clicking of a pushbutton
+*in the screen triggers the PAI event so I uncomment the SAP provided 'USER_COMMAND_0100' module and double click to create it
+*within my TOP INCLUDE.
+*The module looks like this:
+*********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+*********************************************************************
+
+*Now I need to create the transaction code (by right-clicking on the program's name, selecting Create and then Transaction).
+*It's name is 'ZBMI8' and its start object 'Program and dynpro (dialog transaction)' Moving forward I need to provide the
+*program's name and the screen number which is 0100. I need to check the 'SAP GUI for Windows' radiobutton within the
+*'GUI support' section.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
