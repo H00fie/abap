@@ -10090,6 +10090,44 @@ ENDMODULE.
 *have two different fields called the same ('v_vbeln'). In fact, they will share their one explicit declaration too.
 *I also add the button for leaving the Modal Dialog Box - I draw a pushbutton whose name is 'B1', text 'Leave' and function
 *code 'FC1'.
+*Now I go back to the flow logic section of screen 100. The data that is to be displayed in the Modal Dialog Box is to be fetched
+*the moment the Enter key is pressed while in the sales document's input box in the screen. Thus it is within therein created
+*'get_sales_data' module that the logic fetching the data is to be written. The moment the described action occurs, 'get_sales_data'
+*is triggered and, if the VBELN's screen field is not empty, the code tries to fetch the corresponding data. If it's a success,
+*then the Modal Dialog Box (which is a screen of the number of 200!) is called at a specified location.
+*- STARTING AT is followed by the coordinates of the top left corner.
+*- ENDING AT is followed by the coordinates of the bottom right corner.
+*If the fetching does not bring back any results from the database table, a pop-up window with a relevant update is displayed.
+*If the Enter key is pressed without a sales document having been provided, a pop-up window asking for one is displayed.
+*The 'get_sales_data' module now looks like this:
+*********************************************************************
+MODULE get_sales_data INPUT.
+  IF v_vbeln IS NOT INITIAL.
+    SELECT SINGLE vbeln erdat erzet ernam
+      FROM vbak
+        INTO (v_vbeln, v_erdat, v_erzet, v_ernam)
+          WHERE vbeln = v_vbeln.
+    IF sy-subrc = 0.
+      CALL SCREEN 200 STARTING AT 5 10 ENDING AT 50 20.
+    ELSE.
+      MESSAGE 'No sales data available for the provided sales document.' TYPE 'I'.
+    ENDIF.
+  ELSE.
+    MESSAGE 'Please provide the sales document.' TYPE 'E'.
+  ENDIF.
+ENDMODULE.
+*********************************************************************
+
+*All the screen fields I am referring to in my MP programs need to be declared explicitly, thus the top part of my TOP INCLUDE
+*looks like this:
+*********************************************************************
+PROGRAM Z_BM_TEST_MPP6.
+
+DATA: v_vbeln TYPE vbak-vbeln,
+      v_erdat TYPE vbak-erdat,
+      v_erzet TYPE vbak-erzet,
+      v_ernam TYPE vbak-ernam.
+*********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
