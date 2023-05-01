@@ -10079,6 +10079,18 @@ MODULE get_sales_data INPUT.
 ENDMODULE.
 *********************************************************************
 
+*Now to design the Modal Dialog Box itself - I need to prepare a new screen which will be my Modal Dialog Box. I right click
+*the name of my program and click Create and then Screen. I give it the number of 200, the description of 'Screen 200' and I
+*need to check the 'Modal Dialog Box' radiobutton in the 'Screen Type' section. The point of Modal Dialog Boxes is that until
+*they are closed, the user cannot interact with other parts of the window.
+*Now I design the layout (move to the Screen Painter tool). I choose Goto -> Secondary Window -> Dictionary/Program fields and
+*provide the table VBAK. I select 'Get from Dictionary', choose VBELN, ERDAT, ERZET and ERNAM and place them on my screen. In
+*order to solve the problem with the screen fields containing a hyphen I immediately move to change the names of the newly
+*created fields. 'vbak-vbeln' becomes 'v_vbeln', 'vbak-erdat' becomes 'v_erdat' and so on. It's not a problem that I will now
+*have two different fields called the same ('v_vbeln'). In fact, they will share their one explicit declaration too.
+*I also add the button for leaving the Modal Dialog Box - I draw a pushbutton whose name is 'B1', text 'Leave' and function
+*code 'FC1'.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
