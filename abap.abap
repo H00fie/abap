@@ -10052,6 +10052,32 @@ TABLES: vbak.
 *... which technically would work because it would create a work area of VBAK. The problem is it would hinder performance
 *of my program because with that declaration I have created a work area with a few hundred fields while I am only going to
 *use one.
+*A better thing to do is simply to change the name of the field within the Layout of my screen (the Screen Painter tool) as
+*it will allow me to declare a single field and will work just fine. I access the Screen Painter tool and change the name
+*of the sales document's field to 'v_vbeln' and proceed to change all its mentions in the code as well.
+*The PAI event looks like this:
+*********************************************************************
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0100.
+ FIELD v_vbeln MODULE get_sales_data.
+*********************************************************************
+ 
+*The top part of the TOP INCLUDE looks like this:
+*********************************************************************
+PROGRAM Z_BM_TEST_MPP6.
+
+DATA: v_vbeln TYPE vbak-vbeln.
+*********************************************************************
+
+*The 'get_sales_data' module looks like this:
+*********************************************************************
+MODULE get_sales_data INPUT.
+  IF v_vbeln IS NOT INITIAL.
+  ELSE.
+    MESSAGE 'Please provide the sales document.' TYPE 'E'.
+  ENDIF.
+ENDMODULE.
+*********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
