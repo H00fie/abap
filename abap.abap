@@ -10022,6 +10022,37 @@ ENDMODULE.
 *program's name and the screen number which is 0100. I need to check the 'SAP GUI for Windows' radiobutton within the
 *'GUI support' section.
 
+*In case of a selection screen, pressing the Enter key in the input field triggers three events one after another. These are
+*AT SELECTION-SCREEN ON FIELD, AT SELECTION-SCREEN and AT SELECTION-SCREEN OUTPUT. In case of Module Pool (a dialog screen)
+*pressing the Enter key within the input field will trigger the PAI and PBO events.
+*So if I want a function to be executed upon hitting the Enter key while in an input box, I need to create a module in the
+*PAI event.
+*The PAI event within the flow logic section of screen 100 looks like this:
+*********************************************************************
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0100.
+ FIELD vbak-vbeln MODULE get_sales_data.
+*********************************************************************
+
+*'vbak-vbeln' refers to the screen field of the sales document within my program's main screen. The FIELD keyword is followed
+*by the exact screen field's name which is specified within the Screen Painter tool. In order to be able to refer to the
+*screen fields I need to declare them explicitly within my program, so I would need to declare:
+*********************************************************************
+DATA: vbak-vbeln TYPE vbak-vbeln.
+*********************************************************************
+
+*... which would not work, because it contains a hyphen. Even if SAP didn't consider it an error (might be a SAP version thing)
+*data would simply not be fetched because it technically satisfies the necessity to declare the screen field explicitly... but
+*doesn't make it work as if the field was declared.
+*I could instead declare my screen field 'vbak-vbeln' like that:
+*********************************************************************
+TABLES: vbak.
+*********************************************************************
+
+*... which technically would work because it would create a work area of VBAK. The problem is it would hinder performance
+*of my program because with that declaration I have created a work area with a few hundred fields while I am only going to
+*use one.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
