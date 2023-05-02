@@ -10129,6 +10129,21 @@ DATA: v_vbeln TYPE vbak-vbeln,
       v_ernam TYPE vbak-ernam.
 *********************************************************************
 
+*Now to make the 'Leave' button in the Modal Dialog Box let me go back to the main screen of the program. The main screen of
+*the program is called a "parent screen".
+*I go to screen 200 and uncomment the 'USER_COMMAND_0200' module in the PAI event. The logic needs to happen in the PAI event
+*because that's the event that is triggered upon hitting a button in the screen. I choose my TOP INCLUDE as the destination
+*of the new module. The 'LEAVE TO SCREEN 0' part tells SAP to return to the parent screen.
+*The module 'USER_COMMAND_0200' now looks like this:
+*********************************************************************
+MODULE user_command_0200 INPUT.
+  CASE sy-ucomm.
+  	WHEN 'FC1'.
+      LEAVE TO SCREEN 0.
+  ENDCASE.
+ENDMODULE.
+*********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
