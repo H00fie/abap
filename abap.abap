@@ -10144,6 +10144,75 @@ MODULE user_command_0200 INPUT.
 ENDMODULE.
 *********************************************************************
 
+*Now I would like to create my own custom F4 Help for the initial sales document screen field that would include both available
+*sales documents (like the SAP-provided default F4 Help does) and the associated net value. Furthermore I want the Help to
+*suggest only the documents of the net worth higher than 5.
+*The requirement is local to my MP program and not to be shared by multiple objects. Thus I am not to define the Search Help
+*on the database level but on the object level.
+*In case of selection screen programs, pressing F4 button in an input field, the AT SELECTION-SCREEN ON VALUE REQUEST. Therein
+*I ought to call a standard function module ('F4IF_INT_TABLE_VALUE_REQUEST'). In case of MP programs, pressing F4 in an input
+*field will make SAP react by triggering the PROCESS ON VALUE-REQUEST event. I need to define the desired behaviour therein,
+*in the flow logic section of screen 100.
+*It is then here that I once again utilize the syntax to have a specific module be executed for a specific field.
+*The bottom part of screen 100's flow logic section looks like this:
+*********************************************************************
+PROCESS ON VALUE-REQUEST.
+ FIELD v_vbeln MODULE get_f4_values.
+*********************************************************************
+ 
+*I double-click the new module to be created and make it happen within the TOP INCLUDE. That function will require an internal
+*table to store the values for my custom F4 Help to use, so I create it. No work area will be needed.
+*The top part of my TOP INCLUDE now looks like this:
+*********************************************************************
+PROGRAM Z_BM_TEST_MPP6.
+
+DATA: v_vbeln TYPE vbak-vbeln,
+      v_erdat TYPE vbak-erdat,
+      v_erzet TYPE vbak-erzet,
+      v_ernam TYPE vbak-ernam.
+
+TYPES: BEGIN OF t_f4_values,
+  vbeln TYPE vbak-vbeln,
+  netwr TYPE vbak-netwr,
+END OF t_f4_values.
+DATA: lt_f4_values TYPE TABLE OF t_f4_values.
+*********************************************************************
+
+*Now I define the 'get_f4_values' module. First I need to select the desired fields (VBELN and NETWR) from the database table
+*into the internal table I have created previously. I also include the condition of the net value being above 5. If the loading
+*of the data was successful, I call the standard function module responsible for handling the F4 Help and provide it with relevant
+*data:
+*- 'retfield' -    refers to the field for which the F4 Help is being created, so VBELN in my case. It's the name of the field within
+*                  the internal table.
+*- 'dynpprog' -    refers to the program's name which is stored in the system variable sy-repid.
+*- 'dynpnr'   -    is the current screen's number which is stored in the system variable sy-dynnr.
+*- 'dynprofield' - is the name of the screen field for which I am to return the values. It is 'V_VBELN' in my case.
+*- 'value_org'   - refers to the way the data is transferred. 'S' means 'structure'. Without it, the program will believe there are
+*                  no values found.
+*- 'value_tab'   - is the internal table I have created to hold the values for the F4 Search Help.
+*The 'get_f4_values' module looks like this:
+*********************************************************************
+MODULE get_f4_values INPUT.
+  SELECT vbeln netwr
+    FROM vbak
+      INTO TABLE lt_f4_values
+        WHERE netwr > 5.
+  IF sy-subrc = 0.
+    CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+      EXPORTING
+        retfield               = 'VBELN'
+        dynpprog               = sy-repid
+        dynpnr                 = sy-dynnr
+        dynprofield            = 'V_VBELN'
+        value_org              = 'S'
+      TABLES
+        value_tab              = lt_f4_values.
+  ELSE.
+    MESSAGE 'There is no relevant data for F4 Help to suggest.' TYPE 'I'.
+  ENDIF.
+ENDMODULE.
+*********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
