@@ -10213,6 +10213,25 @@ MODULE get_f4_values INPUT.
 ENDMODULE.
 *********************************************************************
 
+*Now I want to create my custom F1 Help for my sales document's screen field. In case of a selection screen program, whenever F1 is
+*pressed while in an input field, the AT SELECTION-SCREEN ON HELP-REQUEST event is triggered. In case of an MP program, that event is
+*PROCESS ON HELP-REQUEST. Much like the PROCESS ON VALUE-REQUEST event, it too must be defined in the main screen's flow logic section
+*under the PAI event.
+*I create the 'get_f1_help' module and place it within the TOP INCLUDE. Within it I summon a standard function module - 'popup_to_inform'
+*that allows me to define a field's custom F1 help. Within the bounds of my help window I can provide whatever information I deem
+*necessary for a user to receive.
+*The 'get_f1_help' module looks like this:
+*********************************************************************
+MODULE get_f1_help INPUT.
+  CALL FUNCTION 'POPUP_TO_INFORM'
+    EXPORTING
+      titel         = 'Sales document number'
+      txt1          = 'Table name: VBAK'
+      txt2          = 'Field name: V_VBELN'
+      txt3          = 'Very help, much wow'.
+ENDMODULE.
+*********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
