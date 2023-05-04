@@ -10239,6 +10239,35 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. DROP-DOWN LISTBOXES.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*I go to SE80 and create a new MP program with a TOP INCLUDE - 'Z_BM_TEST_MPP7'. I create a new screen (100) and move to Layout to
+*design the screen. I draw the 'Input/Output Field' (the third button from the top) in my screen and name it 'IO1'. I want that field
+*to act like a drop-down list of values and to that end I need to set the 'Dropdown' property of that field. I can choose between
+*the 'Listbox' and 'Listbox with key' options. The latter choice would make the possible values be displayed along with their key.
+*That doesn't seem to be very helpful for the user so the former option it is. Next I draw a 'Text field' next to my input field, name
+*it 'T1' and set its text to 'Select a value'. I draw a 'Pushbutton' that will give the user the option to exit the program. Its
+*name is 'B1', its text is 'Exit' and its function code is 'FC1'.
+*Now I move to the flow logic section of screen 100 and uncomment the 'user_command_0100' module. It is here that the logic for
+*exitting the program is to be written as pressing a pushbutton trigges the PAI event.
+*The 'user_command_0100' looks like this:
+**********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+  	WHEN 'FC1'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
