@@ -10261,6 +10261,9 @@ MODULE user_command_0100 INPUT.
 ENDMODULE.
 **********************************************************************
 
+*Now I create the transaction code. The transaction's name is 'ZBMI9', its program is 'Z_BM_TEST_MPP7' and its screen number is 0100.
+*As usual, I need to check the 'SAP GUI for Windows' checkbox.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
