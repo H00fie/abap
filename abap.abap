@@ -10354,6 +10354,16 @@ ENDMODULE.
 *('T1' already exists) with 'Amenouzume', 'T3' with 'Amyntas' and 'T4' with 'Salem'. The box around them is 'BX3' and 
 *'Even more plushies'.
 
+*Right now, the user can select all three radiobuttons at the same time. I want only one of them to be able to be active at any
+*given time. In order to do it I need to group them. In case of selection screen programs I would use the syntax RADIOBUTTON GROUP
+*followed by the group's name. In case of MP programs I need to select the first radiobutton, hold the CTRL key and select the
+*two remaining radiobuttons. Then I need to right-click the area of the selected elements and choose 'Radio Button Group' and then
+*'Define'. Now if I click the thus created area I can attach the function code to the created group. It was not possible to attach
+*a function code to a single radiobutton. As a side note, I can attach a function code to a single checkbox and to a drop-down listbox
+*(created for an input field) but I cannot attach a function code to a regular input field.
+*Now, the first radiobutton within a group will be checked by default, but selecting another will disable the previously checked one.
+*Only a single radiobutton within a group can be active at a time.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
