@@ -10398,6 +10398,22 @@ FORM make_blocks_invisible .
 ENDFORM.
 **********************************************************************
 
+*I want certain blocks of elements to become visible depending on what value is chosen from the drop-down listbox. In order to
+*make it happen I first assign my drop-down listbox a function code 'FC2' within the Layout of screen 100. When a value from a
+*drop-down listbox is selected, the PAI event is triggered, so it is here where I need to proceed. The 'user_command_0100' module
+*handles the actions depending on the value of 'sy-ucomm' so I expand this function. So whenever a value in a drop-down listbox 
+*is selected the function code of 'FC2' (in my case) will be assigned to the 'sy-ucomm' variable... AND that chosen value's key
+*will be placed within the listbox internally. My listbox's (the input field's) name is 'IO1' and I can refer to it (after having
+*explicitly declared it since I need to do this if I want to refer to any screen fields) to determine what value has been chosen.
+*The data type of that drop-down listbox is C and it is of the length of two.
+*Now, in the 'user_command_0100' module I can request SAP, if a value of the drop-down list has been selected (if 'sy-ucomm'
+*is 2), to check the value of the drop-down listbox screen field (as it now holds the key of the chosen option) and, based on that,
+*I can set the 'gv_flag' variable to have a value that will inform the screen refreshing logic (in PBO) how the screen needs to be
+*adjusted. Having done that I go to augment the 'status_0100' module within PBO - since it is PBO, that module will triggered at
+*the very execution of the program and after every run of the PAI module. Thus that module can both hold the logic that sets the
+*default layout of the screen (by making some screen elements invisible) and the logic that makes appropriate screen elements
+*visible - always depending on what value has been assigned to 'gv_flag' during the PAI event (so what option has been chosen).
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
