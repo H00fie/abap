@@ -10341,6 +10341,13 @@ MODULE status_0100 OUTPUT.
 ENDMODULE.
 **********************************************************************
 
+*Now I'd also like to implement three additional blocks in my screen - one with radiobuttons, one with checkboxes and the third
+*one with text fields.
+*I move to the Layout of screen 100, choose the 'Checkbox' button (the fourth from the top in the toolbox on the left hand side
+*of the screen) and draw three checkboxes in a column. The first one's name is 'C1', text 'Attalos', the second's 'C2' and 'Abydon
+*and the thirds' 'C3' and 'Torcali'. Now I select the 'Box' option from the toolbox (the sixth option from the bottom) and draw
+*it around the checkboxes. I double-click the created box, give it the name 'BX1' and text 'Plushies'.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
