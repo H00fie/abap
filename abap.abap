@@ -10264,6 +10264,83 @@ ENDMODULE.
 *Now I create the transaction code. The transaction's name is 'ZBMI9', its program is 'Z_BM_TEST_MPP7' and its screen number is 0100.
 *As usual, I need to check the 'SAP GUI for Windows' checkbox.
 
+*Now I would like to make my drop-down list actually display a set of values. In order to make it happen, I am to use a standard
+*function module - 'vrm_set_values'. I need to pass two parameters into the function module. One is the ID and the second is an internal
+*table of the 'vrm_values' type which is of the 'vrm' type group. That table type contains two fields - KEY and TEXT, both of C type.
+*Thus I need to prepare a table of 'vrm_values' which I will pass into the function module to populate my drop-down list. I want the
+*values to be present by default so the logic needs to be handled within the PBO event.
+*Hence I uncomment the 'status_0100' module within the PBO event of the flow logic section of screen 100. I want the function providing
+*values to my drop-down list to be executed only once which I can ensure by utilizing a flag variable. The function in question (the
+*module responsible for populating the drop-down list) will be triggered at the beginning of the program's lifecycle (because it's in
+*the PBO event) and also only if the flag variable is of its default value (0, due to being of I type). Given that right afterwards that
+*default value is changed... it will occur only once. Afterwards I am appending the key-text pairs to the 'lt_values' internal table
+*and finally calling the standard SAP function module - 'vrm_set_values' to finalize my custom value list for my drop-down listbox.
+*I need to declare my flag variable and both the internal table and the work area that will be required to handle the data necessary
+*for my drop-down list. 'lt_values' can just be the TYPE instead of TYPE TABLE because 'vrm_values' already is an internal table. In
+*SAP 7.5 this should no longer be necessary but if 'vrm_values' was not recognised I would need to explicitly declare its type group
+*('TYPE-POOLS: vrm.').
+*The top part of my TOP INCLUDE now looks like this:
+**********************************************************************
+PROGRAM Z_BM_TEST_MPP7.
+
+DATA: lv_flag    TYPE i,
+      lt_values  TYPE vrm_values,
+      lwa_values LIKE LINE OF lt_values.
+**********************************************************************
+
+*And the 'status_0100' module itself looks like this:
+**********************************************************************
+MODULE status_0100 OUTPUT.
+  IF lv_flag = 0.
+    lv_flag = 1.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K1'.
+    lwa_values-text = 'Czavoska'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K2'.
+    lwa_values-text = 'Minnos'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K3'.
+    lwa_values-text = 'Tardhaghar'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K4'.
+    lwa_values-text = 'Attos'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K5'.
+    lwa_values-text = 'Dumuzdin'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K6'.
+    lwa_values-text = 'Ivariar'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K7'.
+    lwa_values-text = 'Nasfahlenii'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K8'.
+    lwa_values-text = 'Rodgalikan'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K9'.
+    lwa_values-text = 'Tragida'.
+    APPEND lwa_values TO lt_values.
+    CLEAR: lwa_values.
+    lwa_values-key  = 'K10'.
+    lwa_values-text = 'Ezzah'.
+    APPEND lwa_values TO lt_values.
+    CALL FUNCTION 'VRM_SET_VALUES'
+      EXPORTING
+        id                    = 'IO1'
+        values                = lt_values. "WARNING: despite the drop-down listox type set to 'Listbox' and not 'Listbox with keys',
+  ENDIF.                                   "         the keys are visible during runtime.
+ENDMODULE.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
