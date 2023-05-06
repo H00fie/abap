@@ -10347,15 +10347,12 @@ ENDMODULE.
 *of the screen) and draw three checkboxes in a column. The first one's name is 'C1', text 'Attalos', the second's 'C2' and 'Abydon
 *and the thirds' 'C3' and 'Torcali'. Now I select the 'Box' option from the toolbox (the sixth option from the bottom) and draw
 *it around the checkboxes. I double-click the created box, give it the name 'BX1' and text 'Plushies'.
-*Now I'd also like to implement three additional blocks in my screen - one with radiobuttons, one with checkboxes and the third
-*one with text fields.
-*I move to the Layout of screen 100, choose the 'Checkbox' button (the fourth from the top in the toolbox on the left hand side
-*of the screen) and draw three checkboxes in a column. The first one's name is 'C1', text 'Attalos', the second's 'C2' and 'Abydon
-*and the thirds' 'C3' and 'Torcali'. Now I select the 'Box' option from the toolbox (the sixth option from the bottom) and draw
-*it around the checkboxes. I double-click the created box, give it the name 'BX1' and text 'Plushies'.
 *Now to create radiobuttons - I select the 'Radio button' option from the toolbox and create three of those in a column below the
 *checkboxes. Their properties are 'RB1' and 'Roganon', 'RB2' and 'Njord' and 'RB3' and 'Bor'. I create a 'Box' around them - 'BX2'
 *and 'More plushies'.
+*I move to create the text fields. I select the 'Text Field' button and draw three of those below the radiobuttons. They are 'T2'
+*('T1' already exists) with 'Amenouzume', 'T3' with 'Amyntas' and 'T4' with 'Salem'. The box around them is 'BX3' and 
+*'Even more plushies'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
