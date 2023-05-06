@@ -10364,6 +10364,40 @@ ENDMODULE.
 *Now, the first radiobutton within a group will be checked by default, but selecting another will disable the previously checked one.
 *Only a single radiobutton within a group can be active at a time.
 
+*I want all the checkboxes, radiobuttons, text fields and their boxes to be invisible by default. To start the process, I select
+*every one of these elements separately (including the boxes) and assign the 'Groups' property to them. This refers to the concept
+*of the screen group - it will allow me to make the elements invisible by refering to the 'screen' internal table. The checkboxes
+*and their box are of group 'G1', radiobuttons 'G2' and text fields 'G3'.
+*The first event triggered upon the execution of the program is PBO. Hence I write the logic for making my chosen screen elements
+*invisible within the 'status_0100' module.
+*If a screen element belongs to a group 'G1', 'G2' or 'G3 - that element's 'invisible' property is set to '1', which makes it
+*invisible.
+*The 'status_0100' module now looks as below. The populating of the 'lt_values' and the calling of the 'vrm_set_values' have been 
+*extracted to the 'prepare_values' form.
+**********************************************************************
+MODULE status_0100 OUTPUT.
+  IF lv_flag = 0.
+    lv_flag = 1.
+    PERFORM prepare_values.
+    PERFORM make_blocks_invisible.
+  ENDIF.
+ENDMODULE.
+**********************************************************************
+
+*The 'make_blocks_invisible' module looks like this:
+**********************************************************************
+FORM make_blocks_invisible .
+  LOOP AT SCREEN.
+    IF screen-group1 = 'G1' OR
+       screen-group1 = 'G2' OR
+       screen-group1 = 'G3'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
