@@ -10401,7 +10401,7 @@ ENDFORM.
 *I want certain blocks of elements to become visible depending on what value is chosen from the drop-down listbox. In order to
 *make it happen I first assign my drop-down listbox a function code 'FC2' within the Layout of screen 100. When a value from a
 *drop-down listbox is selected, the PAI event is triggered, so it is here where I need to proceed. The 'user_command_0100' module
-*handles the actions depending on the value of 'sy-ucomm' so I expand this function. So whenever a value in a drop-down listbox 
+*handles the actions depending on the value of 'sy-ucomm' so I expand this function. So whenever a value in a drop-down listbox
 *is selected the function code of 'FC2' (in my case) will be assigned to the 'sy-ucomm' variable... AND that chosen value's key
 *will be placed within the listbox internally. My listbox's (the input field's) name is 'IO1' and I can refer to it (after having
 *explicitly declared it since I need to do this if I want to refer to any screen fields) to determine what value has been chosen.
@@ -10413,6 +10413,105 @@ ENDFORM.
 *the very execution of the program and after every run of the PAI module. Thus that module can both hold the logic that sets the
 *default layout of the screen (by making some screen elements invisible) and the logic that makes appropriate screen elements
 *visible - always depending on what value has been assigned to 'gv_flag' during the PAI event (so what option has been chosen).
+*In order to ensure that the drop-down listbox, the 'Select a value' text field and the 'Exit' button remain visible at all times,
+*I assign the value of 'G4' to each of these elements' 'Groups' property and explicitly inform SAP, within the forms making certain
+*screen elements visible, that these three elements ('G4') are ever to remain visible.
+*
+*The top part of my TOP INCLUDE now looks like this:
+**********************************************************************
+PROGRAM Z_BM_TEST_MPP7.
+
+DATA: lv_flag    TYPE i,
+      lt_values  TYPE vrm_values,
+      lwa_values LIKE LINE OF lt_values,
+      io1(2)     TYPE c.
+**********************************************************************
+
+*The 'user_command_0100' looks like this:
+**********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      LEAVE PROGRAM.
+    WHEN 'FC2'.
+      IF io1 = 'K1'.
+        gv_flag = 2.
+      ELSEIF io1 = 'K2'.
+        gv_flag = 3.
+      ELSEIF io1 = 'K3'.
+        gv_flag = 4.
+      ENDIF.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
+*And the 'status_0100' module looks as follows:
+**********************************************************************
+MODULE status_0100 OUTPUT.
+  IF lv_flag = 0.
+    lv_flag = 1.
+    PERFORM prepare_values.
+    PERFORM make_blocks_invisible.
+  ELSEIF lv_flag = 2.
+    PERFORM make_block_one_visible.
+  ELSEIF lv_flag = 3.
+    PERFORM make_block_two_visible.
+  ELSEIF lv_flag = 4.
+    PERFORM make_block_three_visible.
+  ENDIF.
+ENDMODULE.
+**********************************************************************
+
+*The 'make_block_one_visible' form:
+**********************************************************************
+FORM make_block_one_visible .
+  LOOP AT SCREEN.
+    IF screen-group1 = 'G1' OR
+       screen-group1 = 'G4'.
+      screen-invisible = '0'.
+      MODIFY SCREEN.
+    ELSEIF screen-group1 = 'G2' OR
+           screen-group1 = 'G3'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+**********************************************************************
+
+*The 'make_block_two_visible' form:
+**********************************************************************
+FORM make_block_two_visible .
+  LOOP AT SCREEN.
+    IF screen-group1 = 'G2' OR
+       screen-group1 = 'G4'.
+      screen-invisible = '0'.
+      MODIFY SCREEN.
+    ELSEIF screen-group1 = 'G1' OR
+           screen-group1 = 'G3'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+**********************************************************************
+
+*The 'make_block_three_visible' form:
+**********************************************************************
+FORM make_block_three_visible .
+  LOOP AT SCREEN.
+    IF screen-group1 = 'G3' OR
+       screen-group1 = 'G4'.
+      screen-invisible = '0'.
+      MODIFY SCREEN.
+    ELSEIF screen-group1 = 'G1' OR
+           screen-group1 = 'G2'.
+      screen-invisible = '1'.
+      MODIFY SCREEN.
+    ENDIF.
+  ENDLOOP.
+ENDFORM.
+**********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
