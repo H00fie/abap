@@ -10513,6 +10513,81 @@ FORM make_block_three_visible .
 ENDFORM.
 **********************************************************************
 
+*Now I would like to have a pop-up window displayed every time a checkbox or a radiobutton is selected or deselected with the
+*information which screen element is being interacted with.
+*Whenever a checkbox is selected or deselected, in case of selection screens, the AT SELECTION-SCREEN event is triggered. In
+*case of MP programs, that is the PAI event. To be able to identify what screen element is being interacted with, I need to
+*make sure every of these elements has a function code assigned to it. When that's the case - the switch case (hehe) within the
+*PAI event can determine what action is to be performed based on the current value of 'sy-ucomm'. I move to the Layout of screen
+*100 and assign the following screen elements the following function codes: 'Attalos' - 'FC3', 'Abydon' - 'FC4', 'Torcali' - 'FC5',
+*'Roganon', 'Njord' and 'Bor' - 'FC6'. The last three share a single function code because they are radiobuttons grouped together.
+*Next, based on the value of 'sy-ucomm', I am checking if the corresponding screen element has been selected (has the value of 'X')
+*or deselected (has no value). I am referring to the screen elements by their names and, in order to refer to the screen elements
+*at all - I need to declare them explicitly. At last, based on whether the screen element is selected or deselected a proper
+*information is displayed in the form of a pop-up window. The radiobuttons do not display the information about having been
+*deselected because they form a group - at any point in time only one of them can be selected and selecting one automatically
+*deselects others.
+
+*The top part of my TOP INCLUDE now looks like this:
+**********************************************************************
+PROGRAM Z_BM_TEST_MPP7.
+
+DATA: lv_flag    TYPE i,
+      lt_values  TYPE vrm_values,
+      lwa_values LIKE LINE OF lt_values,
+      io1(2)     TYPE c,
+      c1         TYPE c,
+      c2         TYPE c,
+      c3         TYPE c,
+      rb1        TYPE c,
+      rb2        TYPE c,
+      rb3        TYPE c.
+**********************************************************************
+
+*The 'user_command_0100' module now looks like this:
+**********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      LEAVE PROGRAM.
+    WHEN 'FC2'.
+      IF io1 = 'K1'.
+        lv_flag = 2.
+      ELSEIF io1 = 'K2'.
+        lv_flag = 3.
+      ELSEIF io1 = 'K3'.
+        lv_flag = 4.
+      ENDIF.
+    WHEN 'FC3'.
+      IF c1 = 'X'.
+        MESSAGE 'Attalos selected!' TYPE 'I'.
+      ELSE.
+        MESSAGE 'Attalos deselected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC4'.
+      IF c2 = 'X'.
+        MESSAGE 'Abydon selected!' TYPE 'I'.
+      ELSE.
+        MESSAGE 'Abydon deselected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC5'.
+      IF c3 = 'X'.
+        MESSAGE 'Torcali selected!' TYPE 'I'.
+      ELSE.
+        MESSAGE 'Torcali deselected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC6'.
+      IF rb1 = 'X'.
+        MESSAGE 'Amenouzume selected!' TYPE 'I'.
+      ELSEIF rb2 = 'X'.
+        MESSAGE 'Amyntas deselected.' TYPE 'I'.
+      ELSEIF rb3 = 'X'.
+        MESSAGE 'Salem deselected.' TYPE 'I'.
+      ENDIF.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
