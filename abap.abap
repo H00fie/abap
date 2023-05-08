@@ -10646,6 +10646,26 @@ MODULE user_command_0200 INPUT.
 ENDMODULE.
 **********************************************************************
 
+*I do not need to create the transaction code because this is a report program/an executable program (written in SE38). The
+*SELECT-OPTIONS was moved into a subscreen will not generate a selection screen automatically anymore. Right now, if I executed
+*the program, I would get a Module Pool screen with the two buttons I created. That is because of the 'CALL SCREEN 200' within
+*my code. A selection screen is not being generated because the SELECT-OPTIONS statement is placed within a subscreen and a
+*Module Pool screen is displayed instead... because I am calling it.
+*Whenever a Module Pool screen is called the first event triggered is PBO. I need to inform SAP here that I want my subscreen
+*'SAREA' displayed here. The INCLUDING keyword is followed by the name of the program where the subscreen is to be displayed
+*(which is the calling program, so 'sy-repid') and the number of the subscreen.
+*The entire flow logic section of screen 200 looks like this:
+**********************************************************************
+PROCESS BEFORE OUTPUT.
+  CALL SUBSCREEN sarea INCLUDING sy-repid '100'.
+* MODULE STATUS_0200.
+*
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0200.
+**********************************************************************
+
+*The result is a Module Pool screen and not a selection screen.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
