@@ -10658,13 +10658,25 @@ ENDMODULE.
 **********************************************************************
 PROCESS BEFORE OUTPUT.
   CALL SUBSCREEN sarea INCLUDING sy-repid '100'.
-* MODULE STATUS_0200.
-*
+
 PROCESS AFTER INPUT.
  MODULE USER_COMMAND_0200.
 **********************************************************************
 
-*The result is a Module Pool screen and not a selection screen.
+*The result is a Module Pool screen and not a selection screen. At this point trying to select the 'Multiple selection'
+*button will result in nothing and changing the default values ('1000' and '1010') in the input boxes and pressing Enter will
+*result in default values being reintroduced. This is because so far the subscreen is being called only in PBO. To make it
+*work correctly I need the subscreen called within the PAI event as well. It is the same situation as with the TABLE CONTROL
+*which requires me to have LOOP...ENDLOOP in both MP events.
+*The entire flow logic section of screen 200 looks like this:
+**********************************************************************
+PROCESS BEFORE OUTPUT.
+  CALL SUBSCREEN sarea INCLUDING sy-repid '100'.
+
+PROCESS AFTER INPUT.
+  CALL SUBSCREEN sarea.
+  MODULE USER_COMMAND_0200.
+**********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
