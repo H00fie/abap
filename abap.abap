@@ -10595,6 +10595,49 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*MPP. SELECT-OPTIONS.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*The purpose of SELECT-OPTIONS is to read a range of values from the user. I want an MP program that will accept the input of 
+*customers' numbers in the form of SELECT-OPTIONS and display the sales orders of the provided customers in the form of TABLE 
+*CONTROL. The TABLE CONTROL is a good choice because it will make it possible to have multiple sales orders displayed.
+*If I simply used the SELECT-OPTIONS statement, a selection screen for reading a range of values would be automatically generated,
+*much like using the PARAMETERS statement generates a selection screen for reading a single value.
+*The thing is, if I want to have the SELECT-OPTIONS as part of my MP program, I am going to need to join the selection-screen
+*programming with the module pool programming.
+*I need to begin creating my program not in the object navigator (SE80), but in SE38 - it needs to be a regular executable program.
+*I name it 'Z_BM_TEST_MPP8', provide a short description and set the 'Type' to 'Executable program' within the 'Attributes' section.
+*I create the initial version of my program - so far, this will generate a selection screen:
+**********************************************************************
+REPORT Z_BM_TEST_MPP8.
+
+DATA: lv_kunnr TYPE kna1-kunnr.
+SELECT-OPTIONS so_kunnr FOR lv_kunnr DEFAULT '1000' TO '1010'.
+**********************************************************************
+
+*I do not want a selection screen as I also want the TABLE CONTROL component to be included and thus I need to make this an MP
+*program. I need to work around this as SELECT-OPTIONS will always generate a selection screen.
+*To make it happen, I can make the SELECT-OPTIONS statement be a part of the subscreen, like that:
+**********************************************************************
+SELECTION-SCREEN BEGIN OF SCREEN 100 AS SUBSCREEN.
+  SELECT-OPTIONS so_kunnr FOR lv_kunnr DEFAULT '1000' TO '1010'.
+SELECTION-SCREEN END OF SCREEN 100.
+**********************************************************************
+
+*By doing that, if I execute my program now, no selection screen will be generated. Now I am delving into handling Module Pool
+*screens. In order to have my subscreen displayed, I need a normal screen. Thus, I 'CALL SCREEN 200' and double-click the number.
+*I provide a short description and make sure the 'Screen Type' is 'Normal'. In order for my normal screen to be able to contain
+*a subscreen, I need to provide it with a subscreen area. Hence, I go to 'Layout'. I choose the 'Subscreen Area' button from the
+*toolbox (the fourth from the bottom) and draw my subscreen area. It's name is 'SAREA'. I also draw two pushbuttons. The first
+*one's name is 'B1', text is 'Get sales orders' and the function code is 'FC1'. The second's parameters are 'B2', 'Exit' and 'FC2'.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
