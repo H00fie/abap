@@ -10678,6 +10678,45 @@ PROCESS AFTER INPUT.
   MODULE USER_COMMAND_0200.
 **********************************************************************
 
+*Now I need to implemenet the TABLE CONTROL component. I go to the 'Layout' of screen 200 and choose the 'Table Control'
+*button from the toolbox (the fourth from the bottom) and draw the table control below the previously created subscreen. I name
+*the component 'TBCTRL' and check the 'Vertical' and 'Horizontal' checkboxes under the 'Separators' part of the 'Attributes'
+*section. I need columns within my table control so I choose GoTo, Secondary Window and Dictionary/Program Fields. I provide the
+*name of my custom VBAK structure ('zbmierzwi_test_vbak_struct') that has only the four fields that I desire. My custom structure
+*looks like this within the dictionary:
+*- VBELN type VBELN_VA,
+*- ERDAT type ERDAT,
+*- ERZET type ERZET,
+*- ERNAM type ERNAM.
+*I select all the fields and drop the structure within my table control component. It is also required that both the PBO and PAI
+*events contain the LOOP statement. Without it being done, I will get a compilation error. Initially it is enough simply to declare
+*a loop without anything in it.
+*The entire flow logic section of screen 200 looks like this:
+**********************************************************************
+PROCESS BEFORE OUTPUT.
+  CALL SUBSCREEN sarea INCLUDING sy-repid '100'.
+  LOOP.
+  ENDLOOP.            "WARNING - SAP still reports there is an error here and does not want to activate. I think I cannot have an
+* MODULE STATUS_0200. "          empty loop after all. I need to loop through something.
+*
+PROCESS AFTER INPUT.
+  CALL SUBSCREEN sarea.
+  MODULE USER_COMMAND_0200.
+  LOOP.
+  ENDLOOP.
+**********************************************************************
+  
+*Although if I tried to execute my program now, I would still get an error - a runtime one. That is because if I am calling a
+*screen that has a table control component, I need to declare that component explicitly.
+*The upper part of my program ('Z_BM_TEST_MPP8') now looks like this:
+**********************************************************************
+REPORT Z_BM_TEST_MPP8.
+
+DATA: lv_kunnr TYPE kna1-kunnr.
+
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 200.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
