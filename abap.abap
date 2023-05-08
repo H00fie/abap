@@ -10717,6 +10717,86 @@ DATA: lv_kunnr TYPE kna1-kunnr.
 CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 200.
 **********************************************************************
 
+*Now, when an end-user pushes the 'Get sales orders' button, the PAI event is triggered and I should fetch the relevant data
+*into an internal table. Then I need to loop through that table and load the data into the table control component. To that
+*end, I first declare the internal table.
+*The upper part of my program ('Z_BM_TEST_MPP8') now looks like this:
+**********************************************************************
+REPORT Z_BM_TEST_MPP8.
+
+DATA: lv_kunnr TYPE kna1-kunnr.
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 200.
+TYPES: BEGIN OF t_sales.
+  INCLUDE TYPE zbmierzwi_test_vbak_struct.
+TYPES END OF t_sales.
+DATA: lt_sales  TYPE TABLE OF t_sales,
+      lwa_sales TYPE t_sales.
+**********************************************************************
+
+*As mentioned, the clicking of the button will make the PAI event be triggered and there my module 'user_command_0200' decides
+*what action is to be undertaken. The 'Get sales orders' button has the function code 'FC1' assigned to it, so when 'sy-ucomm'
+*holds that value, I need to fetch the relevant data into my internal table based on the range of data the end-user has provided
+*as input. When the 'sy-ucomm' variable contains the value of 'FC1' I am first making sure the input fields (select-options) are
+*not initial. Perhaps the user is pushing the button without providing any input and it's reduntant to perform any operation. If
+*the input has been indeed provided, I am selecting the data for my table control into my internal table with the condition of the
+*particular record's KUNNR being present within the range of values provided by the end-user. If any data has been found, so if 
+*the 'sy-subrc' variable equals 0, I refer to my table control component's 'line' property and set it to the number of records 
+*that has been found. The 'sy-dbcnt' variable contains the number of records that have been retrieved by the previous SELECT
+*statement. This actions allows the potentional vertical scrolling should the number of records demand it.
+*The 'user_command_0200' module now looks like this:
+**********************************************************************
+MODULE user_command_0200 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+      IF so_kunnr IS NOT INITIAL.
+        SELECT vbeln erdat erzet ernam
+          FROM vbak
+            INTO lt_sales
+              WHERE kunnr IN so_kunnr.
+        IF sy-subrc = 0.
+          tbctrl-lines = sy-dbcnt.
+        ENDIF.
+      ENDIF.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
+*Now I need to move the fetched data from my internal table to the table control. When the PAI event is finished, the control goes
+*to the PBO event. Now comes the time for me to actually utilize the LOOP statement within PBO. I am iterating through my internal
+*table with 'WITH CONTROL <table control name>' added at the end. Within the loop I am writing the logic that assigns every record's
+*data to the table control's fields. This works despite the actual table control not being mentioned by its name ('tbctrl') because 
+*the screen fields created in the Screen Painter tool are called 'zbmierzwi_test_vbak_struct-vbeln', 'zbmierzwi_test_vbak_struct-erdat',
+*'zbmierzwi_test_vbak_struct-erzet' and 'zbmierzwi_test_vbak_struct-ernam' and so when I mention them, from my program's perspective, 
+*I am talking about my table control's fields. 'CLEAR zbmierzwi_test_vbak_struct' will clear the work area as 'zbmierzwi_test_vbak_struct'
+*needs to be declared, I am declaring it with the usage of the keyword TABLES which automatically creates a work area.
+
+*The upper part of my program ('Z_BM_TEST_MPP8') now looks like this:
+**********************************************************************
+REPORT Z_BM_TEST_MPP8.
+
+DATA: lv_kunnr TYPE kna1-kunnr.
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 200.
+TYPES: BEGIN OF t_sales.
+  INCLUDE TYPE zbmierzwi_test_vbak_struct.
+TYPES END OF t_sales.
+DATA: lt_sales  TYPE TABLE OF t_sales,
+      lwa_sales TYPE t_sales.
+TABLES: zbmierzwi_test_vbak_struct.
+**********************************************************************
+ 
+*The 'transfer_data' module looks like this:
+**********************************************************************
+MODULE transfer_data OUTPUT.
+  CLEAR zbmierzwi_test_vbak_struct.
+  zbmierzwi_test_vbak_struct-vbeln = lwa_sales-vbeln.
+  zbmierzwi_test_vbak_struct-erdat = lwa_sales-erdat.
+  zbmierzwi_test_vbak_struct-erzet = lwa_sales-erzet.
+  zbmierzwi_test_vbak_struct-ermam = lwa_sales-ernam.
+ENDMODULE.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
