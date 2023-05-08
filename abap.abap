@@ -10626,10 +10626,25 @@ SELECTION-SCREEN END OF SCREEN 100.
 
 *By doing that, if I execute my program now, no selection screen will be generated. Now I am delving into handling Module Pool
 *screens. In order to have my subscreen displayed, I need a normal screen. Thus, I 'CALL SCREEN 200' and double-click the number.
+**********************************************************************
+CALL SCREEN 200.
+**********************************************************************
+
 *I provide a short description and make sure the 'Screen Type' is 'Normal'. In order for my normal screen to be able to contain
 *a subscreen, I need to provide it with a subscreen area. Hence, I go to 'Layout'. I choose the 'Subscreen Area' button from the
 *toolbox (the fourth from the bottom) and draw my subscreen area. It's name is 'SAREA'. I also draw two pushbuttons. The first
 *one's name is 'B1', text is 'Get sales orders' and the function code is 'FC1'. The second's parameters are 'B2', 'Exit' and 'FC2'.
+*Now I move to write the logic of the 'Exit' button. Whenever a button is pushed, the PAI event is triggered. Thus I uncomment
+*the 'user_command_0200' module in the flow logic section of screen 200 and double-click it. I do not have the TOP INCLUDE here
+*so I choose the main program ('Z_BM_TEST_MPP8') as the destination. The module will hence be written in SE38.
+**********************************************************************
+MODULE user_command_0200 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
