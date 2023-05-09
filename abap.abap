@@ -10840,6 +10840,10 @@ MODULE user_command_0200 INPUT.
 ENDMODULE.
 **********************************************************************
 
+*At the moment the field displaying the number of records fetched is available for providing input which should not be the case. The
+*field should only display the number without allowing the end-user to interfere with said number. To that end, I go to the 'Layout'
+*of screen 200, double-click the input field 'IO1' and select the checkbox 'Output Only' within the 'Attributes' section.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
