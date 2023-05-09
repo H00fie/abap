@@ -10797,6 +10797,49 @@ MODULE transfer_data OUTPUT.
 ENDMODULE.
 **********************************************************************
 
+*I would like to display the number of sales orders found. In order to do it, I go to the 'Layout' of screen 200 and draw a 'Text Field'
+*next to the table control component. It's name is 'T1' and text 'Number of sales orders is:'. Then I draw a 'Input/Output Field' next
+*to it and give it the name of 'IO1' and change the 'Format' property within the 'Attributes' section to 'INT4'. This field should be
+*filled with the fetching of the data because it's dependent on it. I also need to declare that screen field explicitly as I am going
+*to refer to it. The data type of 'io1' is 'i' because that's what I set when I changed the 'Format' property to 'INT4'. Then the 'io1'
+*is assigned value after the data has been fetched in the 'user_command_0200' module.
+
+*The 'user_command_0200' module now looks like this:
+**********************************************************************
+REPORT Z_BM_TEST_MPP8.
+
+DATA: lv_kunnr TYPE kna1-kunnr.
+CONTROLS: tbctrl TYPE TABLEVIEW USING SCREEN 200.
+TYPES: BEGIN OF t_sales.
+  INCLUDE TYPE zbmierzwi_test_vbak_struct.
+TYPES END OF t_sales.
+DATA: lt_sales  TYPE TABLE OF t_sales,
+      lwa_sales TYPE t_sales.
+TABLES: zbmierzwi_test_vbak_struct.
+DATA: io1 TYPE i.
+**********************************************************************
+
+*The 'user_command_0200' looks like this:
+**********************************************************************
+MODULE user_command_0200 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+    WHEN 'FC1'.
+      IF so_kunnr IS NOT INITIAL.
+        SELECT vbeln erdat erzet ernam
+          FROM vbak
+            INTO TABLE lt_sales
+              WHERE kunnr IN so_kunnr.
+        IF sy-subrc = 0.
+          tbctrl-lines = sy-dbcnt.
+          io1 = sy-dbcnt.
+        ENDIF.
+      ENDIF.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
