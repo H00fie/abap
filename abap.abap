@@ -10851,6 +10851,40 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*PROUDLY ABAPER. MPP. BDC - BATCH DATA COMMUNICATION.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*BDC - Batch Data Communication, is used for migrating the data from legacy systems (non-SAP systems) to a SAP system. If a company,
+*say - Fluffy Ponies, decided to migrate to SAP, people (me) responsible for making it happen, would need to create a BDC program
+*that would read the data from Fluffy Ponies' legacy system and migrate it to SAP's database tables.
+*The data to be migrated could be located on a local machine or a server. Irrespective of the location, I need to load the data into
+*an internal table and to SAP database tables from there.
+*There are many BDC techniques.
+*1) Direct Input Method.
+*   DIM is just reading the data from the legacy system into an internal table and directly into SAP. There are no validations on
+*   the way. First, I need to understand what data is there in the legacy system, I need to know what database tables I will be
+*   migrating the data to (customer data, material data, vendor data, cost centre data, sales order data, invoice data, purchase
+*   order data, etc), how many fields there are per record, what is the separateor, what is the delimiter.
+*   E.g. I have a .txt file on a local machine. It contains the customer data, is named 'POKE' and looks like this:
+*   *******************
+*   666xyz,KA,Dedenne
+*   729abc,KT,Cubone
+*   695tal,JH,Cyndaquil
+*   *******************
+*   In this case, the first field is the customer number, the second is the customer's country key and the third is the customer's
+*   first name. This file contains customer data, has a maximum of three fields per record and fields are separated by a comma.
+*   I now need to analyse what is my target table within SAP. The database table for storing the customer master data is KNA1.
+*   KNA1 has 215 fields but the legacy system has data only for three fields. I need to understand what are those three fields
+*   within SAP.
+*   The DIM technique does not include checking if the data is valid, I am migrating everything as it is.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
