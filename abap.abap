@@ -10878,6 +10878,37 @@ ENDMODULE.
 *   within SAP.
 *   The DIM technique does not include checking if the data is valid, I am migrating everything as it is.
 
+*In order to read the data from a local text file, SAP has provided a function module 'GUI_UPLOAD'. It's one mandatory import
+*parameter is the filename, all other are optional. Although I also need to provide a table parameter because the function module
+*reads the data into an internal table.
+*I would like the end-user to be able to provide the file in the runtime of the program. To that end I am taking a path to the
+*file as a parameter. To make the life of the end-user easier, I should provide a F4 Help functionality to the input box accepting
+*the path. When F4 is pressed, an Open Dialog Box should be opened. When F4 is pressed, the AT SELECTION-SCREEN ON VALUE REQUEST
+*event is triggered. I could, e.g. display a message here - it will be displayed upon hitting F4 within my input box.
+*In order to present the user with an Open Dialog Box where user can choose the path to the file I am to use a standard SAP's
+*function module - 'F4_FILENAME'. It will allow the user to conveniently choose the path to the file that the program will load.
+*'F4_FILENAME' has one export parameter (the value returned by the function module) of the type IBIPPARMS-PATH. This is the path
+*to the file selected by the user.
+*I declare the variable 'lv_path' of the IBIPPARMS-PATH type in order to store the path to the file in a local variable.
+*I define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
+*the Open Dialog Box allowing the end-user to select the file. The path to the chosen file is returned by the 'F4_FILENAME' function
+*module and stored within my 'lv_path' variable. If the path was indeed chosen and a value is present within 'lv_path' - that value
+*is assigned to the parameter input box.
+
+PARAMETERS: p_fname TYPE string.
+
+DATA: lv_path TYPE ibipparms-path.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fname.
+*  MESSAGE 'Hello' TYPE 'I'. "This is testing. Upon hitting F4, that message should pop up.
+CALL FUNCTION 'F4_FILENAME'
+ IMPORTING
+   FILE_NAME           = lv_path.
+
+IF lv_path IS NOT INITIAL.
+  p_fname = lv_path.
+ENDIF.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
