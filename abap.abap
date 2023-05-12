@@ -10889,25 +10889,51 @@ ENDMODULE.
 *function module - 'F4_FILENAME'. It will allow the user to conveniently choose the path to the file that the program will load.
 *'F4_FILENAME' has one export parameter (the value returned by the function module) of the type IBIPPARMS-PATH. This is the path
 *to the file selected by the user.
+
+*A parameter input box for the end-user to provide the path to the file that contains the data we want to be migrated to a SAP's
+*database table.
+PARAMETERS: p_fname TYPE string.
+
 *I declare the variable 'lv_path' of the IBIPPARMS-PATH type in order to store the path to the file in a local variable.
-*I define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
+DATA: lv_path TYPE ibipparms-path.
+
+*I declare the internal table that will be the "middle man" between the legacy system's file and SAP's database table. The file's
+*records consist of three fields each - customer number, country and name, but the entire record... is a string. So one variable
+*within my internal table is enough.
+TYPES: BEGIN OF t_temp,
+  str TYPE string,
+END OF t_temp.
+DATA: lt_temp  TYPE TABLE OF t_temp,
+      lwa_temp TYPE t_temp.
+
+*When the Execute button is pressed, the START-OF-SELECTION event is triggered. So if at the moment of the program's execution
+*the input box is not empty and thus a path to the file has indeed been provided - I should read the data from my local text
+*file to the temporary internal table. I will use the 'GUI_UPLOAD' function module for this. If no path has been provided, a 
+*pop-up window with a message is displayed.
+START-OF-SELECTION.
+  IF p_fname IS NOT INITIAL.
+    CALL FUNCTION 'GUI_UPLOAD'
+      EXPORTING
+        filename                      = p_fname
+      TABLES
+        data_tab                      = lt_temp.
+  ELSE.
+    MESSAGE 'Please select a file.' TYPE 'I'.
+  ENDIF.
+
+*To define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
 *the Open Dialog Box allowing the end-user to select the file. The path to the chosen file is returned by the 'F4_FILENAME' function
 *module and stored within my 'lv_path' variable. If the path was indeed chosen and a value is present within 'lv_path' - that value
 *is assigned to the parameter input box.
-
-PARAMETERS: p_fname TYPE string.
-
-DATA: lv_path TYPE ibipparms-path.
-
 AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fname.
 *  MESSAGE 'Hello' TYPE 'I'. "This is testing. Upon hitting F4, that message should pop up.
-CALL FUNCTION 'F4_FILENAME'
- IMPORTING
-   FILE_NAME           = lv_path.
+  CALL FUNCTION 'F4_FILENAME'
+    IMPORTING
+      FILE_NAME           = lv_path.
 
-IF lv_path IS NOT INITIAL.
-  p_fname = lv_path.
-ENDIF.
+  IF lv_path IS NOT INITIAL.
+    p_fname = lv_path.
+  ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
