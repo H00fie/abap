@@ -10883,11 +10883,11 @@ ENDMODULE.
 *I would like the end-user to be able to provide the file in the runtime of the program. To that end I am taking a path to the
 *file as a parameter. To make the life of the end-user easier, I should provide a F4 Help functionality to the input box accepting
 *the path. When F4 is pressed, an Open Dialog Box should be opened. When F4 is pressed, the AT SELECTION-SCREEN ON VALUE REQUEST
-*event is triggered. I could, e.g. display a message here - it will be displayed upon hitting F4 within my input box.
-*In order to present the user with an Open Dialog Box where user can choose the path to the file I am to use a standard SAP's
-*function module - 'F4_FILENAME'. It will allow the user to conveniently choose the path to the file that the program will load.
-*'F4_FILENAME' has one export parameter (the value returned by the function module) of the type IBIPPARMS-PATH. This is the path
-*to the file selected by the user.
+*event is triggered (it's defined at the bottom of the source code). I could, e.g. display a message here - it will be displayed
+*upon hitting F4 within my input box. In order to present the user with an Open Dialog Box where user can choose the path to the
+*file I am to use a standard SAP's function module - 'F4_FILENAME'. It will allow the user to conveniently choose the path to the
+*file that the program will load. 'F4_FILENAME' has one export parameter (the value returned by the function module) of the type
+*IBIPPARMS-PATH. This is the path to the file selected by the user.
 
 *A parameter input box for the end-user to provide the path to the file that contains the data we want to be migrated to a SAP's
 *database table.
@@ -10907,8 +10907,10 @@ DATA: lt_temp1  TYPE TABLE OF t_temp,
 
 *I declare the internal table that will be the SECOND "middle man" between the legacy system's file and SAP's database table. First,
 *the data from the local file has been uploaded into 't_temp1' in a "raw" form - it was a text file and I just loaded the data into
-*an internal table with a single field of the string type. Now I need to adjust the structure of the data so  SAP knows what fields
-*and in what way should receive the data within KNA1.
+*an internal table with a single field of the string type. Now I need to adjust the structure of the data so SAP knows what fields
+*and in what way should receive the data within KNA1. The second "middle man" has the data properly split bewtween the correct
+*fields but is still not the final "middle man". I can only MODIFY the database table FROM an internal table of an identical
+*structure. The second "middle man" has only three fields and KNA1 has 215 of them.
 TYPES: BEGIN OF t_temp2,
   kunnr TYPE kna1-kunnr,
   land1 TYPE kna1-land1,
@@ -10916,6 +10918,14 @@ TYPES: BEGIN OF t_temp2,
 END OF t_temp2.
 DATA: lt_temp2  TYPE TABLE OF t_temp2,
       lwa_temp2 TYPE t_temp2.
+
+*I declare the third and final "middle man". The first one served as the receiver of the data in its raw form from the initial text
+*file - its job was to simply load the data as it is into SAP. The second "middle man's" job was to organise the fields correctly -
+*split the data into correct fields that correspond to those that will serve as the data's final destination within the database
+*table. The third "middle man's" task is to receive the loaded and prepared data into the structure identical to that of the final
+*database table's and transfer it into that table.
+DATA: lt_temp3  TYPE TABLE OF kna1,
+      lwa_temp3 TYPE kna1.
 
 *When the Execute button is pressed, the START-OF-SELECTION event is triggered. So if at the moment of the program's execution
 *the input box is not empty and thus a path to the file has indeed been provided - I should read the data from my local text
@@ -10934,12 +10944,12 @@ START-OF-SELECTION.
 
 *If the 'lt_temp1' indeed contains the data, I need to properly split it among the fields that I recognised as good destination
 *fields within KNA1. So I need the first "middle man" who holds the data in its "raw" form to hand the data to the second "middle man"
-*whose structure is adjusted so it's compatible with the structure of KNA1.
+*who splits the data into the fields that are the same as the fields of the database table in which that data will be put.
 *I iterate through the first "middle man" and for every single one of its records, I am performing the operation of splitting that
 *record at every occurence of a comma (since the initial text file had its data organised in this way) and placing the part of the
 *string that was split first in the second "middle man's" work area's 'kunnr' field, then in the 'land1' field and then in the 'name1'
 *field. The order of the fields is deliberate because that's how the data in the initial text file was organised. If it had the data
-*starting with, say, the customer's name, then the name1 field should be the first to appear after the INTO keyword. At the end, I am
+*starting with, say, the customer's name, then the 'name1' field should be the first to appear after the INTO keyword. At the end, I am
 *appending the data stored within the work area to the second "middle man" and starting the loop anew for the next record of the
 *first "middle man".
   IF lt_temp1 IS NOT INITIAL.
@@ -10951,6 +10961,26 @@ START-OF-SELECTION.
       APPEND lwa_temp2 TO lt_temp2.
     ENDLOOP.
   ENDIF.
+
+*If the data indeed resides within the second "middle man" then it's time to transfer said data into the third "middle man" whose
+*structure is identical to that of the target database table.
+  IF lt_temp2 Is NOT INITIAL.
+    LOOP AT lt_temp2 INTO lwa_temp2.
+      CLEAR lwa_temp3.
+      lwa_temp3-kunnr = lwa_temp2-kunnr.
+      lwa_temp3-land1 = lwa_temp2-land1.
+      lwa_temp3-name1 = lwa_temp2-name1.
+      APPEND lwa_temp3 TO lt_temp3.
+    ENDLOOP.
+  ENDIF.
+
+*Finally, I need to transfer the data to the target database table itself. I can do it now, because the third "middle man" has the
+*structure identical to that of KNA1 where the data I am processing is going. Yet again, I am starting by making sure there actually
+*is any data present with my internal table in order not to perform operations if there's nothing to perform them on.
+IF lt_temp3 IS NOT INITIAL.
+  MODIFY kna1 FROM TABLE lt_temp3.
+  WRITE: / 'The number of records affected: ', sy-dbcnt.
+ENDIF.
 
 *To define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
 *the Open Dialog Box allowing the end-user to select the file. The path to the chosen file is returned by the 'F4_FILENAME' function
