@@ -10982,6 +10982,11 @@ IF lt_temp3 IS NOT INITIAL.
   WRITE: / 'The number of records affected: ', sy-dbcnt.
 ENDIF.
 
+*In the case of my program, the data contains country keys that are not available in SAP (the list of the country keys that SAP
+*recognises is within the T005 dataase table). Thus the keys are invalid, but the data will be blindly inserted into the system
+*regardless as I am not performing any validations with the Direct Input Method of the Batch Data Communication. The lack of any 
+*validations of the data improves performance but constitues a risk of storing invalid data.
+
 *To define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
 *the Open Dialog Box allowing the end-user to select the file. The path to the chosen file is returned by the 'F4_FILENAME' function
 *module and stored within my 'lv_path' variable. If the path was indeed chosen and a value is present within 'lv_path' - that value
