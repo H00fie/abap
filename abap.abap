@@ -10987,6 +10987,29 @@ ENDIF.
 *regardless as I am not performing any validations with the Direct Input Method of the Batch Data Communication. The lack of any 
 *validations of the data improves performance but constitues a risk of storing invalid data.
 
+*It is worth noting that the initial file's data isn't bound by any legal contract to have a comma as a separator. It could also
+*use a tab as one. In that case my content of the legacy system's text file would look like that:
+********************
+*666xyz  KA  Dedenne
+*729abc  KT  Cubone
+*695tal  JH  Cyndaquil
+********************
+*If that was the case, my program would look slightly different. The 'GUI_UPLOAD' function module has an optional import parameter 
+*of 'has_field_separator'. It is a parameter specifically designed to inform the function module if the file's data is separated
+*by tabs. Thanks to that property, I can load the data directly into the second "middle man".
+*The calling of the 'GUI_UPLOAD' function module would look like this:
+*CALL FUNCTION 'GUI_UPLOAD'
+*      EXPORTING
+*        filename                      = p_fname
+*         has_field_separator           = 'X'
+*      TABLES
+*        data_tab                      = lt_temp2.
+*The function module would place the data within the second "middle man's" field according to the order of these fields within that
+*internal table, so by creating the second "middle man" in a way that its columns are in the same order as the data within the
+*legacy system's text file, I ensure the correct placement of said data.
+*This method of handling this task is available only if the separator is a tab. If it's a comma, a semicolon or anything else, I
+*need to stick to the original logic of first loading the legacy system's file data into an internal table in its "raw" form.
+
 *To define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
 *the Open Dialog Box allowing the end-user to select the file. The path to the chosen file is returned by the 'F4_FILENAME' function
 *module and stored within my 'lv_path' variable. If the path was indeed chosen and a value is present within 'lv_path' - that value
