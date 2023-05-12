@@ -10861,8 +10861,8 @@ ENDMODULE.
 *an internal table and to SAP database tables from there.
 *There are many BDC techniques.
 *
-*TheDirect Input Method is just reading the data from the legacy system into an internal table and directly into SAP. There are no 
-*validations on the way. First, I need to understand what data is there in the legacy system, I need to know what database tables I 
+*TheDirect Input Method is just reading the data from the legacy system into an internal table and directly into SAP. There are no
+*validations on the way. First, I need to understand what data is there in the legacy system, I need to know what database tables I
 *will be migrating the data to (customer data, material data, vendor data, cost centre data, sales order data, invoice data, purchase
 *order data, etc), how many fields there are per record, what is the separateor, what is the delimiter.
 *E.g. I have a .txt file on a local machine. It contains the customer data, is named 'POKE' and looks like this:
@@ -10871,9 +10871,9 @@ ENDMODULE.
 *729abc,KT,Cubone
 *695tal,JH,Cyndaquil
 ********************
-*In this case, the first field is the customer number, the second is the customer's country key and the third is the customer's first 
-*name. This file contains customer data, has a maximum of three fields per record and fields are separated by a comma. I now need to 
-*analyse what is my target table within SAP. The database table for storing the customer master data is KNA1. It has 215 fields but 
+*In this case, the first field is the customer number, the second is the customer's country key and the third is the customer's first
+*name. This file contains customer data, has a maximum of three fields per record and fields are separated by a comma. I now need to
+*analyse what is my target table within SAP. The database table for storing the customer master data is KNA1. It has 215 fields but
 *the legacy system has data only for three fields. I need to understand what are those three fields within SAP.
 *The DIM technique does not include checking if the data is valid, I am migrating everything as it is.
 
@@ -10896,18 +10896,30 @@ PARAMETERS: p_fname TYPE string.
 *I declare the variable 'lv_path' of the IBIPPARMS-PATH type in order to store the path to the file in a local variable.
 DATA: lv_path TYPE ibipparms-path.
 
-*I declare the internal table that will be the "middle man" between the legacy system's file and SAP's database table. The file's
-*records consist of three fields each - customer number, country and name, but the entire record... is a string. So one variable
-*within my internal table is enough.
+*I declare the internal table that will be the FIRST "middle man" between the legacy system's file and SAP's database table. The
+*file's records consist of three fields each - customer number, country and name, but the entire record... is a string. So one
+*variable within my internal table is enough. To begin with, I am essentially copying the local file's structure within my code.
 TYPES: BEGIN OF t_temp,
   str TYPE string,
 END OF t_temp.
-DATA: lt_temp  TYPE TABLE OF t_temp,
-      lwa_temp TYPE t_temp.
+DATA: lt_temp1  TYPE TABLE OF t_temp,
+      lwa_temp1 TYPE t_temp.
+
+*I declare the internal table that will be the SECOND "middle man" between the legacy system's file and SAP's database table. First,
+*the data from the local file has been uploaded into 't_temp1' in a "raw" form - it was a text file and I just loaded the data into
+*an internal table with a single field of the string type. Now I need to adjust the structure of the data so  SAP knows what fields
+*and in what way should receive the data within KNA1.
+TYPES: BEGIN OF t_temp2,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+END OF t_temp2.
+DATA: lt_temp2  TYPE TABLE OF t_temp2,
+      lwa_temp2 TYPE t_temp2.
 
 *When the Execute button is pressed, the START-OF-SELECTION event is triggered. So if at the moment of the program's execution
 *the input box is not empty and thus a path to the file has indeed been provided - I should read the data from my local text
-*file to the temporary internal table. I will use the 'GUI_UPLOAD' function module for this. If no path has been provided, a 
+*file to the temporary internal table. I will use the 'GUI_UPLOAD' function module for this. If no path has been provided, a
 *pop-up window with a message is displayed.
 START-OF-SELECTION.
   IF p_fname IS NOT INITIAL.
@@ -10915,9 +10927,29 @@ START-OF-SELECTION.
       EXPORTING
         filename                      = p_fname
       TABLES
-        data_tab                      = lt_temp.
+        data_tab                      = lt_temp1.
   ELSE.
     MESSAGE 'Please select a file.' TYPE 'I'.
+  ENDIF.
+
+*If the 'lt_temp1' indeed contains the data, I need to properly split it among the fields that I recognised as good destination
+*fields within KNA1. So I need the first "middle man" who holds the data in its "raw" form to hand the data to the second "middle man"
+*whose structure is adjusted so it's compatible with the structure of KNA1.
+*I iterate through the first "middle man" and for every single one of its records, I am performing the operation of splitting that
+*record at every occurence of a comma (since the initial text file had its data organised in this way) and placing the part of the
+*string that was split first in the second "middle man's" work area's 'kunnr' field, then in the 'land1' field and then in the 'name1'
+*field. The order of the fields is deliberate because that's how the data in the initial text file was organised. If it had the data
+*starting with, say, the customer's name, then the name1 field should be the first to appear after the INTO keyword. At the end, I am
+*appending the data stored within the work area to the second "middle man" and starting the loop anew for the next record of the
+*first "middle man".
+  IF lt_temp1 IS NOT INITIAL.
+    LOOP AT lt_temp1 INTO lwa_temp1.
+      CLEAR lwa_temp2.
+      SPLIT lwa_temp1-str AT ',' INTO lwa_temp2-kunnr
+                                     lwa_temp2-land1
+                                     lwa_temp2-name1.
+      APPEND lwa_temp2 TO lt_temp2.
+    ENDLOOP.
   ENDIF.
 
 *To define what happens during the AT SELECTION-SCREEN ON VALUE REQUEST event. Hitting F4 in the parameter input box will display
