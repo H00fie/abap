@@ -11055,6 +11055,46 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fname.
 *code 'FC1', the second one is 'B2', 'Exit' and 'FC2' and the third 'B3', 'Cancel' and 'FC3'. The third is to act as a cancel button and
 *so I also need to set the 'FctType' (function type) property to 'E Exit command' - this will allow me to perform a forecfull exit which
 *means that even a failure to provide the obligatory input fields with values will not prevent the end-user from leaving the program.
+*When the 'Insert' button is pressed, the data should be loaded from the local text into a SAP's database table. When a screen button
+*is pushed in a Module Pool program, the PAI event is triggered. Thus I move to the flow logic section of screen 100, uncomment the
+*'user_command_0100' module, double-click it, place it within the TOP INCLUDE and proceed to write the logic for the buttons.
+*The area for the 'FC1' function code is left void so far, it will be done later. The 'FC2' function code is responsible for the
+*"gracious" exit - one that will not be possible if any validation in the screen is failed.
+*The "forceful" exit - one that will be possible even if there are failed validations in the screen requires me to define a separate
+*module in the flow logic section of the screen. This module will be executed when a button with the function type of 'E' is pressed.
+*Thus I create the 'exit_forcefully' module in the PAI event and define it within the TOP INCLUDE. The logic is the same as in the case
+*of the "gracious" exit but the "forceful" requires a module with the AT EXIT-COMMAND part.
+*The flow logic section of screen 100 looks like this so far:
+**********************************************************************
+PROCESS BEFORE OUTPUT.
+* MODULE STATUS_0100.
+*
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0100.
+ MODULE exit_forcefully AT EXIT-COMMAND.
+**********************************************************************
+   
+*The 'user_command_0100' looks like that:
+**********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
+*And the 'exit_forcefully' module looks like that:
+**********************************************************************
+MODULE exit_forcefully INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC3'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
