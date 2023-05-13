@@ -11096,6 +11096,10 @@ MODULE exit_forcefully INPUT.
 ENDMODULE.
 **********************************************************************
 
+*Now I create the transaction for the program. Its name is 'ZBMI10' and its 'Start object' i 'Program and dynpro (dialog transaction'
+*as is always the case for Module Pool programs. Next I need to provide the name of my program ('Z_BM_TEST_MPP9') and the screen
+*number (0100). I also need to check the 'SAP GUI for Windows' checkbox in the 'GUI support' section.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
