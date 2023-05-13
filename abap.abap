@@ -11031,6 +11031,38 @@ AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_fname.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*BDC - BATCH DATA COMMUNICATION. MIGRATING DATA FROM A LOCAL TEXT FILE USING THE CALL TRANSACTION TECHNIQUE.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*While the Direct Input Method consists of three levels - the legacy system, an internal table and SAP, the Call Transaction technique
+*consist of five - the legacy system -> an internal table -> a BDCDATA internal table -> transaction -> SAP.
+*First I need to get the data from the legacy system to an internal table, then into a BDCDATA internal table from which I need to
+*map the data into a Module Pool dialog transaction from which I need to migrate the data to SAP itself.
+*First I need to analyse the file containing the data - in my case it will be a text file stored locally with the customer data with 
+*three fields - customer number, country code and customer name. The target database table is thus KNA1.
+*The file looks like that:
+********************
+*666xyz  KA  Dedenne
+*729abc  KT  Cubone
+*695tal  JH  Cyndaquil
+********************
+*The perform the Call Transaction technique, I need a module pool transaction. Hence I need to develop a module pool program. I go
+*to SE80 and create a new program ('Z_BM_TEST_MPP9' in this case) with the TOP INCLUDE, it's 'Type' being 'Module Pool'. Then I
+*create a screen (100), its 'Screen Type' being 'Normal'. Then I move to the 'Layout' so design the screen's layout. In this screen
+*I need three fields - 'kunnr', 'land1' and 'name1' of the table KNA1 so I choose GoTo -> Secondary Window -> Dictionary/Program Fields
+*provide the name of KNA1, take the three fields I require and place them in my screen.
+*Now I move to create three buttons and draw them beneath the screen fields. The first one's name is 'B1', text 'Insert' and function
+*code 'FC1', the second one is 'B2', 'Exit' and 'FC2' and the third 'B3', 'Cancel' and 'FC3'. The third is to act as a cancel button and
+*so I also need to set the 'FctType' (function type) property to 'E Exit command' - this will allow me to perform a forecfull exit which
+*means that even a failure to provide the obligatory input fields with values will not prevent the end-user from leaving the program.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
