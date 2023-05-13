@@ -10851,7 +10851,7 @@ ENDMODULE.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*BDC - BATCH DATA COMMUNICATION. DIRECT INPUT METHOD.
+*BDC - BATCH DATA COMMUNICATION. MIGRATING DATA FROM A LOCAL TEXT FILE USING DIRECT INPUT METHOD.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *BDC - Batch Data Communication, is used for migrating the data from legacy systems (non-SAP systems) to a SAP system. If a company,
