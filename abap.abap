@@ -11100,6 +11100,38 @@ ENDMODULE.
 *as is always the case for Module Pool programs. Next I need to provide the name of my program ('Z_BM_TEST_MPP9') and the screen
 *number (0100). I also need to check the 'SAP GUI for Windows' checkbox in the 'GUI support' section.
 
+*Here I am inserting one record at a time. In order to store the data provided in the screen, I need to declare a work area with
+*the type compatibility with KNA1. I will be collecting the data from the screen fields and their names are 'kna1-kunnr',
+*'kna1-land1' and 'kna1-name1'. Thus I can simply declare 'TABLES kna1' and that statement will both create the correct work area,
+*compatibile with the KNA1 database table AND serve as the explicit declaration of my program's screen fields.
+*So now, when the 'Insert' button is pressed (so if the function code is 'FC1') I can simply state 'MODIFY kna1'. That's it. I don't
+*need to specify 'FROM kna1' because the work area's name is exactly the same as database table's name. 'FROM kna1' is thus inferred.
+*The top part of my TOP INCLUDE now looks like this:
+**********************************************************************
+PROGRAM Z_BM_TEST_MPP9.
+
+TABLES: kna1.
+**********************************************************************
+
+*And the 'user_command_0100' looks like that:
+**********************************************************************
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      MODIFY kna1.
+      IF sy-subrc = 0.
+        MESSAGE 'A record has been affected.' TYPE 'I'.
+      ELSE.
+        MESSAGE 'A record has not been affected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
+*The recommended way of doing the above is a BAPI instead of MODIFY, INSERT statements.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
