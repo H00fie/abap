@@ -11245,6 +11245,16 @@ ENDFORM.
 *further mapped to the Module Pool transaction, it is mapped from the BDCDATA structure to a Session Object from which the data
 *is mapped to the Module Pool transaction.
 
+*To perform the Session technique, I need a module pool transaction. Hence I need to develop a module pool program. I go to SE80 
+*and create a new program ('Z_BM_TEST_MPP10' in this case) with the TOP INCLUDE, it's 'Type' being 'Module Pool'. Then I create a 
+*screen (100), its 'Screen Type' being 'Normal'. Then I move to the 'Layout' so design the screen's layout. In this screen I need 
+*three fields - 'kunnr', 'land1' and 'name1' of the table KNA1 so I choose GoTo -> Secondary Window -> Dictionary/Program Fields
+*provide the name of KNA1, take the three fields I require and place them in my screen.
+*Now I move to create three buttons and draw them beneath the screen fields. The first one's name is 'B1', text 'Insert' and function
+*code 'FC1', the second one is 'B2', 'Exit' and 'FC2' and the third 'B3', 'Cancel' and 'FC3'. The third is to act as a cancel button and
+*so I also need to set the 'FctType' (function type) property to 'E Exit command' - this will allow me to perform a forecfull exit which
+*means that even a failure to provide the obligatory input fields with values will not prevent the end-user from leaving the program.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
