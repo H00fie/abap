@@ -11226,6 +11226,32 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*BDC - BATCH DATA COMMUNICATION. MIGRATING DATA FROM A TEXT FILE STORED IN APPLICATION SERVER USING THE SESSION METHOD.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*Application server is where SAP is installed. If I want to know the IP Address of my application server I need to go to SAP Logon
+*and right-click the name of the server  (e.g. BOD, QMR, MMX) and go to its 'Properties'. I have the Application Server's IP address
+*here, e.g. 666.666.666.666. I can access the Application Server's drive from my local system by running the Run command
+*(Windows key + R) and providing e.g. "\\666.666.666.666\c" .
+*I am most likely going to be asked for the admin's ID and password. The data will be uploaded from a text file stored in the
+*Application server - it contains the customer data and looks like this:
+********************
+*666xyz,KA,Dedenne
+*729abc,KT,Cubone
+*695tal,JH,Cyndaquil
+********************
+*The Session technique is similar to the Call Transaction technique but has one additional level. First the data is uploaded from
+*the legacy system to an internal table. Then it is mapped from that table to a BDCDATA internal table, but before the data is
+*further mapped to the Module Pool transaction, it is mapped from the BDCDATA structure to a Session Object from which the data
+*is mapped to the Module Pool transaction.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
