@@ -11352,6 +11352,8 @@ OPEN DATASET lv_path FOR INPUT IN TEXT MODE ENCODING DEFAULT MESSAGE lv_msg.
 *table and the file pointer automatically goes to the next row of the file because it is within a loop. It will keep repeating over and 
 *over again until there are no more records to read which is indicated by the failure ('sy-subrc' being 0) of the READ DATASET. When 
 *that happenes, the EXIT keyword will make the control leave the current loop.
+*When all the lines of the file have been read and the loop is finished, I should use the statement of 'CLOSE DATASET' to close the
+*file that I was reading.
 IF sy-subrc = 0.
   DO.
     CLEAR lwa_legacy.
@@ -11360,6 +11362,7 @@ IF sy-subrc = 0.
       APPEND lwa_legacy TO lt_legacy.
     ENDIF.
   ENDDO.
+  CLOSE DATASET lv_path.
 ELSE.
   WRITE: / lv_msg.
 ENDIF.
