@@ -11102,7 +11102,7 @@ MODULE exit_forcefully INPUT.
 ENDMODULE.
 **********************************************************************
 
-*Now I create the transaction for the program. Its name is 'ZBMI10' and its 'Start object' i 'Program and dynpro (dialog transaction'
+*Now I create the transaction for the program. Its name is 'ZBMI10' and its 'Start object' is 'Program and dynpro (dialog transaction'
 *as is always the case for Module Pool programs. Next I need to provide the name of my program ('Z_BM_TEST_MPP9') and the screen
 *number (0100). I also need to check the 'SAP GUI for Windows' checkbox in the 'GUI support' section.
 
@@ -11315,6 +11315,30 @@ ENDMODULE.
 *Now I create the transaction for the program. Its name is 'ZBMI11' and its 'Start object' is 'Program and dynpro (dialog transaction'
 *as is always the case for Module Pool programs. Next I need to provide the name of my program ('Z_BM_TEST_MPP10') and the screen
 *number (0100). I also need to check the 'SAP GUI for Windows' checkbox in the 'GUI support' section.
+
+*Now, that the Module Pool program is complete, I need to perform the actual Session technique to migrate the data from the legacy
+*system. First, I need to read the data from the legacy system into an internal table. The data is stored within within a text file in
+*an application server. A comma is the separator. To proceed, I now need to create an executable program (SE38).
+
+*Below begins the structure of the aforementioned executable program.
+*If the file was stored locally, I could use the 'GUI_UPLOAD' function module to load the data. However it is placed in an application
+*server so I declare a variable to store the path to the file which includes the IP address of the application server. 'hedgehog.txt'
+*is my file. The 'lv_msg' variable is here to store the possible return message if the reading of the file has not been successful.
+*The internal table 'lt_legacy' is the one I will be loading the data into from the legacy system's file.
+DATA: lv_path TYPE string VALUE '\\666.666.666.666\c\hedgehog.txt',
+      lv_msg  TYPE string.
+TYPES: BEGIN OF t_legacy,
+  str TYPE string,
+END OF t_legacy.
+DATA: lt_legacy  TYPE TABLE OF t_legacy,
+      lwa_legacy TYPE t_legacy.
+
+*If the file containing the data is stored locally (so in the "presentation server"), I can use the 'GUI_UPLOAD' function module to
+*upload the data, but reaching the file in the application system requires a different mechanism. The OPEN DATASET statement allows
+*me to reach the application server, the FOR INPUT part means it's for reading, the IN TEXT MODE means the reading will be done
+*line by line. The MESSAGE part of the statement needs to be followed by a variable of the string type. If the file I am trying to
+*reach is not reached, the operating system's message will be stored within that variable.
+OPEN DATASET lv_path FOR INPUT IN TEXT MODE ENCODING DEFAULT MESSAGE lv_msg.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
