@@ -11340,6 +11340,30 @@ DATA: lt_legacy  TYPE TABLE OF t_legacy,
 *reach is not reached, the operating system's message will be stored within that variable.
 OPEN DATASET lv_path FOR INPUT IN TEXT MODE ENCODING DEFAULT MESSAGE lv_msg.
 
+*If the program has failed to open the file, the appropriate message is contained within the 'lv_msg' variable, so if the 'sy-subrc'
+*is not 0, I simply display the message as it tells the end-user what went wrong. If the file has been reached properly, I need to
+*start reading it from the first line to the last line. I don't know how long is the file so, to make sure, all the records are read,
+*I am writing the logic for reading the file's content within a loop (DO..ENDO LOOP) that is going to be finished only when the reading
+*of a line has failed, so when 'sy-subrc' is not 0. If it has been successfuland the line has been placed within my work area, I am
+*appending the current content of the work area to my internal table. The 'READ DATASET lv_path' changes the lines of the file it reads
+*thanks to the concept of the "file pointer". If the file has been successfully read, the file pointer is placed at the beginning of the
+*first line. The loop is entered. The 'READ DATASET' statement reads the entire line of the file because it has been opened in the
+*'TEXT MODE'. If the reading operation was successful, 'sy-subrc' is set to 0, the content of the work area is appended to the internal
+*table and the file pointer automatically goes to the next row of the file because it is within a loop. It will keep repeating over and 
+*over again until there are no more records to read which is indicated by the failure ('sy-subrc' being 0) of the READ DATASET. When 
+*that happenes, the EXIT keyword will make the control leave the current loop.
+IF sy-subrc = 0.
+  DO.
+    CLEAR lwa_legacy.
+    READ DATASET lv_path INTO lwa_legacy-str.
+    IF sy-subrc = 0.
+      APPEND lwa_legacy TO lt_legacy.
+    ENDIF.
+  ENDDO.
+ELSE.
+  WRITE: / lv_msg.
+ENDIF.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
