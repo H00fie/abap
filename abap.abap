@@ -11255,6 +11255,63 @@ ENDFORM.
 *so I also need to set the 'FctType' (function type) property to 'E Exit command' - this will allow me to perform a forecfull exit which
 *means that even a failure to provide the obligatory input fields with values will not prevent the end-user from leaving the program.
 
+*Now I create the logic for the created buttons. Within the flow logic section of screen 100 I uncomment the 'user_command_0100' module
+*and define the behaviour for particular function codes. When it's 'FC1' (so when the 'Insert' button has been pressed), the target
+*database table is to be modified based on the values present within the screen fields. The syntax 'MODIFY kna1' is enough because I
+*declared the 'TABLES kna1' which creates a work area so the 'FROM kna1' part of the MODIFY statement is inferred and the 'TABLES kna1'
+*also serves as an explicit declaration of my screen fields because their names are 'KNA1-KUNNR', 'KNA1-LAND1' AND 'KNA1-NAME1'. A
+*pop-up window with a message is displayed based on whether the modification was successful or not. If the function code is 'FC2', then
+*the 'Exit' button has been pushed and the program should be closed. However this exit will be prevented if any validations have been
+*failed in the screen. The 'Cancel' button's ('FC3') logic is defined in a separate module as it has the function type property set to 
+*'E' ('Exit Command') and thus I need to create a separate module with the 'AT EXIT-COMMAND' addition which handles the function codes
+*that had the function type set to 'E'. This button will allow the end-user to leave the program even if the validations have failed.
+*The flow lofic section of screen 100 looks like this:
+**********************************************************************
+PROCESS BEFORE OUTPUT.
+
+PROCESS AFTER INPUT.
+ MODULE USER_COMMAND_0100.
+ MODULE exit_forcefully AT EXIT-COMMAND.
+**********************************************************************
+   
+*The TOP INCLUDE looks like this:
+**********************************************************************
+PROGRAM Z_BM_TEST_MPP10.
+
+TABLES: kna1.
+
+*&---------------------------------------------------------------------*
+*&      Module  USER_COMMAND_0100  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE user_command_0100 INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC1'.
+      MODIFY kna1.
+      IF sy-subrc = 0.
+        MESSAGE 'A record has been affected.' TYPE 'I'.
+      ELSE.
+        MESSAGE 'A record has not been affected.' TYPE 'I'.
+      ENDIF.
+    WHEN 'FC2'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+
+*&---------------------------------------------------------------------*
+*&      Module  EXIT_FORCEFULLY  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE exit_forcefully INPUT.
+  CASE sy-ucomm.
+    WHEN 'FC3'.
+      LEAVE PROGRAM.
+  ENDCASE.
+ENDMODULE.
+**********************************************************************
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
