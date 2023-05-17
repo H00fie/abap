@@ -11245,9 +11245,9 @@ ENDFORM.
 *further mapped to the Module Pool transaction, it is mapped from the BDCDATA structure to a Session Object from which the data
 *is mapped to the Module Pool transaction.
 
-*To perform the Session technique, I need a module pool transaction. Hence I need to develop a module pool program. I go to SE80 
-*and create a new program ('Z_BM_TEST_MPP10' in this case) with the TOP INCLUDE, it's 'Type' being 'Module Pool'. Then I create a 
-*screen (100), its 'Screen Type' being 'Normal'. Then I move to the 'Layout' so design the screen's layout. In this screen I need 
+*To perform the Session technique, I need a module pool transaction. Hence I need to develop a module pool program. I go to SE80
+*and create a new program ('Z_BM_TEST_MPP10' in this case) with the TOP INCLUDE, it's 'Type' being 'Module Pool'. Then I create a
+*screen (100), its 'Screen Type' being 'Normal'. Then I move to the 'Layout' so design the screen's layout. In this screen I need
 *three fields - 'kunnr', 'land1' and 'name1' of the table KNA1 so I choose GoTo -> Secondary Window -> Dictionary/Program Fields
 *provide the name of KNA1, take the three fields I require and place them in my screen.
 *Now I move to create three buttons and draw them beneath the screen fields. The first one's name is 'B1', text 'Insert' and function
@@ -11262,7 +11262,7 @@ ENDFORM.
 *also serves as an explicit declaration of my screen fields because their names are 'KNA1-KUNNR', 'KNA1-LAND1' AND 'KNA1-NAME1'. A
 *pop-up window with a message is displayed based on whether the modification was successful or not. If the function code is 'FC2', then
 *the 'Exit' button has been pushed and the program should be closed. However this exit will be prevented if any validations have been
-*failed in the screen. The 'Cancel' button's ('FC3') logic is defined in a separate module as it has the function type property set to 
+*failed in the screen. The 'Cancel' button's ('FC3') logic is defined in a separate module as it has the function type property set to
 *'E' ('Exit Command') and thus I need to create a separate module with the 'AT EXIT-COMMAND' addition which handles the function codes
 *that had the function type set to 'E'. This button will allow the end-user to leave the program even if the validations have failed.
 *The flow lofic section of screen 100 looks like this:
@@ -11273,7 +11273,7 @@ PROCESS AFTER INPUT.
  MODULE USER_COMMAND_0100.
  MODULE exit_forcefully AT EXIT-COMMAND.
 **********************************************************************
-   
+
 *The TOP INCLUDE looks like this:
 **********************************************************************
 PROGRAM Z_BM_TEST_MPP10.
@@ -11332,6 +11332,16 @@ TYPES: BEGIN OF t_legacy,
 END OF t_legacy.
 DATA: lt_legacy  TYPE TABLE OF t_legacy,
       lwa_legacy TYPE t_legacy.
+*The final internal table is where the above internal table 'lt_legacy' will be chucking the data over. While 'lt_legacy' has one
+*field of the string type because it just takes in the "raw" lines of text from the legacy system's file in their entirety, the
+*'lt_final' table needs to have a structure that differentiates between the desired fields ('kunnr', 'land1', 'name1' in my case).
+TYPES: BEGIN OF t_final,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+END OF t_final.
+DATA: lt_final  TYPE TABLE OF t_final,
+      lwa_final TYPE t_final.
 
 *If the file containing the data is stored locally (so in the "presentation server"), I can use the 'GUI_UPLOAD' function module to
 *upload the data, but reaching the file in the application system requires a different mechanism. The OPEN DATASET statement allows
@@ -11365,6 +11375,23 @@ IF sy-subrc = 0.
   CLOSE DATASET lv_path.
 ELSE.
   WRITE: / lv_msg.
+ENDIF.
+
+*Now, if my temporary internal table indeed has records within it, I need to transfer the data from it to the final internal table.
+*I iterate through 'lt_legacy' and for every single one of its records, I am performing the operation of splitting that record at 
+*every occurence of a comma (since the initial text file had its data organised in this way) and placing the part of the string that 
+*was split first in 'lt_final's' work area's 'kunnr' field, then in the 'land1' field and then in the 'name1' field. The order of 
+*the fields is deliberate because that's how the data in the initial text file was organised. If it had the data starting with, say, 
+*the customer's name, then the 'name1' field should be the first to appear after the INTO keyword. At the end, I am appending the 
+*data stored within the work area to 'lt_final' and starting the loop anew for the next record of 'lt_legacy'.
+IF lt_legacy IS NOT INITIAL.
+  LOOP AT lt_legacy INTO lwa_legacy.
+    CLEAR lwa_final.
+    SPLIT lwa_legacy-str AT ',' INTO lwa_final-kunnr 
+                                     lwa_final-land1 
+                                     lwa_final-name1.
+    APPEND lwa_final TO lt_final.
+  ENDLOOP.
 ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
