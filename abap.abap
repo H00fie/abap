@@ -11394,6 +11394,20 @@ IF lt_legacy IS NOT INITIAL.
   ENDLOOP.
 ENDIF.
 
+*Now, before I map the data to the BDCDATA intenal table, I need to create the session object given the 'lt_final' internal table
+*indeed has values stored within it. To do it, I need to utilize the 'BDC_OPEN_GROUP' function module. The 'group' property is the
+*name of the session object and can be named whatever. The 'holddate' property indicates until when the object is not processable.
+*The 'keep' property with the 'X' means the session object will be available even after processing.
+IF lt_final IS NOT INITIAL.
+  CALL FUNCTION 'BDC_OPEN_GROUP'
+    EXPORTING
+      CLIENT                    = SY-MANDT
+      GROUP                     = 'S1'
+      HOLDDATE                  = '20230530'
+      KEEP                      = 'X'
+      USER                      = SY-UNAME.
+ENDIF.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
