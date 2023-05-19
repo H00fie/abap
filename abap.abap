@@ -11342,6 +11342,9 @@ TYPES: BEGIN OF t_final,
 END OF t_final.
 DATA: lt_final  TYPE TABLE OF t_final,
       lwa_final TYPE t_final.
+*I also need an internal table of the BDCDATA type. In this case my session object will be giving it the data.
+DATA: lt_bdcdata  TYPE TABLE OF bdcdata,
+      lwa_bdcdata TYPE bdcdata.
 
 *If the file containing the data is stored locally (so in the "presentation server"), I can use the 'GUI_UPLOAD' function module to
 *upload the data, but reaching the file in the application system requires a different mechanism. The OPEN DATASET statement allows
@@ -11354,41 +11357,43 @@ OPEN DATASET lv_path FOR INPUT IN TEXT MODE ENCODING DEFAULT MESSAGE lv_msg.
 *is not 0, I simply display the message as it tells the end-user what went wrong. If the file has been reached properly, I need to
 *start reading it from the first line to the last line. I don't know how long is the file so, to make sure, all the records are read,
 *I am writing the logic for reading the file's content within a loop (DO..ENDO LOOP) that is going to be finished only when the reading
-*of a line has failed, so when 'sy-subrc' is not 0. If it has been successfuland the line has been placed within my work area, I am
+*of a line has failed, so when 'sy-subrc' is not 0. If it has been successful and the line has been placed within my work area, I am
 *appending the current content of the work area to my internal table. The 'READ DATASET lv_path' changes the lines of the file it reads
 *thanks to the concept of the "file pointer". If the file has been successfully read, the file pointer is placed at the beginning of the
 *first line. The loop is entered. The 'READ DATASET' statement reads the entire line of the file because it has been opened in the
 *'TEXT MODE'. If the reading operation was successful, 'sy-subrc' is set to 0, the content of the work area is appended to the internal
-*table and the file pointer automatically goes to the next row of the file because it is within a loop. It will keep repeating over and 
-*over again until there are no more records to read which is indicated by the failure ('sy-subrc' being 0) of the READ DATASET. When 
+*table and the file pointer automatically goes to the next row of the file because it is within a loop. It will keep repeating over and
+*over again until there are no more records to read which is indicated by the failure ('sy-subrc' not being 0) of the READ DATASET. When
 *that happenes, the EXIT keyword will make the control leave the current loop.
 *When all the lines of the file have been read and the loop is finished, I should use the statement of 'CLOSE DATASET' to close the
-*file that I was reading.
+*file that I was reading. It should be done before leaving the loop altogether.
 IF sy-subrc = 0.
   DO.
     CLEAR lwa_legacy.
     READ DATASET lv_path INTO lwa_legacy-str.
     IF sy-subrc = 0.
       APPEND lwa_legacy TO lt_legacy.
+    ELSE.
+      CLOSE DATASET lv_path.
+      EXIT.
     ENDIF.
   ENDDO.
-  CLOSE DATASET lv_path.
 ELSE.
   WRITE: / lv_msg.
 ENDIF.
 
 *Now, if my temporary internal table indeed has records within it, I need to transfer the data from it to the final internal table.
-*I iterate through 'lt_legacy' and for every single one of its records, I am performing the operation of splitting that record at 
-*every occurence of a comma (since the initial text file had its data organised in this way) and placing the part of the string that 
-*was split first in 'lt_final's' work area's 'kunnr' field, then in the 'land1' field and then in the 'name1' field. The order of 
-*the fields is deliberate because that's how the data in the initial text file was organised. If it had the data starting with, say, 
-*the customer's name, then the 'name1' field should be the first to appear after the INTO keyword. At the end, I am appending the 
+*I iterate through 'lt_legacy' and for every single one of its records, I am performing the operation of splitting that record at
+*every occurence of a comma (since the initial text file had its data organised in this way) and placing the part of the string that
+*was split first in 'lt_final's' work area's 'kunnr' field, then in the 'land1' field and then in the 'name1' field. The order of
+*the fields is deliberate because that's how the data in the initial text file was organised. If it had the data starting with, say,
+*the customer's name, then the 'name1' field should be the first to appear after the INTO keyword. At the end, I am appending the
 *data stored within the work area to 'lt_final' and starting the loop anew for the next record of 'lt_legacy'.
 IF lt_legacy IS NOT INITIAL.
   LOOP AT lt_legacy INTO lwa_legacy.
     CLEAR lwa_final.
-    SPLIT lwa_legacy-str AT ',' INTO lwa_final-kunnr 
-                                     lwa_final-land1 
+    SPLIT lwa_legacy-str AT ',' INTO lwa_final-kunnr
+                                     lwa_final-land1
                                      lwa_final-name1.
     APPEND lwa_final TO lt_final.
   ENDLOOP.
@@ -11406,7 +11411,63 @@ IF lt_final IS NOT INITIAL.
       HOLDDATE                  = '20230530'
       KEEP                      = 'X'
       USER                      = SY-UNAME.
+
+*Now to map the data from 'lt_final' to 'lt_bdcdata'. To populate the BDCDATA structure, I need to map the program's information
+*first and then map the individual fields. To map the program's information, I create the 'map_program_info' perform which is
+*USING my module pool program's name and its screen's number.
+*Afterwards I need to map all the fields' data as well. My perform takes in the name of the field and the value of the field as
+*parameters.
+  LOOP AT lt_final INTO lwa_final.
+    PERFORM map_program_info USING 'Z_BM_TEST_MPP10' '100'.
+    PERFORM map_field_info USING 'KNA1-KUNNR' lwa_final-kunnr.
+    PERFORM map_field_info USING 'KNA1-LAND1' lwa_final-land1.
+    PERFORM map_field_info USING 'KNA1-NAME1' lwa_final-name1.
+*In case of the Call Transaction technique, when the BDCDATA structure is populated, I call the transaction directly
+*(CALL TRANSACTION <program_same> USING <my_bdcdata_internal_table). In case of the Session technique, I need to map the data to
+*the session object first. In order to do it, I use the 'BDC_INSERT' function module. I need to provide it with the transaction
+*code of the module pool part of my program ('ZBMI11') and the name of the BDCDATA internal table I populated with the data
+*previously.
+    CALL FUNCTION 'BDC_INSERT'
+      EXPORTING
+        TCODE                  = 'ZBMI11'
+      TABLES
+        DYNPROTAB              = lt_bdcdata.   
+  ENDLOOP.
+  
+*When all the data has been processed (the loop ended), I should close the session object. The 'BDC_CLOSE_GROUP' function module
+*does not require any parameters and is smart enough to know what session object I want closed.
+  CALL FUNCTION 'BDC_CLOSE_GROUP'.
 ENDIF.
+
+*&---------------------------------------------------------------------*
+*&      Form  MAP_PROGRAM_INFO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+*The internal table itself is refreshed because, after all the program's data and all the fields' data have been placed within,
+*the module pool part of the program is called using that table, the data housed within is placed into proper screen fields based
+*on the fields' names that the BDCDATA structure is provided with and when the record is processed, the cycle repeats itself so
+*the BDCDATA structure is always to contain just one record at a time.
+FORM map_program_info USING p_program_name p_screen_number.
+  REFRESH lt_bdcdata.
+  CLEAR lwa_bdcdata.
+  lwa_bdcdata-program = p_program_name.
+  lwa_bdcdata-dynpro = p_screen_number.
+  lwa_bdcdata-dynbegin = 'X'.
+  APPEND lwa_bdcdata TO lt_bdcdata.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  MAP_FIELD_INFO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM map_field_info USING p_field_name p_field_value.
+  CLEAR lwa_bdcdata.
+  lwa_bdcdata-fnam = p_field_name.
+  lwa_bdcdata-fval = p_field_valie.
+  APPEND lwa_bdcdata TO lt_bdcdata.
+ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
