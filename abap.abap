@@ -11439,6 +11439,26 @@ IF lt_final IS NOT INITIAL.
   CALL FUNCTION 'BDC_CLOSE_GROUP'.
 ENDIF.
 
+*When the program here is executed the transaction will NOT be displayed like it was in case of the Call Transaction technique.
+*Instead of calling the transaction after having populated the BDCDATA structure, I am mapping the data to the session object and
+*executing the program creates that session object. In order to process the session object, I need to go to the SM35 transaction.
+*I should see 'Batch Input: Session Overview' at the top of the screen and my session object in the table control below. In case
+*of my program here, I should see the 'Lock Date' field with the value of 30.05.2023 because when creating the session object with
+*the help of the 'BDC_OPEN_GROUP' function module I set the 'HOLDDATE' property to that date. If I want to process the session
+*object, I need to press the 'Process' button (F8). If I tried to do that before 30.05.2023, I wouldn't be able to due to the
+*lock date being set. I can unlock the object by pressing the 'Unlock' button in the application toolbar in SM35 (or simply by
+*not adding any 'HOLDDATE' in the frist place).
+*When I hit the 'Process' button and there's no active lock, SAP will ask me whether I want to process the session object in the
+*'foreground' or 'background' mode. If I check the 'Process/foreground' radiobutton and push the 'Process' button, my module pool
+*transaction will be triggered and I will be at the same stage I would be in if I used the CALL TRANSACTION statement after
+*having populated the BDCDATA structure.
+*When all the data has been processed, I should see a pop-up window with a text message of 'Processing of batch input session
+*completed'. If I choose the 'Session overview' button I will be taken back to SM35. My session object should have a white box
+*with a green checkmark icon in the 'Status' columns which means the session object is processed. I am still able to see the session
+*object here even after the processing because while I was creating the session object I set the 'KEEP' property to 'X'. Without
+*it, the session object would not be visible here after the processing. I think it's a good idea to have the 'KEEP' property have
+*the 'X' value because that will allow me to see the log.
+
 *&---------------------------------------------------------------------*
 *&      Form  MAP_PROGRAM_INFO
 *&---------------------------------------------------------------------*
