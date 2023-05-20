@@ -11459,6 +11459,13 @@ ENDIF.
 *it, the session object would not be visible here after the processing. I think it's a good idea to have the 'KEEP' property have
 *the 'X' value because that will allow me to see the log.
 
+*An advatnge of the session technique is that a log is generated automatically here. If my session object is still here after the
+*processing (if it's been KEPT, hehe), I can choose the 'Log' option from the application toolbar. Then I can go deeper by choosing
+*the 'Analyze session' button. Here I have a tab called 'Log created on <date>'. If I enter that tab I can see the entire history
+*of processing the session object. E.g. if there were any errors on the way, e.g. one of the records had a country code unknown to
+*SAP, I will see a proper message here within the log, informing me what went wrong. The changes made in the screen are neatly
+*tracked here, e.g. I have the information at what exact time the 'KNA1-KUNNR' screen field changed the value from one to another.
+
 *&---------------------------------------------------------------------*
 *&      Form  MAP_PROGRAM_INFO
 *&---------------------------------------------------------------------*
