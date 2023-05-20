@@ -11466,6 +11466,16 @@ ENDIF.
 *SAP, I will see a proper message here within the log, informing me what went wrong. The changes made in the screen are neatly
 *tracked here, e.g. I have the information at what exact time the 'KNA1-KUNNR' screen field changed the value from one to another.
 
+*The Session technique is not an immediate process, while the Call Transaction technique acts immediately. In case of the Session
+*technique the data is held within the session object and I can process it at a later point in time by accessing SM35.
+*The Call Transaction technique is an asynchronous process while the Session technique is a synchronous process. In case of a
+*synchronous process internally an acknowledgement is noted after every record has been processed and the next record is processed
+*only after said acknowledgement has been noted. In case of an asynchronous process, no such acknowledgement is had SAP immediately
+*starts processing the next record after being done with the previous one. The Call Transaction technique is thus faster than the 
+*Session technique.
+*On the other hand, in case of the Session technique an automatic log is generated which I can analyse later. If I want a log with
+*the Call Transaction I would need to generate it manually.
+
 *&---------------------------------------------------------------------*
 *&      Form  MAP_PROGRAM_INFO
 *&---------------------------------------------------------------------*
