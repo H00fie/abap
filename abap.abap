@@ -11513,6 +11513,64 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
+*BDC - BATCH DATA COMMUNICATION. MIGRATING DATA FROM A LOCAL EXCEL FILE USING THE CALL TRANSACTION METHOD WITH A MANUAL LOGGING.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*First of all I need to read the data from a local Excel file into an internal table. In case of a text file, I would use the
+*'GUI_UPLOAD' function module. In case of an Excel file I should use the 'TEXT_CONVERT_XLS_TO_SAP' function module. It has two
+*mandatory parameters. One is of the 'TRUXS_T_TEXT_DATA' type. It is an internal table and the second is of the 'RLGRAP-FILENAME'
+*type so it is a field of the 'RLGRAP' structure. That field is of the 'CHAR' type and of the length of 128.
+*'TEXT_CONVERT_XLS_TO_SAP' returns a table.
+
+*My Excel file is called 'POKE3' and looks like this:
+***************************
+*     A   |  B |   C
+*-------------------------
+*1 666xyz | KA | Dedenne
+*-------------------------
+*2 729abc | KT | Cubone
+*-------------------------
+*3 695tal | JH | Cyndaquil
+**************************
+
+*First I declare an internal table to receive the data from the local Excel file via the aforementioned function module. I need
+*to understand what kind of data I am migrating and which SAP's database table and what fields of it should that data go to. I
+*recognised here I am dealing with customer data. I have a customer number, country code and customer name. Thus, KNA1 it is as
+*it is the customer master data database table of SAP.
+TYPES: BEGIN OF t_kna1,
+  kunnr TYPE kna1-kunnr,
+  land1 TYPE kna1-land1,
+  name1 TYPE kna1-name1,
+END OF t_kna1.
+DATA: lt_kna1  TYPE TABLE OF t_kna1,
+      lwa_kna1 TYPE t_kna1,
+*The function module I will be using to load the data from the Excel file to my internal table requests a parameter of the
+*'TRUXS_T_TEXT_DATA' type.
+      lt_truxs TYPE truxs_t_text_data,
+*It also required a parameter of the 'RLGRAP-FILENAME' type for the path to the Excel file.
+      lv_filename TYPE rlgrap-filename VALUE 'c:\POKE3.xls'.
+
+*The data from the Excel file found due to the provided path ('lv_filename') is loaded into the internal table that has been
+*prepared to receive the data into specific fields. If my internal table was constructed in a way that the customer name would
+*be the first column, then what is actually a customer number (the first information in the Excel file) would end up in that
+*customer name field. The 'lt_truxs' internal table is kind of here for the ride. It is a part of the 'TRUXS' type group so,
+*if I am working in an older version of SAP, I might be told that this structure is unknown. If it is so, I need to declare 
+*the 'TYPE-POOLS: truxs.' at the top of the program. Once upon a time working with elements belonging to a type group required
+*the declaring of that type group. It was the case until version 6.0.
+CALL FUNCTION 'TEXT_CONVERT_XLS_TO_SAP'
+  EXPORTING
+    i_tab_raw_data             = lt_truxs
+    i_filename                 = lv_filename
+  TABLES
+    i_tab_converted_data       = lt_kna1.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+*---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
