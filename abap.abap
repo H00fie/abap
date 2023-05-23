@@ -11637,6 +11637,46 @@ ENDMODULE.
 *as is always the case for Module Pool programs. Next I need to provide the name of my program ('Z_BM_TEST_MPP10') and the screen
 *number (0100). I also need to check the 'SAP GUI for Windows' checkbox in the 'GUI support' section.
 
+*Now, that the Module Pool program is complete, I need to populate the BDCDATA structure. In order to do it I need to map the program's
+*information first and then map the individual fields. To map the program's information, I create the 'map_program_info' perform which
+*is USING my module pool program's name and its screen's number. Afterwards I need to map all the fields' data as well. My perform takes
+*in the name of the field and the value of the field as parameters.
+IF lt_kna1 IS NOT INITIAL.
+  LOOP AT lt_kna1 INTO lwa_kna1.
+    PERFORM map_program_info USING 'Z_BM_TEST_MPP10' '100'.
+    PERFORM map_field_info USING 'KNA1-KUNNR' lwa_kna1-kunnr.
+    PERFORM map_field_info USING 'KNA1-LAND1' lwa_kna1-land1.
+    PERFORM map_field_info USING 'KNA1-NAME1' lwa_kna1-name1.
+    CALL TRANSACTION 'ZBMI11' USING lt_bdcdata. 
+  ENDLOOP.
+ENDIF.
+
+*&---------------------------------------------------------------------*
+*&      Form  MAP_PROGRAM_INFO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM map_program_info USING p_program_name p_screen_number.
+  REFRESH lt_bdcdata.
+  CLEAR lwa_bdcdata.
+  lwa_bdcdata-program = p_program_name.
+  lwa_bdcdata-dynpro = p_screen_number.
+  lwa_bdcdata-dynbegin = 'X'.
+  APPEND lwa_bdcdata TO lt_bdcdata.
+ENDFORM.
+
+*&---------------------------------------------------------------------*
+*&      Form  MAP_FIELD_INFO
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+FORM map_field_info USING p_field_name p_field_number.
+  CLEAR lwa_bdcdata.
+  lwa_bdcdata-fnam = p_field_name.
+  lwa_bdcdata-fval = p_field_number.
+  APPEND lwa_bdcdata TO lt_bdcdata.
+ENDFORM.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
