@@ -11641,13 +11641,17 @@ ENDMODULE.
 *information first and then map the individual fields. To map the program's information, I create the 'map_program_info' perform which
 *is USING my module pool program's name and its screen's number. Afterwards I need to map all the fields' data as well. My perform takes
 *in the name of the field and the value of the field as parameters.
+*Afterwards I am calling the module pool screen created beforehand with the addition of "USING lt_bdcdata" to ensure that with every
+*iteration of the loop, I will have the module pool screen displayed and its fields filled with the data previously mapped into the
+*BDCDATA structure. Additionally, the "MESSAGES INTO lt_bdcmsgcoll" addition (hehe) ensures that the internal table will contain all
+*the messages' IDs and using these IDs I can collect the messages.
 IF lt_kna1 IS NOT INITIAL.
   LOOP AT lt_kna1 INTO lwa_kna1.
     PERFORM map_program_info USING 'Z_BM_TEST_MPP10' '100'.
     PERFORM map_field_info USING 'KNA1-KUNNR' lwa_kna1-kunnr.
     PERFORM map_field_info USING 'KNA1-LAND1' lwa_kna1-land1.
     PERFORM map_field_info USING 'KNA1-NAME1' lwa_kna1-name1.
-    CALL TRANSACTION 'ZBMI11' USING lt_bdcdata. 
+    CALL TRANSACTION 'ZBMI11' USING lt_bdcdata MESSAGES INTO lt_bdcmsgcoll.. 
   ENDLOOP.
 ENDIF.
 
