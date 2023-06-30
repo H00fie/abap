@@ -11651,7 +11651,39 @@ IF lt_kna1 IS NOT INITIAL.
     PERFORM map_field_info USING 'KNA1-KUNNR' lwa_kna1-kunnr.
     PERFORM map_field_info USING 'KNA1-LAND1' lwa_kna1-land1.
     PERFORM map_field_info USING 'KNA1-NAME1' lwa_kna1-name1.
-    CALL TRANSACTION 'ZBMI11' USING lt_bdcdata MESSAGES INTO lt_bdcmsgcoll.. 
+    CALL TRANSACTION 'ZBMI11' USING lt_bdcdata MESSAGES INTO lt_bdcmsgcoll. 
+  ENDLOOP.
+ENDIF.
+
+*Now the program works in terms of migrating the data from the Excel file to one of SAP's database tables, but I also want the logging
+*to take place. In order to generate a log in the Call Transaction technique I need to employ the Error Handling jutsu. In this case
+*at least "Error handling" means "generating a log". Just like I have the BDCDATA structure, SAP has also provided me with the BDCMSGCOLL
+*structure and I can use it to collect messages in the SAP system. The structure has first been declared and then populated due to the
+*"MESSAGES INTO lt_bdcmsgcoll" code above, in the "CALL TRANSACTION" statement. That operation though provides the BDCMSGCOLL structure
+*only with the IDs of the messages and now I need to collect the messages themselves.
+*In order to do it I am to iterate through the BDCMSGCOLL structure and for every ID stored within call a standard SAP's function module
+*'FORMAT_MESSAGE'. This function module returns a message based on the parameters stored previously within 'lt_bdcmsgcoll'. In order to
+*know what fields of the internal table I need to assign to the particular fields of the function module I am comparing their descriptions
+*or names, e.g. 'no' wants a number and the BDCMSGCOLL structure has a field called "message number" so this one goes there.
+*Previously I have created an internal table - 'lt_log' on which a file with log on the application server will be based. This internal
+*table has two fields - one of the string type to store the message and one of the alphanumeric type to store the number of the record. 
+*While the function module returns the message, I can simply use 'sy-tabix' to number my records as the system variable auto-increments
+*with every iteration of the loop. 
+IF lt_bdcmsgcoll IS NOT INITIAL.
+  LOOP AT lt_bdcmsgcoll INTO lwa_bdcmsgcoll.
+    CLEAR lwa_log.
+    CALL FUNCTION 'FORMAT_MESSAGE'
+      EXPORTING
+        id              = lwa_bdcmsgcoll-msgid
+        lang            = sy-lang
+        no              = lwa_bdcmsgcoll-msgnr
+        v1              = lwa_bdcmsgcoll-msgv1
+        v2              = lwa_bdcmsgcoll-msgv2
+        v3              = lwa_bdcmsgcoll-msgv3
+        v4              = lwa_bdcmsgcoll-msgv4
+      IMPORTING
+        msg             = lwa_log-msg.
+    lwa_log-recno = sy-tabix.  
   ENDLOOP.
 ENDIF.
 
