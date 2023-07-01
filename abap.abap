@@ -11687,6 +11687,20 @@ IF lt_bdcmsgcoll IS NOT INITIAL.
   ENDLOOP.
 ENDIF.
 
+*When my custom internal table ('lt_log') is filled with the collected messages, I need to write the log into local a text file. Much like
+*the 'GUI_UPLOAD' function module is used for reading, the 'GUI_DOWNLOAD' function module is used for writing. The 'filename' field is the
+*path to where the file is to be created and its name. The 'write_field_separator' field is used to indicate if the separator should be a 
+*tab. The 'data_tab' field is the table that contains the information that is to be written. The function module will create a text file
+*containing all the previously collected messages.
+IF lt_log IS NOT INITIAL.
+  CALL FUNCTION 'GUI_DOWNLOAD'
+    EXPORTING
+      filename                        = 'C:\Users\bartosz.mierzwinski\Desktop\test_log'
+      write_field_separator           = 'X'
+    TABLES
+      data_tab                        = lt_log.
+ENDIF.
+
 *&---------------------------------------------------------------------*
 *&      Form  MAP_PROGRAM_INFO
 *&---------------------------------------------------------------------*
