@@ -11701,6 +11701,38 @@ IF lt_log IS NOT INITIAL.
       data_tab                        = lt_log.
 ENDIF.
 
+*Now I need to move the file to the application server as per the initial requirement. The 'lv_path' variable is the path to the location
+*in the application server where I want the file stored and the name of the file. The 'lv_msg' variable is used by the "MESSAGE(...) part
+*of the OPEN DATASET statement. If there is a problem with the creating of the file the operating system's message will be stored within
+*'lv_msg'. When I was reaching to an application server in order to read a file, the "FOR INPUT" addition was used. Now I want to write a
+*file into the application server so "FOR OUTPUT" it is. 'sy-subrc' will assume the value of 0 if the file is successfully created for
+*writing purposes by the "OPEN DATASET(...)" part. I need to actually transfer the data from my internal table to the created file. This
+*is done by looping through my internal table that contains the number of every message and the message itself. Within the loop I am
+*concatenating both the number and the message to my string variable ('lv_msg') and then, courtesy of the TRANSFER statement, transferring
+*every record of the internal table into the file created by the OPEN DATASET statement. When it's done, I need to CLOSE DATASET to close
+*the connection.
+  DATA: lv_path TYPE string VALUE '666.666.666.666\c\test_log',
+        lv_msg  TYPE string.
+  OPEN DATASET lv_path FOR OUTPUT IN TEXT MODE ENCODING DEFAULT MESSAGE lv_msg.
+*If the creation of the file in the application server is successful...
+  IF sy-subrc = 0.
+    LOOP AT lt_log INTO lwa_log.
+      CLEAR lv_msg.
+      CONCATENATE lwa_log-recno lwa_log-msg INTO lv_msg SEPARATED BY space.
+      TRANSFER lv_msg TO lv_path.
+    ENDLOOP.
+    CLOSE DATASET lv_path.
+  ELSE.
+*If the creation of the file in the application server is not successful - print out the operating system's message to tell me what is wrong.
+    WRITE lv_msg.
+  ENDIF.
+ENDIF.
+
+*The Call Transaction Technique is asynchronous while the Session Technique is synchronous. That means the Call Transaction Technique
+*will not wait to see the status of the migrated record before migrating the next one. The Session Technique will check the status of
+*the record before migrating another. The Session Technique also automatically generates logs while in the case of the Call Transaction
+*Technique I need to create it manually.
+
 *&---------------------------------------------------------------------*
 *&      Form  MAP_PROGRAM_INFO
 *&---------------------------------------------------------------------*
