@@ -11769,7 +11769,14 @@ ENDFORM.
 *BDC - RECORDING A PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
 
-
+*Generally whenever I want to do the data migration, I am not writing the program but recording it. First I need to understand the
+*data that is going to be migrated - the format of the file, how many fields per record there are, what's the separator. When the
+*program is generated after the recording, I will need to modify it manually.
+*To record a transaction, I need to understand the entire process of the migration and perform it for a single record using sample
+*data. That is because that's how recording takes place - I do the process manually once and SAP remembers how it's done.
+*My exemplary file contains the fields MATNR, MBRSH, MTART and MEINS that belong to the table MARA and MAKTX from MAKT. Thus I see
+*I need to create a material. I have the MM01 transaction that is used for creating the materials. If I have analysed the legacy
+*data and realized there's no relevant SAP transaction, I need to create that transaction.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
