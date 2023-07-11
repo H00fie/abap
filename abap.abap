@@ -11778,6 +11778,14 @@ ENDFORM.
 *I need to create a material. I have the MM01 transaction that is used for creating the materials. If I have analysed the legacy
 *data and realized there's no relevant SAP transaction, I need to create that transaction.
 
+*In order to start recording I need to go to the SHDB transaction. Here I should hit the 'New recording' button. This is the first
+*screen. Here I need to provide the name to the recording and the transaction code I want recorded. In my case it's MM01 because I 
+*want to create a new material. Then I need to press the 'Start recording' button. This will take me to the initial screen of the 
+*transaction I am recording.
+*Here I need to provide all the necessary parameters, a sample record. I am providing the 'Material' (a random name in this case,
+*the 'Industry sector' (a random choice in this case) and the 'Material Type' (a random choice in this case). Then I should press
+*Enter.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
