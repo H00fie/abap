@@ -11786,6 +11786,11 @@ ENDFORM.
 *the 'Industry sector' (a random choice in this case) and the 'Material Type' (a random choice in this case). Then I should press
 *Enter.
 
+*Upon hitting Enter I am transported to a second screen - a pop-up window appears. Within here I choose the 'Basic data 1' option.
+*Now the third screen appears in which I am providing a description and filling the 'Base Unit of Measure' field with the value of
+*'KG'. Now I save the progress. I should get the message that the recording is complete and SAP should display the recorded details
+*mapped to the fields of a BDCDATA structure. The columns I see here are the BDCDATA columns.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
