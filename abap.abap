@@ -11779,17 +11779,28 @@ ENDFORM.
 *data and realized there's no relevant SAP transaction, I need to create that transaction.
 
 *In order to start recording I need to go to the SHDB transaction. Here I should hit the 'New recording' button. This is the first
-*screen. Here I need to provide the name to the recording and the transaction code I want recorded. In my case it's MM01 because I 
-*want to create a new material. Then I need to press the 'Start recording' button. This will take me to the initial screen of the 
+*screen. Here I need to provide the name to the recording and the transaction code I want recorded. In my case it's MM01 because I
+*want to create a new material. Then I need to press the 'Start recording' button. This will take me to the initial screen of the
 *transaction I am recording.
-*Here I need to provide all the necessary parameters, a sample record. I am providing the 'Material' (a random name in this case,
-*the 'Industry sector' (a random choice in this case) and the 'Material Type' (a random choice in this case). Then I should press
-*Enter.
+*Here I need to provide all the necessary parameters, a sample record. I am providing the 'Material' (a name, e.g. ZBMTESTMAT, the
+*'Industry sector' (e.g. Chemical Industry) and the 'Material Type' (e.g. FERT-Finished Product). Then I should press Enter.
 
 *Upon hitting Enter I am transported to a second screen - a pop-up window appears. Within here I choose the 'Basic data 1' option.
 *Now the third screen appears in which I am providing a description and filling the 'Base Unit of Measure' field with the value of
 *'KG'. Now I save the progress. I should get the message that the recording is complete and SAP should display the recorded details
 *mapped to the fields of a BDCDATA structure. The columns I see here are the BDCDATA columns.
+*In the second row I should see a record - it indicates the first screen I visited. The program's name should be 'SAPLMGMM' and the
+*screen number should be '0060'. Since it is a new screen the DYNBEGIN field of BDCDATA (the column's header is called 'Start ID'
+*here) assumes the value of 'X'. Whenever a new screen starts the DYNBEGIN field ('Start ID here) is set to have the value of 'X'.
+*Within this recorded details' screen I need to make note of the field names for which I entered the sample data. In the 'Field name'
+*column I can see e.g. the RMMG1-MATNR field with ZBMTESTMAT in the column next right next to it. This is the name of the field where 
+*I put my material's name. Underneath there's the RMMG1-MBRSH field and RMMG1-MTART field corresponding to the provided 'Industry
+*sector' and 'Material Type' respectively.
+*I need to remember the names of these fields because I will need them if I want to be able to implement any changes.
+*Then I can see (preferably in the 8th row) that a new screen has begun ('0070'). In the second screen I didn't provide any data.
+*I only selected one of the available options - the first one, which is indicated by the '(01)' part of the MSICHTAUSW-KZSEL (01)
+*value of the 'Field name' column.
+*In the third screen ('4004') I provided the description and the base unit of measure. That's MAKT-MAKTX and MARA-MEINS respectively.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
