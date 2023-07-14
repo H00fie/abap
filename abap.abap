@@ -11802,6 +11802,8 @@ ENDFORM.
 *value of the 'Field name' column.
 *In the third screen ('4004') I provided the description and the base unit of measure. That's MAKT-MAKTX and MARA-MEINS respectively.
 
+*I should 
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
