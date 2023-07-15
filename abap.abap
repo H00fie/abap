@@ -11793,7 +11793,7 @@ ENDFORM.
 *screen number should be '0060'. Since it is a new screen the DYNBEGIN field of BDCDATA (the column's header is called 'Start ID'
 *here) assumes the value of 'X'. Whenever a new screen starts the DYNBEGIN field ('Start ID here) is set to have the value of 'X'.
 *Within this recorded details' screen I need to make note of the field names for which I entered the sample data. In the 'Field name'
-*column I can see e.g. the RMMG1-MATNR field with ZBMTESTMAT in the column next right next to it. This is the name of the field where 
+*column I can see e.g. the RMMG1-MATNR field with ZBMTESTMAT in the column next right next to it. This is the name of the field where
 *I put my material's name. Underneath there's the RMMG1-MBRSH field and RMMG1-MTART field corresponding to the provided 'Industry
 *sector' and 'Material Type' respectively.
 *I need to remember the names of these fields because I will need them if I want to be able to implement any changes.
@@ -11802,7 +11802,13 @@ ENDFORM.
 *value of the 'Field name' column.
 *In the third screen ('4004') I provided the description and the base unit of measure. That's MAKT-MAKTX and MARA-MEINS respectively.
 
-*I should 
+*I should move back now (F3) and my recording should be available. The column 'Transact.' indicates how many transactions have
+*been recorded and the 'Screens' one how many screens. I need to select my recording and press the 'Program' button in the Application
+*Toolbar. I will be prompted to provide the name for my new program. In my case it's 'ZBM_RECORDED_BDC_MM01_TEST'. The 'Field contents'
+*should be left as the defauly 'Read from file'. When I proceed, I will be asked to provide a short description of the program. Its
+*type is 'Executable program'. To commence forth, I should select the 'Source code' button.
+*Doing the above will generate the program for me based on the previously created recording. I need to modify it to properly read the
+*data from the legacy system.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
