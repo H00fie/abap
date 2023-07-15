@@ -11810,6 +11810,28 @@ ENDFORM.
 *Doing the above will generate the program for me based on the previously created recording. I need to modify it to properly read the
 *data from the legacy system.
 
+*I need to read the file with the data before the START-OF-SELECTION event. The file in my case is stored locally and the separator
+*is a comma. Because it is a comma, I will require two internal tables to process the data correctly. If it was a tab, one internal
+*table would suffice. 
+*The first table will contain just one field - every record will become one string within the table and I will
+*split the data later on while moving it into the second table.
+*The second table's fields are the same fields five that SAP recorded for me.
+TYPES: BEGIN OF t_legacy,
+  string TYPE string,
+END OF t_legacy.
+DATA: lt_legacy  TYPE TABLE OF t_legacy,
+      lwa_legacy TYPE t_legacy.
+
+TYPES: BEGIN OF t_final,
+  matnr TYPE rmmg1-matnr,
+  mbrsh TYPE rmmg1-mbrsh,
+  mtart TYPE rmmg1-mtart,
+  maktx TYPE makt-maktx,
+  meins TYPE mara-meins,
+END OF t_final.
+DATA: lt_final  TYPE TABLE OF t_final,
+      lwa_final TYPE t_final.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
