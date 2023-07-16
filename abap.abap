@@ -11840,11 +11840,26 @@ DATA: lt_final  TYPE TABLE OF t_final,
 *In order to read the data from a local file, the 'GUI_UPLOAD' function module is to be used. I use it to move the data from the legacy
 *file into the initial internal table.
 *The 'filename' field is the path to the file. The 'data_tab' field is the internal table into which the data will be read.
+*If there indeed is data within the 'lt_legacy' internal table, I need to transfer it to the 'lt_final' internal table that will hold
+*the data properly divided into fields. To achieve this, I need to SPLIT what's in 'lt_legacy' as every record there is a line. The order
+*of the fields mentioned at the end of the SPLIT statement matters. At every occurence of a comma what came before it is put into the
+*next mentioned field.
 CALL FUNCTION 'GUI_UPLOAD'
   EXPORTING
     filename                      = 'd:\MATERIAL.txt'
   TABLES
     data_tab                      = lt_legacy.
+IF lt_legacy IS NOT INITIAL.
+  LOOP AT lt_legacy INTO lwa_legacy.
+    CLEAR lwa_final.
+    SPLIT lwa_legacy-string AT ',' INTO lwa_final-matnr
+                                        lwa_final-mbrsh
+                                        lwa_final-mtart
+                                        lwa_final-maktx
+                                        lwa_final-meins.
+    APPEND lwa_final TO lt_final.
+  ENDLOOP.
+ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
