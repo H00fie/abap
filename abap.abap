@@ -11861,6 +11861,41 @@ IF lt_legacy IS NOT INITIAL.
   ENDLOOP.
 ENDIF.
 
+*Now what needs to happen is the mapping of the data from 'lt_final' to the BDCDATA structure. SAP has already generated this part, but
+*I need to make sure it's done correctly. The 'open_group' subroutine creates a session object in case of the Session Technique being
+*deployed. I am not commenting it out as it is relevant for what I am doing.
+*The generated program is using the DO loop, but I am trading it for LOOP loop. The generated program has also created the 'READ DATASET
+*dataset INTO record.' statement which I will not require as it is used to read the data from an application server and mine is stored
+*locally.
+*Within the loop I need to map the program's information as well as the individual fields' information to the BDCDATA structure. SAP
+*has generated a few subroutines for that. The 'bdc_dynpro' one maps the program data and does it just right so I am leaving that one
+*where it is. The generated 'bdc_data' subroutine maps the fields' information to the BDCDATA structure. Right now the fields passed
+*into the subroutines are a part of the 'record' structure  so I am changing their origin into my work area that the data is being looped
+*into. The first and second callings of the 'bdc_field' subroutine are automatically generated and I shouldn't concern myself with them.
+*The occurences of the 'bdc_field' subroutine that map my fields mention the fields' names as provided by SAP after I recorded the
+*process - hence the combination of weird 'RMMG1' first and simple 'MAKT' and 'MARA' later on. They are a bit scattered around so I
+*need to locate them amongst all other occurences of the calling of the subroutine performed by SAP itself.
+*The mapping of the data looks as below:
+LOOP AT lt_final INTO lwa_final.
+  PERFORM bdc_data        USING 'SAPLMGMM' '0060'.
+  PERFORM bdc_field       USING 'BDC_CURSOR' 'RMMG1-MTART'.
+  PERFORM bdc_field       USING 'BDC_OK_CODE' '=ENTR'.
+  PERFORM bdc_field       USING 'RMMG1-MATNR' lwa_final-matnr. "<---changed here
+  PERFORM bdc_field       USING 'RMMG1-MBRSH' lwa_final-mbrsh. "<---changed here
+  PERFORM bdc_field       USING 'RMMG1-MTART' lwa_final-mtart. "<---changed here
+  PERFORM bdc_dynpro      USING 'SAPLMGMM' '0070'.
+  PERFORM bdc_field       USING 'BDC_CURSOR' 'MSICHTAUSW-DYTXT(01)'.
+  PERFORM bdc_field       USING 'BDC_OKCODE' '=ENTR'.
+  PERFORM bdc_field       USING 'MSICHTAUSW-KZSEL(01)' record-KZSEL_01_004.
+  PERFORM bdc_dynpro      USING 'SAPLMGMM' '4004'.
+  PERFORM bdc_field       USING 'BDC_OKCODE' '=BU'.
+  PERFORM bdc_field       USING 'MAKT-MAKTX'  lwa_final-maktx. "<---changed here
+  PERFORM bdc_field       USING 'BDC_CURSOR' 'MARA-MEINS'.
+  PERFORM bdc_field       USING 'MARA-MEINS'  lwa_final-meins. "<---changed here
+  PERFORM bdc_field       USING 'MARA-MTPOS_MARA' record-MTPOD_MARA_007.
+  PERFORM bdc_transaction USING 'MM01'.
+ENDLOOP.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
