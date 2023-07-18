@@ -11902,6 +11902,10 @@ ENDLOOP.
 *After the mapping is done, SAP calls the 'close_group' subroutine. If the Session Technique has been deployed, it closes the Session
 *Object. Afterwards the 'close_dataset' subroutine comes which I can comment out, because I was opening no dataset previously.
 
+*To sum things up I added the logic for reading the data from a local file (to replace the generated OPEN DATASET), I replaced the
+*generated parameters (structure 'record') passed into those occurences of the 'bdc_field' that correspond to the fields I am interested 
+*in with the fields of my own work area ('lwa_final') and I commented out a few unnecessary lines like "OPEN DATASET" or "CLOSE_DATASET".
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
