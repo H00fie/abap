@@ -11906,6 +11906,19 @@ ENDLOOP.
 *generated parameters (structure 'record') passed into those occurences of the 'bdc_field' that correspond to the fields I am interested 
 *in with the fields of my own work area ('lwa_final') and I commented out a few unnecessary lines like "OPEN DATASET" or "CLOSE_DATASET".
 
+*When I execute the program ('F8' while still in SE38) I will see the auto-generated screen. Here I can choose whether I want to utilize
+*the Session Technique or the Call Transaction Technique.
+*Say I choose the Session Technique. I should select the 'Generate session' radiobutton and provide the 'Session name' ('S60' in my case).
+*If I check the 'Keep session' checkbox - even after the processing of the Session Object it will still be available for further analisys.
+*Thus it is recommended to always have it checked. I can also elect to give the Session Object a lock by providing the 'Lock date'. When
+*I execute the transaction now, the Session Object should be created. In order to process a Session Object, I need to go to the SM35
+*transaction. Here I should see my Session Object - 'S60'. The column 'Transaction' shows how many records are available in the Session
+*Object. Upon choosing my Session Object and hitting the 'Process' button, I will be asked whether I want to process the Session Object
+*in foreground or background.
+*If I chose the foreground processing - I will be taken on a ride through the process. I will need to select the green tick in the
+*pop-up window or press Enter whenever promted to.
+*If I choose the background processing - it will just all happen in the background.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
