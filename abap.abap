@@ -11899,6 +11899,9 @@ LOOP AT lt_final INTO lwa_final.
   PERFORM bdc_transaction USING 'MM01'.
 ENDLOOP.
 
+*After the mapping is done, SAP calls the 'close_group' subroutine. If the Session Technique has been deployed, it closes the Session
+*Object. Afterwards the 'close_dataset' subroutine comes which I can comment out, because I was opening no dataset previously.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
