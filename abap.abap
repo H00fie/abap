@@ -11919,6 +11919,14 @@ ENDLOOP.
 *pop-up window or press Enter whenever promted to.
 *If I choose the background processing - it will just all happen in the background.
 
+*If I want to analyse the process that the Session Object carried out I can select it and click the 'Log' button in the Application
+*Toolbar. I should choose the log in the 'Log Overview' tab and click the 'Analyse session' button in the Application Toolbar.
+*Here, in the left hand side of the screen I should be able to see the status for every record processed - it's here that I can see
+*if something went wrong - it will be indicated by the 'Incorrect' status. If I select the 'Log created on(...)' button, I can see
+*all the operations with timestamps. Every operation is described, e.g. if something went wrong with a record it might be informing me
+*here that "The material type does not exist". This is the problem that was encountered by SAP with this particular record during
+*the process of the migration.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
