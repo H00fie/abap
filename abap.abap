@@ -11936,6 +11936,21 @@ ENDLOOP.
 
 
 
+*---------------------------------------------------------------------------------------------------------------------------------
+*BDC - RECORDING A PROGRAM WITH TABLE CONTROL.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*I want to record the XK01 transaction which is used to create new vendors. During the process I will be asked to provide the bank
+*details - the screen will display a table control.
+*I go to SHDB and select the 'New recording' button in the Application Toolbar. I provide the name of the recording - in my case 
+*it's 'R2' and the transaction code of 'XK01'. Then I press the 'Start recording' button.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
