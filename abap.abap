@@ -11766,7 +11766,7 @@ ENDFORM.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*BDC - RECORDING A PROGRAM.
+*BDC - RECORDING A PROGRAM WITH A LOCAL TEXT FILE.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *Generally whenever I want to do the data migration, I am not writing the program but recording it. First I need to understand the
