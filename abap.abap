@@ -11942,8 +11942,15 @@ ENDLOOP.
 
 *I want to record the XK01 transaction which is used to create new vendors. During the process I will be asked to provide the bank
 *details - the screen will display a table control.
-*I go to SHDB and select the 'New recording' button in the Application Toolbar. I provide the name of the recording - in my case 
-*it's 'R2' and the transaction code of 'XK01'. Then I press the 'Start recording' button.
+*I go to SHDB and select the 'New recording' button in the Application Toolbar. I provide the name of the recording - in my case
+*it's 'R2' and the transaction code of 'XK01'. Then I press the 'Start recording' button. Now I need to walk through the process
+*of creating a vendor so that SAP might record my actions. I ought to provide the 'Vendor' (e.g. '666') and the 'Account group'
+*(e.g. '0001') and press Enter. I am transported to the next screen where I provide the 'Name' (e.g. 'Lilith'), the 'Search term'
+*(e.g. 'Lil') and the 'Country' which actually is a country key, not just country (e.g. 'UA'). After pressing Enter here, I am
+*taken to the next screen which contains a Table Control component. Here I provide the 'Ctry' (e.g. 'UA'), the 'Bank Key'
+*(e.g. 'DOG') and the 'Bank Account' (e.g. '666666666'). Upon saving the progress the recording is complete and the transaction
+*"is transferred" (according to the SAP's message). I am transported to the screen with the details of the recording mapped to
+*the BDCDATA structure's components.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
