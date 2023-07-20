@@ -11951,6 +11951,16 @@ ENDLOOP.
 *(e.g. 'DOG') and the 'Bank Account' (e.g. '666666666'). Upon saving the progress the recording is complete and the transaction
 *"is transferred" (according to the SAP's message). I am transported to the screen with the details of the recording mapped to
 *the BDCDATA structure's components.
+*I should remember the fields for which I provided the input during the recording. In the screen '0100' (indicated in the second
+*row in the column 'Screen'), I provided the values '666' in the 'Vendor' field. That is the 'RF02K-LIFNR' field in the details.
+*I also provided the '0001' value to the 'Account group' field which here translates to 'RF02K-KTOKK'.
+*In the '0110' screen I provided 'Lilith' ('Name'), 'Lil' ('Search term') and 'UA' ('Country'). These three translate to 'LFA1-NAME1',
+*'LFA1-SORTL' and 'LFA1-LAND1' respectively.
+*In the screen '0120' I did not provide any input.
+*In the screen '0130' I can see the three fields I provided data for. These are 'LFBK-BANKS(01)', 'LFBK-BANKL(01)' and 'LFBK-BANKN(01)'
+*with the values of 'UA', 'DOG' and '666666666' respectively. The '(01)' part all the fields' names are suffixed with means the row
+*number. These fields are all the fields of the Table Control and the suffixed number indicates the row. If I added more rows with
+*data, I would have three more fields here with the same names but suffixed with '(02)' instead.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
