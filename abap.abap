@@ -12004,6 +12004,16 @@ DATA: lt_lfbk  TYPE TABLE OF t_lfbk,
 
 DATA: lv_rowid(2) TYPE n,
       lv_id(3)    TYPE c.
+	  
+*Just after the START-OF-SELECTION event, SAP has automatically generated the 'open_dataset' subroutine. It is used to load the
+*files from an application server, so I am not going to need it as my file is stored locally. I comment out that subroutine and
+*instead use the 'GUI_UPLOAD' function module. I provide the path to my file and the internal table into which the data should
+*be loaded.
+CALL FUNCTION 'GUI_UPLOAD'
+  EXPORTING
+    filename                      = 'd:\vendor.txt'
+  TABLES
+    data_tab                      = lt_legacy.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
