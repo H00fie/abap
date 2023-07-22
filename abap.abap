@@ -12014,6 +12014,38 @@ CALL FUNCTION 'GUI_UPLOAD'
     filename                      = 'd:\vendor.txt'
   TABLES
     data_tab                      = lt_legacy.
+	
+*If there indeed is data within 'lt_legacy', I need to transfer the data from it to the other two internal tables - the final
+*ones. I need to differentiate which records should go to the vendor table and which to the bank table. This will be done by
+*checking the identifier every line within the file starts with. Every record within 'lt_legacy' is just a single string, but
+*I know that the identifier is always at the starts of the lines. So I can essentially take a substring out of the string and
+*see what the identifier is. Based on that, I can decide into which final internal table the line that is being processed
+*should go. It works by reading the string from the position specified by '+0' where 0 can be replaced with any number that
+*indicates the index I want to start reading and '(3)' where 3 can be replaced by the length of the string I want read.
+*Since all the records moved from the legacy file into the 'lt_legacy' internal table are stored as a single string, I need
+*to split those strings into specific fields within the final internal table after deciding which one of the two final internal
+*tables the particular record should go to. The splitting is done at commas as such is the structure of the records within
+*the legacy file - every record has its components separated by commas.
+IF lt_legacy IS NOT INITIAL.
+  LOOP AT lt_legacy INTO lwa_legacy.
+    CLEAR lv_id.
+    lv_id = lwa_legacy-string+0(3).
+    IF lv_id = 'VEN'.
+      SPLIT lwa_legacy-string AT ',' INTO lwa_lfa1-lifnr
+                                          lwa_lfa1-ktokk
+                                          lwa_lfa1-name1
+                                          lwa_lfa1-sortl
+                                          lwa_lfa1-land1.
+      APPEND lwa_lfa1 TO lt_lfa1.
+    ELSEIF lv_id = 'BNK'.
+      SPLIT lwa_legacy-string AT ',' INTO lwa_lfbk-lifnr
+                                          lwa_lfbk-banks
+                                          lwa_lfbk-bankl
+                                          lwa_lfbk-bankn.
+      APPEND lwa_lfbk TO lt_lfbk.
+    ENDIF.
+  ENDLOOP.
+ENDIF.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
