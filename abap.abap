@@ -11961,6 +11961,49 @@ ENDLOOP.
 *with the values of 'UA', 'DOG' and '666666666' respectively. The '(01)' part all the fields' names are suffixed with means the row
 *number. These fields are all the fields of the Table Control and the suffixed number indicates the row. If I added more rows with
 *data, I would have three more fields here with the same names but suffixed with '(02)' instead.
+*Now I should save the progress and go back ('F3'). Here I select my recording ('R2') and click the 'Program' button in the
+*Application Toolbar. The program itself will be generated and I can start modifying it.
+
+*Before the START-OF-SELECTION event, I should declare the structures I require. I need two "final" internal tables, because the
+*legacy data is going to be distributed between LFA1 and LFBK database tables. Each one of them needs its own structures here, because
+*I will be loading the data from these structures to the database tables. LFA1 will be receiving NAME1, SORTL and LAND1 while LFBK
+*will be receiving BANKS, BANKL, BANKN (multiple of those if the Table Control received multiple records!). Apart from these, I also
+*provided input for the 'Vendor' and the 'Account group' fields both of which can go into LFA1 while LFBK can be connected just by
+*'Vendor' (since I am providing a bank account's details of a particular Vendor to the LFBK).
+*The 'lv_rowid' variable will be pointing at a record of the table control since there can be many of them. It is of the length of
+*two and of an alphanumeric type because I want them in the same format as SAP which is e.g. 'LFBK-BANKS(01)' for the first record
+*in the Table Control. The default value of the 'lv_rowid' variable is '00'. If I incremented it by 1, it becomes '01'. This
+*variable cannot be a simple integer because I cannot specify the length of an integer - I could not achieve the '00' or '01' values.
+*A default value of 'lv_rowid(2) TYPE i' would be just '0'.
+*The record of my file with the legacy data start with a three-digit identifier. They inform me whether the row is the master data
+*or bank data. The variable 'lv_id' will store that identifier.
+TYPES: BEGIN OF t_legacy,
+  string TYPE string,
+END OF t_legacy.
+DATA: lt_legacy  TYPE TABLE OF t_legacy,
+      lwa_legacy TYPE t_legacy.
+
+TYPES: BEGIN OF t_lfa1,
+  lifnr TYPE rf02k-lifnr,
+  ktokk TYPE rf02k-ktokk,
+  name1 TYPE lfa1-name1,
+  sortl TYPE lfa1-sortl,
+  land1 TYPE lfa1-land1,
+END OF t_lfa1.
+DATA: lt_lfa1  TYPE TABLE OF t_lfa1,
+      lwa_lfa1 TYPE t_lfa1.
+
+TYPES: BEGIN OF t_lfbk,
+  lifnr TYPE rf02k-lifnr,
+  banks TYPE lfbk-banks,
+  bankl TYPE lfbk-bankl,
+  bankn TYPE lfbk-bankn,
+END OF t_lfbk.
+DATA: lt_lfbk  TYPE TABLE OF t_lfbk,
+      lwa_lfbk TYPE t_lfbk.
+
+DATA: lv_rowid(2) TYPE n,
+      lv_id(3)    TYPE c.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
