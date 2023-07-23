@@ -12051,6 +12051,7 @@ ENDIF.
 *leaving this subroutine within my code. Below that there's a DO loop, a READ DATASET statement and a status check - all three
 *I am commenting out as they are not necessary. READ DATASET would be used if I used OPEN DATASET which I am not doing because
 *my file with the legacy data is stored locally.
+*Below is the code I am either changing, leaving as it is or adding to.
 *Out of the two the 'lt_lfa1' internal table is the main one. This is due to the relation between LFA1 and LFBK. Each vendor
 *(LFA1) can contain multiple bank records in LFBK. Thus, all the operations, including the mapping of the fields of 'lt_lfbk'
 *needs to happen for every record of 'lt_lfa1'.
@@ -12095,6 +12096,7 @@ LOOP AT lt_lfa1 INTO lwa_lfa1.
     PERFORM bdc_field USING lv_fname lwa_lfbk-bankn.    
   ENDLOOP.
   PERFORM bdc_transaction USING 'XK01'.
+*Below should be the ENDDO statement which I am commenting out and replacing with the ENDLOOP.
 ENDLOOP.
 
 *---------------------------------------------------------------------------------------------------------------------------------
