@@ -12099,6 +12099,12 @@ LOOP AT lt_lfa1 INTO lwa_lfa1.
 *Below should be the ENDDO statement which I am commenting out and replacing with the ENDLOOP.
 ENDLOOP.
 
+*WARNING - there is a chance that the above code will throw an exception saying "Invalid access to a string (offset too
+*large)". In this case SAP has a problem with the attempt to cut a substring out of a string while trying to check the
+*three-digit identifier within the 'lt_legacy' internal table. This problem can be solved by modifying the structure of
+*my legacy table - change the 'string' variable from the type string to a type C and set the length of the field to, e.g.
+*100. So "string(100) TYPE c" instead of "string TYPE string".
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
