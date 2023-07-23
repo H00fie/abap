@@ -12072,6 +12072,28 @@ LOOP AT lt_lfa1 INTO lwa_lfa1.
   PERFORM bdc_dynpro USING 'SAPMF02K' '0130'.
   PERFORM bdc_field  USING 'BDC_CURSOR' 'LFBK-BANKN(01)'.
   PERFORM bdc_field  USING 'BDC_OKCODE' '=UPDA'.
+*Now, for each vendor I need to map all of their bank records in 'lt_lfbk'. Up until now I wasn't changing the names of the
+*fields, but in the case of 'lt_lfbk' this will be necessary, because - as every record within 'lf_lfa1' can have multiple
+*records related to it within 'lt_lfbk' - the name of the field changes - the value within the brackets is incremented with
+*every next record. E.g. the first one is 'LFBK-BANKS(01)' and the second will be 'LFBK-BANKS(02)'. Thus, I need to change
+*the name of the field dynamically as many times as there are records within 'lt_lfbk' related to the particular vendor
+*within 'lt_lfa1'. To make it happen I will deploy the indomitable might of the 'lv_rowid' variable. It is of the value of
+*'00' to begin with. Hence I increment it at the beginning of the loop below and thus its value will match that of the first
+*record's name's part enclosed within the brackets. With every iteration of the loop, the value of 'lv_rowid' will be
+*incremented and match the incremnted bracketed value of the currently processed record's name. Of course, I will need to
+*construct the field's name myself.
+  LOOP AT lt_lfbk INTO lwa_lfbk WHERE lifnr = lwa_lfa1-lifnr.
+    lv_rowid = lv_rowid + 1.
+    CLEAR lv_fname.
+    CONCATENATE 'LFBK-BANKS(' lv_rowid ')' INTO lv_fname.
+    PERFORM bdc_field USING lv_fname lwa_lfbk-banks.
+    CLEAR lv_fname.
+    CONCATENATE 'LFBK-BANKL(' lv_rowid ')' INTO lv_fname.
+    PERFORM bdc_field USING lv_fname lwa_lfbk-bankl.
+    CLEAR lv_fname.
+    CONCATENATE 'LFBK-BANKN(' lv_rowid ')' INTO lv_fname.
+    PERFORM bdc_field USING lv_fname lwa_lfbk-bankn.    
+  ENDLOOP.
 ENDLOOP.
 
 *---------------------------------------------------------------------------------------------------------------------------------
