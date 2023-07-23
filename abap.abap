@@ -12047,6 +12047,33 @@ IF lt_legacy IS NOT INITIAL.
   ENDLOOP.
 ENDIF.
 
+*Below the above I should see the 'open_group' subroutine which is responsible for the creation of a Session Object. I am
+*leaving this subroutine within my code. Below that there's a DO loop, a READ DATASET statement and a status check - all three
+*I am commenting out as they are not necessary. READ DATASET would be used if I used OPEN DATASET which I am not doing because
+*my file with the legacy data is stored locally.
+*Out of the two the 'lt_lfa1' internal table is the main one. This is due to the relation between LFA1 and LFBK. Each vendor
+*(LFA1) can contain multiple bank records in LFBK. Thus, all the operations, including the mapping of the fields of 'lt_lfbk'
+*needs to happen for every record of 'lt_lfa1'.
+LOOP AT lt_lfa1 INTO lwa_lfa1.
+  PERFORM bdc_dynpro USING 'SAPMF02K' '0100'.
+  PERFORM bdc_field  USING 'BDC_CURSOR' 'RF02K-KTOKK'.
+  PERFORM bdc_field  USING 'BDC_OKCODE' '/00'.
+  PERFORM bdc_field  USING 'RF02K-LIFNR' lwa_lfa1-lifnr. "<---changed here
+  PERFORM bdc_field  USING 'RF02K-KTOKK' lwa_lfa1-ktokk. "<---changed here
+  PERFORM bdc_dynpro USING 'SAPMF02K' '0110'.
+  PERFORM bdc_field  USING 'BDC_CURSOR' 'LFA1-LAND1'.
+  PERFORM bdc_field  USING 'BDC_OKCODE' '/00'.
+  PERFORM bdc_field  USING 'LFA1-NAME1' lwa_lfa1-name1. "<---changed here
+  PERFORM bdc_field  USING 'LFA1-SORTL' lwa_lfa1-sortl. "<---changed here
+  PERFORM bdc_field  USING 'LFA1-LAND1' lwa_lfa1-land1. "<---changed here
+  PERFORM bdc_dynpro USING 'SAPMF02K' '0120'.
+  PERFORM bdc_field  USING 'BDC_CURSOR' 'LFA1-KUNNR'.
+  PERFORM bdc_field  USING 'BDC_OKCODE' '/00'.
+  PERFORM bdc_dynpro USING 'SAPMF02K' '0130'.
+  PERFORM bdc_field  USING 'BDC_CURSOR' 'LFBK-BANKN(01)'.
+  PERFORM bdc_field  USING 'BDC_OKCODE' '=UPDA'.
+ENDLOOP.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
