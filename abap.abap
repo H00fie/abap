@@ -12094,6 +12094,7 @@ LOOP AT lt_lfa1 INTO lwa_lfa1.
     CONCATENATE 'LFBK-BANKN(' lv_rowid ')' INTO lv_fname.
     PERFORM bdc_field USING lv_fname lwa_lfbk-bankn.    
   ENDLOOP.
+  PERFORM bdc_transaction USING 'XK01'.
 ENDLOOP.
 
 *---------------------------------------------------------------------------------------------------------------------------------
