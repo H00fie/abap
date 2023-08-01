@@ -12111,6 +12111,24 @@ ENDLOOP.
 
 
 
+*---------------------------------------------------------------------------------------------------------------------------------
+*LSMW - LEGACY SYSTEM MIGRATION WORKBENCH.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*LSMW is a tool provided by SAP used for migrating the data from a legacy system to a SAP system. The tool can be used in four
+*different ways:
+*1. By using the Batch Input Recording.
+*2. By using the Direct Input Method.
+*3. By using IDOC.
+*4. By using BAPI.
+*To present LSMW, I will perform the migration of the material data from a locally stored text file to the SAP system.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
