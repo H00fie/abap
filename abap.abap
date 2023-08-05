@@ -12154,6 +12154,10 @@ ENDLOOP.
 *Now I should be back in the screen displaying all the steps I need to take. In the first step I have chosen the technique type
 *(Batch Input Recording), given the recording a name and recorded the MM01 transaction by manually providing sample data to all
 *the necessary fields.
+*The second step is Maintain Source Structures. Here I will need to create my own structure. If the second step (row) is selected,
+*I need to Execute the program (F8) and change the mode to Change if it's in the Display one. When that's done, I should click the
+*'Create a Structure' button in the Application Toolbar. I need to give it a name, e.g. 'Z7AMMATSTR' and a description, e.g.
+*'Material structure' and proceed. Now I need to save my progress and go back. In this step I created a blank structure.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
