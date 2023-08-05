@@ -12121,7 +12121,12 @@ ENDLOOP.
 *2. By using the Direct Input Method.
 *3. By using IDOC.
 *4. By using BAPI.
-*To present LSMW, I will perform the migration of the material data from a locally stored text file to the SAP system.
+*To present LSMW, I will perform the migration of the material data from a locally stored text file to the SAP system. I need to
+*go to the LSMW transaction. I should see a pop-up welcome message here. I need to provide the name of the 'Project' here - in
+*my case it's "ZBM_TEST_LSMW_PRJ". In the Application Toolbar there is the 'Create Entry' button which needs pressing right now. I will
+*be prompted to provide a description. When that's done I will need to provide the name of the 'Subproject' and it's description.
+*In my case it's "ZBM_TEST_LSMW_SUB". And when that's done I will also need to provide the name of the 'Object' and its description.
+*For me it's "ZBM_TEST_LSMW_OBJ". When all that's done, I need to click the execute button (F8).
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
