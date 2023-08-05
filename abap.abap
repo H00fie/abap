@@ -12151,6 +12151,9 @@ ENDLOOP.
 *the data element of every field that particular orange box is in line with.
 *Now I need to save the progress and go back (F3). I should see the screen with the information about my recording which I need to
 *leave by pressing F3. Here I can save again and go back (F3) again.
+*Now I should be back in the screen displaying all the steps I need to take. In the first step I have chosen the technique type
+*(Batch Input Recording), given the recording a name and recorded the MM01 transaction by manually providing sample data to all
+*the necessary fields.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
