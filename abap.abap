@@ -12136,6 +12136,19 @@ ENDLOOP.
 *I should click the 'Create Recording' button, the white sheet on the left hand side of the Application Toolbar. Here I provide
 *the recording's name ('R100') and a short description. Here I am prompted to provide the name of the transaction I want to record
 *which is MM01.
+*Here I need to provide three pieces of information about the sample material I am using for the recording. For example 'Codigo Material'
+*can be '7AMAT666', 'Industry sector' might be 'Pharmaceuticals' and 'Material Type' can be 'FERT - Finished Product'. When I press Enter
+*now, I will be asked to select a view. It refers to the kind of data about the material I will be additionally providing. In my case,
+*apart from the three fields I filled previously, I also want to add a description and a basic unit of measure. These are part of
+*'Basic Data 1'. In order to determine the kind of every piece of data I might need the help of a functional consultant. Thus I select
+*the 'Basic Data 1' option and proceed.
+*In the following screen I provide the description of 'Material 7AMAT666' within the input box to the right of the 'CoMaterial' input
+*box and the 'Base Unit of Measure' with 'CM'. Thus I have provided SAP with all the data about the sample record from the legacy file.
+*I do not fill any other field as the legacy records do not have any more information about them. When I save my progress, I should
+*be transported to another screen where I should be able to see the recorded details mapped to the BDCDATA structure. On the left hand
+*side I see the fields' names, a little bit to the right there are their values and on the far right side there are orange fields that
+*are all blank. I need to press the 'Default All' button in the Application Toolbar in order to fill these blank orange fields with
+*the data element of every field that particular orange box is in line with.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
