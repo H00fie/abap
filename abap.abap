@@ -12127,6 +12127,15 @@ ENDLOOP.
 *be prompted to provide a description. When that's done I will need to provide the name of the 'Subproject' and it's description.
 *In my case it's "ZBM_TEST_LSMW_SUB". And when that's done I will also need to provide the name of the 'Object' and its description.
 *For me it's "ZBM_TEST_LSMW_OBJ". When all that's done, I need to click the execute button (F8).
+*In this case I am using the Batch Input Recording technique. Using this technique requires me to provide the name of the recording
+*and record the steps I want taken by walking through them with a sample record. The file with the legacy data contains the material
+*data in my example. The transaction thus is MM01. I press the 'Execute' button and change the mode from 'Display' to 'Change' if
+*necessary. In the section 'Object Type and Import Method' I should see all the techniques I can choose from. I choose the Batch
+*Input Recording one. In the input box available I should provide the name of the recording, e.g. 'R100'. Next I should click the
+*'Recordings: Overview' button to the right of the input box. And to the right of the button with an arrow on it. In the next screen
+*I should click the 'Create Recording' button, the white sheet on the left hand side of the Application Toolbar. Here I provide
+*the recording's name ('R100') and a short description. Here I am prompted to provide the name of the transaction I want to record
+*which is MM01.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
