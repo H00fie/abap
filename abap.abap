@@ -12158,6 +12158,21 @@ ENDLOOP.
 *I need to Execute the program (F8) and change the mode to Change if it's in the Display one. When that's done, I should click the
 *'Create a Structure' button in the Application Toolbar. I need to give it a name, e.g. 'Z7AMMATSTR' and a description, e.g.
 *'Material structure' and proceed. Now I need to save my progress and go back. In this step I created a blank structure.
+*Now I should be back in the screen where all the steps are displayed. The third step is Maintain Source Fields. This step is about
+*creating the fields for the currently blank structure created in the previous step. I will need to create five fields as this is
+*the number of fields present in the file with the legacy data I am working with. With the third row (step) selected, I am to click
+*the Execute button (F8). In this screen I should see the structure I previously created. If it's the Display mode, I need to change
+*it into the Change one (hehehehehe). I need to choose my structure and then click the 'Table maintenance' button in the Application
+*Toolbar. Here I need to provide the data elements of every field that my structure is to have. These can be collected from the first
+*step as I can simply go back (F3) and access the first step just like I did it before and then return here once again. In my case
+*the fields are as follows ('Field Name', 'Type', 'Length', 'Field description'):
+*MATNR, C, 18.
+*MBRSH, C, 1.
+*MTART, C, 4.
+*MAKTX, C, 40.
+*MEINS, C, 3.
+*Yes, the 'Field description' is left blank for every field. That is because when I press Enter, the descriptions will appear automatically.
+*And that is because I am using data elements known to SAP, so she knows what to make of them.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
