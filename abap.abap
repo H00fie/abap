@@ -12127,6 +12127,10 @@ ENDLOOP.
 *be prompted to provide a description. When that's done I will need to provide the name of the 'Subproject' and it's description.
 *In my case it's "ZBM_TEST_LSMW_SUB". And when that's done I will also need to provide the name of the 'Object' and its description.
 *For me it's "ZBM_TEST_LSMW_OBJ". When all that's done, I need to click the execute button (F8).
+*Now I should see a screen displaying a list of various steps I need to take. 
+*----------THE FIRST STEP----------
+*The first one is 'Maintain Object Attributes'. Here I need to choose the technique - Batch Input Recording, Direct Input Technique, 
+*IDOC, BAPI. The step should already be highlighted. In order to proceed - I need to Execute (F8).
 *In this case I am using the Batch Input Recording technique. Using this technique requires me to provide the name of the recording
 *and record the steps I want taken by walking through them with a sample record. The file with the legacy data contains the material
 *data in my example. The transaction thus is MM01. I press the 'Execute' button and change the mode from 'Display' to 'Change' if
@@ -12154,10 +12158,12 @@ ENDLOOP.
 *Now I should be back in the screen displaying all the steps I need to take. In the first step I have chosen the technique type
 *(Batch Input Recording), given the recording a name and recorded the MM01 transaction by manually providing sample data to all
 *the necessary fields.
+*----------THE SECOND STEP----------
 *The second step is Maintain Source Structures. Here I will need to create my own structure. If the second step (row) is selected,
 *I need to Execute the program (F8) and change the mode to Change if it's in the Display one. When that's done, I should click the
 *'Create a Structure' button in the Application Toolbar. I need to give it a name, e.g. 'Z7AMMATSTR' and a description, e.g.
 *'Material structure' and proceed. Now I need to save my progress and go back. In this step I created a blank structure.
+*----------THE THIRD STEP----------
 *Now I should be back in the screen where all the steps are displayed. The third step is Maintain Source Fields. This step is about
 *creating the fields for the currently blank structure created in the previous step. I will need to create five fields as this is
 *the number of fields present in the file with the legacy data I am working with. With the third row (step) selected, I am to click
