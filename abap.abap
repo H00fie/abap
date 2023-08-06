@@ -12179,6 +12179,13 @@ ENDLOOP.
 *MEINS, C, 3.
 *Yes, the 'Field description' is left blank for every field. That is because when I press Enter, the descriptions will appear automatically.
 *And that is because I am using data elements known to SAP, so she knows what to make of them.
+*----------THE FOURTH STEP----------
+*With that done - the fourth step is 'Maintain Structure Relations'. In this step I need to assign my recording to the previously
+*created structure. Since I have only a single recording in this case and just one structure, the assignment shall be done automatically.
+*If I select the fourth step and Execute it (F8), I should see the name of my recording ('R100' in this case) and the name of my structure
+*('Z7AMMATSTR' in this case) to the right. If I wanted to I could delete this relationship. I'd have to select the structure (click the
+*four arrows pointing at the recording's name) and press the 'Relationship' button with the garbage can in the Application Toolbar. I can
+*create relationships manually by clicking the 'Relationship' button with the white sheet in the Application Toolbar.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
