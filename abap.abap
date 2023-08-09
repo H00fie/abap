@@ -12200,6 +12200,19 @@ ENDLOOP.
 *of the name of 'Auto Field Mapping: Proposals". In this part of the process, SAP will ask me if her idea of what fields should be
 *paired is correct. At the top of the window in the 'Target Field' section is the field of the recording. The 'Source Field' section
 *contains SAP's proposal of the target field within the structure. If I like the proposition, I should 'Accept Proposal'.
+*When I am done assigning all the fields, the screen should be enriched with three more lines per every field of my recording. These
+*are 'Source', 'Rule' and 'Code'. The 'Source' line conveys the information about what field of the structure the particular field
+*has been assigned to. The 'Code' section essentially does the assigning. The 'Rule' section is set to the value 'Transfer (MOVE)' by
+*default after the mapping. This default rule means that whatever data is stored within the file it will be moved as it is. For the sake
+*of making it more interesting - I want to augment that rule. I want to prefix every material number with '666' because hail Lilith.
+*Moreover, whenever the material type is 'COUP', I want to change it into 'HAL'.
+*In order to modify a rule I need to place the cursor onto the field whose rule I want changed and press the 'Rule' button in the
+*Application Toolbar. A pop-up window displays various kinds of rules for me to choose from. For now I am choosing the 'Prefix' one.
+*Now I should see another pop-up window, this time with an input box. Here I need to provide the prefix I am interested in. Thus I
+*type in '666' here and proceed. Now every material number read from the legacy file will be prefixed with '666'.
+*Upon doing that I should see the 'Rule' and 'Code' sections changed for that particular field (MATNR in this case). The 'Rule' section
+*should display the value of 'Prefix' and the 'Code' section should have a bit of automatically generated code that concatenates the
+*value of the prefix with the material number.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
