@@ -12186,6 +12186,20 @@ ENDLOOP.
 *('Z7AMMATSTR' in this case) to the right. If I wanted to I could delete this relationship. I'd have to select the structure (click the
 *four arrows pointing at the recording's name) and press the 'Relationship' button with the garbage can in the Application Toolbar. I can
 *create relationships manually by clicking the 'Relationship' button with the white sheet in the Application Toolbar.
+*----------THE FIFTH STEP----------
+*The fifth step is 'Maintain Field Mapping and Conversion Rules'. In this step I need to map the fields of the recording to the fields
+*of the structure. After the mapping has been done the conversion rules can also be defined.
+*With the fifth step selected I need to Execute (F8) the program and change the mode from Display to Change if need be. In the current
+*screen I should be able to see the fields of my recording - their data elements to be precise. In order to perform the mapping I need
+*to choose the field (in my case the first field is MATNR) and press the 'Source Field' button in the Application Toolbar. I should see
+*a pop-up window showing me the fields of the structure. I am to decide to which field of the structure I want to assign the selected
+*field (which is MATNR). In order to do it it is sufficient to just double-click the chosen field. If the fields' names in the recording
+*and the fields' names in the structure are the same I do not need to manually assign every field. Instead I could place the cursor
+*onto one of the fields of my recording, then choose the 'Extras' option and 'Auto-Field Mapping'. SAP should show me a pop-up window
+*here named 'Auto Field Mapping: Settings' which I am legally allowed to ignore and simply commence forth to the second pop-up window
+*of the name of 'Auto Field Mapping: Proposals". In this part of the process, SAP will ask me if her idea of what fields should be
+*paired is correct. At the top of the window in the 'Target Field' section is the field of the recording. The 'Source Field' section
+*contains SAP's proposal of the target field within the structure. If I like the proposition, I should 'Accept Proposal'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
