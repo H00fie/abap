@@ -12213,6 +12213,12 @@ ENDLOOP.
 *Upon doing that I should see the 'Rule' and 'Code' sections changed for that particular field (MATNR in this case). The 'Rule' section
 *should display the value of 'Prefix' and the 'Code' section should have a bit of automatically generated code that concatenates the
 *value of the prefix with the material number.
+*The second rule I want implemented is the replacement of the material type of 'COUP' with 'HAL'. To accomplish that I place the cursor
+*onto the MTART field and press the 'Rule' button again. The rule I need for this task is 'User-Defined Routine (Reusable)'. Upon proceeding
+*I should have a pop-up window gracefully thrown at me which should be asking me for the name of the subroutine complete with a
+*proposal. I want to provide my own name so I check the 'Own selection' radiobutton and give the name - 'CONVERT_MTART' proving my
+*creativity unparalelled. The 'Rule' section of MTART should reflect the new reality and the 'Code' section should be showing me that
+*the PERFORM is being performed (hehehe)... but there's no implementation yet. The defining of the rules takes place in the next step.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
