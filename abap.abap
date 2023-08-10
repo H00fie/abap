@@ -12227,7 +12227,16 @@ ENDLOOP.
 *I need to place the cursor onto the rule's name and press the 'Edit Entry' button in the Application Toolbar. Here there's a mini
 *editor that already contains a little bit of the code of the subroutine proposed by SAP. I have two parameters to work with - 'p_in'
 *that holds the initial value from the legacy file that I want to be replaced and 'p_out' that holds the changed value that SAP will
-*receive instead of what initially arrived within 'p_in'.
+*receive instead of what initially arrived within 'p_in'. I need to implement the logic that changes the value of the incoming parameter
+*into 'HAL' if initially it was equal to 'COUP'. If it wasn't equal to 'COUP', the returned value is to remain unchanged. The code 
+*hence looks as follows:
+FORM ur_CONVERT_MTART USING p_in CHANGING p_out.
+  IF p_in = 'COUP'.
+    p_out = 'HAL'.
+  ELSE.
+    p_out = p_in.
+  ENDIF.
+ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
