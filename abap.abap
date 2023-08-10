@@ -12237,6 +12237,19 @@ ENDLOOP.
 *    p_out = p_in.
 *  ENDIF.
 *ENDFORM.
+*----------THE SEVENTH STEP----------
+*The 'Specify Files' step is about uploading the file containing the legacy data to the LSMW tool. The file is stored locally. The step
+*is to be selected and the Execute button (F8) is to be pressed. In the next screen I need to change the mode to Change from Display if
+*the latter is the active one. The screen should be displaying a few rows, two uppermost of which being:
+*- 'Legacy Data On the PC (Frontend)'.
+*- 'Legacy Data On the R/3 server (application server)'.
+*I need to put the cursor onto one of the above options - the one that applies (the first one in my case) and press the 'Add Entry' button
+*in the Application Toolbar.
+*The following pop-up window requires me to provide the path to the file (the 'File' input box) and a name of my choosing for the file,
+*e.g. '7AMMATERIALS'. I need to specify the type of the delimiter in the 'Delimiter' section below. In my case it's a comma so the 'Comma'
+*radiobutton gets checked. The 'File Structure' section allows me to specify whether the legacy file's records contain a field name at the
+*start of the file. If they do not and such is the case in my case (xDDD) I need to check the second checkbox - 'Field Order Matches Source
+*Structure Definition'. With that done, I commence forth.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
