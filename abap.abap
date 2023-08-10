@@ -12249,7 +12249,8 @@ ENDLOOP.
 *e.g. '7AMMATERIALS'. I need to specify the type of the delimiter in the 'Delimiter' section below. In my case it's a comma so the 'Comma'
 *radiobutton gets checked. The 'File Structure' section allows me to specify whether the legacy file's records contain a field name at the
 *start of the file. If they do not and such is the case in my case (xDDD) I need to check the second checkbox - 'Field Order Matches Source
-*Structure Definition'. With that done, I commence forth.
+*Structure Definition'. With that done, I commence forth. I should now see the name of file alongside the path to it and the options I
+*have chosen under the 'Legacy Data On the PC (Frontend)' catalogue. I need to save the progress and move on to the next step.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
