@@ -12230,13 +12230,13 @@ ENDLOOP.
 *receive instead of what initially arrived within 'p_in'. I need to implement the logic that changes the value of the incoming parameter
 *into 'HAL' if initially it was equal to 'COUP'. If it wasn't equal to 'COUP', the returned value is to remain unchanged. The code 
 *hence looks as follows:
-FORM ur_CONVERT_MTART USING p_in CHANGING p_out.
-  IF p_in = 'COUP'.
-    p_out = 'HAL'.
-  ELSE.
-    p_out = p_in.
-  ENDIF.
-ENDFORM.
+*FORM ur_CONVERT_MTART USING p_in CHANGING p_out.
+*  IF p_in = 'COUP'.
+*    p_out = 'HAL'.
+*  ELSE.
+*    p_out = p_in.
+*  ENDIF.
+*ENDFORM.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
