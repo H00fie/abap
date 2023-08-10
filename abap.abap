@@ -12251,6 +12251,15 @@ ENDLOOP.
 *start of the file. If they do not and such is the case in my case (xDDD) I need to check the second checkbox - 'Field Order Matches Source
 *Structure Definition'. With that done, I commence forth. I should now see the name of file alongside the path to it and the options I
 *have chosen under the 'Legacy Data On the PC (Frontend)' catalogue. I need to save the progress and move on to the next step.
+*----------THE EIGHT STEP----------
+*The 'Assign Files' step is about assigning the file to the structure. In the current example I only have a single file and a single
+*structure so the assignment is done automatically. The selection of the row with the step needs to precede the pressing of the Execute
+*button (F8) much like the changing of the mode from Display to Change in the following screen needs to precede any further action. In
+*my case I will see the file already assigned to the structure due to the aforementioned reason. I could technically delete that
+*assignment by placing the cursor onto the file's name which is in the second row to the left of the path to the file and pressing
+*the 'Assignment' with a grabage can button in the Application Toolbar. In order to assign a file to a structure I need select the
+*structure's name and press the 'Assignment' with a white sheet button in the Application Toolbar. Since there's only one file to be
+*assigned in my case it will be done automatically. I need to save the progress and go back (F3) to the screen listing all the steps.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
