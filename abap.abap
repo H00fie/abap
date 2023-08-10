@@ -12219,6 +12219,15 @@ ENDLOOP.
 *proposal. I want to provide my own name so I check the 'Own selection' radiobutton and give the name - 'CONVERT_MTART' proving my
 *creativity unparalelled. The 'Rule' section of MTART should reflect the new reality and the 'Code' section should be showing me that
 *the PERFORM is being performed (hehehe)... but there's no implementation yet. The defining of the rules takes place in the next step.
+*----------THE SIXTH STEP----------
+*In the 'Maintaind Fixed Values, Translations, User-Defined Routines' step I am to implement the rules defined in the previous step.
+*The step selected, the Execute button (F8) pressed need be. In the screen displayed I should see the subroutine I created listed
+*under the 'User-Defined Routines' catalogue. The routine in question is 'CONVERT_MTART'. That's implementing the second rule I declared
+*before. The prefix one is not available here as it is pretty straightforward and does not require any additional coding on my part.
+*I need to place the cursor onto the rule's name and press the 'Edit Entry' button in the Application Toolbar. Here there's a mini
+*editor that already contains a little bit of the code of the subroutine proposed by SAP. I have two parameters to work with - 'p_in'
+*that holds the initial value from the legacy file that I want to be replaced and 'p_out' that holds the changed value that SAP will
+*receive instead of what initially arrived within 'p_in'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
