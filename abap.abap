@@ -12268,6 +12268,14 @@ ENDLOOP.
 *again without providing any values. I will be asked if I want to allow SAP to access the file which I should because SAP is great and
 *only wants to help. <3 Now I should see another screen which informs me what file was read and what file was written. The former should
 *essentially be the path to the legacy file and the latter the newly created LSMW.READ file.
+*----------THE TENTH STEP----------
+*The next step is 'Display Read Data'. Here SAP will display the data loaded into the LSMW.READ file. Upon executing this step I should
+*be presented with a pop-up window in which I can specify which records I want to inspect. I can do this by providing the 'From Line' and
+*'To Line' input boxes with relevant values. If I want to read all the records I can simply not provide any values leaving the input
+*boxes as they are and proceed. Now I should see the screen displaying all the data now available in LSMW.READ. I can click a record
+*and see it displayed in a separate screen. At this stage the conversion rules I specified have not been applied yet! The material
+*number isn't prefixed with '666' and the material type hasn't been changed from 'COUP' to 'HAL'. The execution of the rules will take
+*place in the next step.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
