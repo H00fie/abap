@@ -12260,6 +12260,14 @@ ENDLOOP.
 *the 'Assignment' with a grabage can button in the Application Toolbar. In order to assign a file to a structure I need select the
 *structure's name and press the 'Assignment' with a white sheet button in the Application Toolbar. Since there's only one file to be
 *assigned in my case it will be done automatically. I need to save the progress and go back (F3) to the screen listing all the steps.
+*----------THE NINTH STEP----------
+*In the 'Read Data' step I will be, to everyone's shock, reading the data from the file. Whatever SAP reads will be stored within the
+*file called 'LSMW.READ'. Upon executing this step, I will be taken to the screen where technically I can provide a range of values
+*called 'Transaction Number' but I am not doing that. The name is a little bit misleading because, I think, it refers to which records
+*of the file I want read, supposedely from which line to which line. I want the entire file read so I just need to execute the program
+*again without providing any values. I will be asked if I want to allow SAP to access the file which I should because SAP is great and
+*only wants to help. <3 Now I should see another screen which informs me what file was read and what file was written. The former should
+*essentially be the path to the legacy file and the latter the newly created LSMW.READ file.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
