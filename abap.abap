@@ -12276,6 +12276,13 @@ ENDLOOP.
 *and see it displayed in a separate screen. At this stage the conversion rules I specified have not been applied yet! The material
 *number isn't prefixed with '666' and the material type hasn't been changed from 'COUP' to 'HAL'. The execution of the rules will take
 *place in the next step.
+*----------THE ELEVENTH STEP----------
+*In the 'Convert Data' step SAP will execute the conversion rules I requested. The rules shall be applied to the LSMW.READ file's data
+*and thus converted data will be stored in the LSMW.CONV file. When I Execute (F8) the step the process takes place internally. I should
+*see a screen asking me to provide a range of values. I THINK this means which lines of the LSMW.READ I want the rules to apply to. If I
+*want all the content to experience this wonderful fate, I ought to just not provide anything and simply Execute (F8) the program. The
+*screen should now be showing me what file was read ('LSMW.READ') and what file was written ('LSMW.CONV'). There is nothing for me to
+*save here so I need to just go back (F3)!
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
