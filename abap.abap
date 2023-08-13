@@ -12127,7 +12127,8 @@ ENDLOOP.
 *be prompted to provide a description. When that's done I will need to provide the name of the 'Subproject' and it's description.
 *In my case it's "ZBM_TEST_LSMW_SUB". And when that's done I will also need to provide the name of the 'Object' and its description.
 *For me it's "ZBM_TEST_LSMW_OBJ". When all that's done, I need to click the execute button (F8).
-*Now I should see a screen displaying a list of various steps I need to take. 
+*Now I should see a screen displaying a list of various steps I need to take.
+ 
 *----------THE FIRST STEP----------
 *The first one is 'Maintain Object Attributes'. Here I need to choose the technique - Batch Input Recording, Direct Input Technique, 
 *IDOC, BAPI. The step should already be highlighted. In order to proceed - I need to Execute (F8).
@@ -12158,11 +12159,13 @@ ENDLOOP.
 *Now I should be back in the screen displaying all the steps I need to take. In the first step I have chosen the technique type
 *(Batch Input Recording), given the recording a name and recorded the MM01 transaction by manually providing sample data to all
 *the necessary fields.
+
 *----------THE SECOND STEP----------
 *The second step is Maintain Source Structures. Here I will need to create my own structure. If the second step (row) is selected,
 *I need to Execute the program (F8) and change the mode to Change if it's in the Display one. When that's done, I should click the
 *'Create a Structure' button in the Application Toolbar. I need to give it a name, e.g. 'Z7AMMATSTR' and a description, e.g.
 *'Material structure' and proceed. Now I need to save my progress and go back. In this step I created a blank structure.
+
 *----------THE THIRD STEP----------
 *Now I should be back in the screen where all the steps are displayed. The third step is Maintain Source Fields. This step is about
 *creating the fields for the currently blank structure created in the previous step. I will need to create five fields as this is
@@ -12179,6 +12182,7 @@ ENDLOOP.
 *MEINS, C, 3.
 *Yes, the 'Field description' is left blank for every field. That is because when I press Enter, the descriptions will appear automatically.
 *And that is because I am using data elements known to SAP, so she knows what to make of them.
+
 *----------THE FOURTH STEP----------
 *With that done - the fourth step is 'Maintain Structure Relations'. In this step I need to assign my recording to the previously
 *created structure. Since I have only a single recording in this case and just one structure, the assignment shall be done automatically.
@@ -12186,6 +12190,7 @@ ENDLOOP.
 *('Z7AMMATSTR' in this case) to the right. If I wanted to I could delete this relationship. I'd have to select the structure (click the
 *four arrows pointing at the recording's name) and press the 'Relationship' button with the garbage can in the Application Toolbar. I can
 *create relationships manually by clicking the 'Relationship' button with the white sheet in the Application Toolbar.
+
 *----------THE FIFTH STEP----------
 *The fifth step is 'Maintain Field Mapping and Conversion Rules'. In this step I need to map the fields of the recording to the fields
 *of the structure. After the mapping has been done the conversion rules can also be defined.
@@ -12219,6 +12224,7 @@ ENDLOOP.
 *proposal. I want to provide my own name so I check the 'Own selection' radiobutton and give the name - 'CONVERT_MTART' proving my
 *creativity unparalelled. The 'Rule' section of MTART should reflect the new reality and the 'Code' section should be showing me that
 *the PERFORM is being performed (hehehe)... but there's no implementation yet. The defining of the rules takes place in the next step.
+
 *----------THE SIXTH STEP----------
 *In the 'Maintaind Fixed Values, Translations, User-Defined Routines' step I am to implement the rules defined in the previous step.
 *The step selected, the Execute button (F8) pressed need be. In the screen displayed I should see the subroutine I created listed
@@ -12237,6 +12243,7 @@ ENDLOOP.
 *    p_out = p_in.
 *  ENDIF.
 *ENDFORM.
+
 *----------THE SEVENTH STEP----------
 *The 'Specify Files' step is about uploading the file containing the legacy data to the LSMW tool. The file is stored locally. The step
 *is to be selected and the Execute button (F8) is to be pressed. In the next screen I need to change the mode to Change from Display if
@@ -12251,6 +12258,7 @@ ENDLOOP.
 *start of the file. If they do not and such is the case in my case (xDDD) I need to check the second checkbox - 'Field Order Matches Source
 *Structure Definition'. With that done, I commence forth. I should now see the name of file alongside the path to it and the options I
 *have chosen under the 'Legacy Data On the PC (Frontend)' catalogue. I need to save the progress and move on to the next step.
+
 *----------THE EIGHT STEP----------
 *The 'Assign Files' step is about assigning the file to the structure. In the current example I only have a single file and a single
 *structure so the assignment is done automatically. The selection of the row with the step needs to precede the pressing of the Execute
@@ -12260,6 +12268,7 @@ ENDLOOP.
 *the 'Assignment' with a grabage can button in the Application Toolbar. In order to assign a file to a structure I need select the
 *structure's name and press the 'Assignment' with a white sheet button in the Application Toolbar. Since there's only one file to be
 *assigned in my case it will be done automatically. I need to save the progress and go back (F3) to the screen listing all the steps.
+
 *----------THE NINTH STEP----------
 *In the 'Read Data' step I will be, to everyone's shock, reading the data from the file. Whatever SAP reads will be stored within the
 *file called 'LSMW.READ'. Upon executing this step, I will be taken to the screen where technically I can provide a range of values
@@ -12268,6 +12277,7 @@ ENDLOOP.
 *again without providing any values. I will be asked if I want to allow SAP to access the file which I should because SAP is great and
 *only wants to help. <3 Now I should see another screen which informs me what file was read and what file was written. The former should
 *essentially be the path to the legacy file and the latter the newly created LSMW.READ file.
+
 *----------THE TENTH STEP----------
 *The next step is 'Display Read Data'. Here SAP will display the data loaded into the LSMW.READ file. Upon executing this step I should
 *be presented with a pop-up window in which I can specify which records I want to inspect. I can do this by providing the 'From Line' and
@@ -12276,6 +12286,7 @@ ENDLOOP.
 *and see it displayed in a separate screen. At this stage the conversion rules I specified have not been applied yet! The material
 *number isn't prefixed with '666' and the material type hasn't been changed from 'COUP' to 'HAL'. The execution of the rules will take
 *place in the next step.
+
 *----------THE ELEVENTH STEP----------
 *In the 'Convert Data' step SAP will execute the conversion rules I requested. The rules shall be applied to the LSMW.READ file's data
 *and thus converted data will be stored in the LSMW.CONV file. When I Execute (F8) the step the process takes place internally. I should
