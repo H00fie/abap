@@ -12302,6 +12302,13 @@ ENDLOOP.
 *be prefixed with '666' and all occurences of the 'COUP' material type should be changed into 'HAL'. I can click any of the records to
 *see more details about that particular record in another screen.
 
+*----------THE THIRTEENTH STEP----------
+*In this step the data present in the LSMW.CONV file is mapped to the Session Object. When I execute this step, I shoul see the screen
+*showing me the name of the LSMW.CONV file and a few other things. One of these things is a checkbox named 'Keep batch input folder(s)?'.
+*I should check it if I want to keep the Session Object even after processing for the purpose of analisys. The 'Name of Batch Input
+*Folder(s)' field is the name of the Session Object. I should press the Execute button (F8), accept the pop-up window's information
+*and I will be back in the screen listing all the steps.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
