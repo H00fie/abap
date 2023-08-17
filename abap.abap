@@ -12295,6 +12295,13 @@ ENDLOOP.
 *screen should now be showing me what file was read ('LSMW.READ') and what file was written ('LSMW.CONV'). There is nothing for me to
 *save here so I need to just go back (F3)!
 
+*----------THE TWELFTH STEP----------
+*During the 'Display Converted Data' step I am to check whether the rules I defined were made flesh or not. When I execute the step,
+*I will see a pop-up window where I can specify the lines I want to see. If I want to see all of them, I can just commence forth without
+*doing anything here. I should now see the screen displaying all the lines of the LSMW.CONV file. All the material numbers should now
+*be prefixed with '666' and all occurences of the 'COUP' material type should be changed into 'HAL'. I can click any of the records to
+*see more details about that particular record in another screen.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
