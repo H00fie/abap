@@ -12309,6 +12309,18 @@ ENDLOOP.
 *Folder(s)' field is the name of the Session Object. I should press the Execute button (F8), accept the pop-up window's information
 *and I will be back in the screen listing all the steps.
 
+*----------THE FOURTEENTH STEP----------
+*The 'Run Batch Input Session' step takes the control to the SM35 transaction when executed. I should see my newly created Session
+*Object here with the 'New' state. I ought to select the object and push the 'Process' button in the Application Toolbar. A pop-up
+*window will ask me about my preferred 'Processing Mode'.
+*I would choose the 'Background' option but first I need to modify one of the previous steps. When I was creating the recording I
+*chose 'Basic View 1'. I need to mark that field for the recording. I ought to go back (F3) to the screen displaying all the steps,
+*select the fifth step and execute it. Here I have the 'KZSEL_01' field which I need to select and press the 'Rule' button in the
+*Application Toolbar in order to insert a new rule. I should check the 'Constant' radiobutton and put 'X' in the input box to the left
+*of 'KZSEL'. Thanks to that, the 'Basic View 1' option will be automatically selected from now on. I should save it... and execute the
+*following steps and save them too. In the 'Read Data' I should read the data (F8 inside) again. The same with the 'Convert Data' step.
+*I should also execute 'Create Batch Input Session' again.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
