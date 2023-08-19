@@ -12324,6 +12324,13 @@ ENDLOOP.
 *When I execute the 'Run Batch Input Session' step and am transported to SM35 I choose the newly created Session Object and click the
 *'Process' button in the Application Toolbar. Then I choose the 'Background' option and press the 'Process' button.
 
+*In case it's taking a lot of time and seems to be unable to finish, I can carry out this process another way. I can scroll the table
+*control to the right and at the end of it I should see the 'Queue ID' column. I should copy the number of the Session that isn't
+*very cooperative and open a program called 'RSBDCBTC' in SE38. Upon executing it I will be prompted to provide 'Queue_ID' which is
+*the number I copied previously after which I should execute the program. I should see a pop-up window telling me 'Processing of batch
+*input session completed'. When I click the 'Session overview' button I will be taken back to SM35 and the status of the Session
+*should be changed.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
