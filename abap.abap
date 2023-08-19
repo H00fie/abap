@@ -12331,6 +12331,11 @@ ENDLOOP.
 *input session completed'. When I click the 'Session overview' button I will be taken back to SM35 and the status of the Session
 *should be changed.
 
+*If I want to analise the processing of the Session Object, I should select the record with the Session I am interested in and click
+*the 'Analysis' button in the Application Toolbar. In the 'Transactions' tab which should be active by default I will see a list
+*of all the records that were processed and what is their status. In order to see the details of the process I should access the
+*'Log created on <date>' tab.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
