@@ -12321,6 +12321,9 @@ ENDLOOP.
 *following steps and save them too. In the 'Read Data' I should read the data (F8 inside) again. The same with the 'Convert Data' step.
 *I should also execute 'Create Batch Input Session' again.
 
+*When I execute the 'Run Batch Input Session' step and am transported to SM35 I choose the newly created Session Object and click the
+*'Process' button in the Application Toolbar. Then I choose the 'Background' option and press the 'Process' button.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
