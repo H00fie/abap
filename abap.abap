@@ -12112,7 +12112,7 @@ ENDLOOP.
 
 
 *---------------------------------------------------------------------------------------------------------------------------------
-*LSMW - LEGACY SYSTEM MIGRATION WORKBENCH.
+*LSMW - LEGACY SYSTEM MIGRATION WORKBENCH. BATCH INPUT RECORDING.
 *---------------------------------------------------------------------------------------------------------------------------------
 
 *LSMW is a tool provided by SAP used for migrating the data from a legacy system to a SAP system. The tool can be used in four
