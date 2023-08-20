@@ -12342,6 +12342,22 @@ ENDLOOP.
 
 
 
+*---------------------------------------------------------------------------------------------------------------------------------
+*LSMW - LEGACY SYSTEM MIGRATION WORKBENCH. DIRECT INPUT METHOD.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+*First I need to go to the LSMW transaction. After providing just the name in the 'Project' input box, I click the 'Create project'
+*button in the Application Toolbar. In this example the name is 'Z7DPRJ'. In the pop-up window I need to provice the desccription
+*of the new project and press Enter. The window will be expanded and I will be asked to provide the name of the subproject, e.g.
+*'Z7DSPRJ' and its description. After pressing Enter again the window will again expand this time asking me for the Object's name.
+*This refers to the Session Object's name. I also need to provide the description.
+
+*---------------------------------------------------------------------------------------------------------------------------------
+*END OF PROGRAM.
+*---------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *SENDING EMAIL WITH BCS.
