@@ -12349,8 +12349,20 @@ ENDLOOP.
 *First I need to go to the LSMW transaction. After providing just the name in the 'Project' input box, I click the 'Create project'
 *button in the Application Toolbar. In this example the name is 'Z7DPRJ'. In the pop-up window I need to provice the desccription
 *of the new project and press Enter. The window will be expanded and I will be asked to provide the name of the subproject, e.g.
-*'Z7DSPRJ' and its description. After pressing Enter again the window will again expand this time asking me to give the Object's name.
+*'Z7DSPRJ' and its description. After pressing Enter again the window will again expand this time asking me for the Object's name.
 *This refers to the Session Object's name. I also need to provide the description.
+*When all that's done, I should click the Execute button (F8). I should be taken to the screen listing all the necessary steps.
+
+*----------THE FIRST STEP----------
+*'Maintain Object Attributes' is the step where I am to choose the type of technique. I should select the step and Execute it (F8).
+*If the mode is Display, I need to make it into Change. The 'Object Type and Import Method' section is the place where I can inform
+*SAP which technique I would prefer. Since I want to utilize the Direct Input Method, I should make sure that the
+*'Standard Batch/Direct Input' radiobutton is selected. Now I am to provide an 'Object'. This refers to the type of data I will
+*be migrating. In order to fill that fields with input I should click the white sheet button and see which number corresponds to the
+*type of data within the legacy file. In my case it's going to be '0020' since my file contains material data ('Material master').
+*I should treat the 'Method' box in the same manner but when I click the white sheet button, the input box should be filled
+*automatically with the value of '0000'. Likewise, the 'Program Name' field should be automatically filled with the value of
+*'RMDATIND' and the 'Program Type' field with the value of 'D'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
