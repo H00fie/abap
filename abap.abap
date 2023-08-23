@@ -12362,7 +12362,14 @@ ENDLOOP.
 *type of data within the legacy file. In my case it's going to be '0020' since my file contains material data ('Material master').
 *I should treat the 'Method' box in the same manner but when I click the white sheet button the input box should be filled
 *automatically with the value of '0000'. Likewise, the 'Program Name' field should be automatically filled with the value of
-*'RMDATIND' and the 'Program Type' field with the value of 'D'.
+*'RMDATIND' and the 'Program Type' field with the value of 'D'. The 'RMDATIND' program is a standard program provided by SAP to 
+*migrate the material master data. I can open it in SE38 if I wish to behold it. At this stage I should save my progress
+*If I wanted to employ the Batch Input Recording technique I would select the relevant radiobutton, provide the recording's name in
+*the input box next to the 'Recording' field and pressed the 'Recordings: Overview' button, on the far right side of the screen in
+*the same line. I would be asked which transaction I want recorded which would be MM01 in my case and I would proceed to record
+*the process of going through the MM01 transaction, providing the necessary data on the way.
+*In case of the 'Standard Batch/Direct Input' radiobutton being selected, SAP provides the program herself depending on the 'Object'
+*that I chose. I ought to go back now to the screem displaying all the steps.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
