@@ -12360,7 +12360,7 @@ ENDLOOP.
 *'Standard Batch/Direct Input' radiobutton is selected. Now I am to provide an 'Object'. This refers to the type of data I will
 *be migrating. In order to fill that fields with input I should click the white sheet button and see which number corresponds to the
 *type of data within the legacy file. In my case it's going to be '0020' since my file contains material data ('Material master').
-*I should treat the 'Method' box in the same manner but when I click the white sheet button, the input box should be filled
+*I should treat the 'Method' box in the same manner but when I click the white sheet button the input box should be filled
 *automatically with the value of '0000'. Likewise, the 'Program Name' field should be automatically filled with the value of
 *'RMDATIND' and the 'Program Type' field with the value of 'D'.
 
