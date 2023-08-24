@@ -12392,6 +12392,13 @@ ENDLOOP.
 *Yes, the 'Field description' is left blank for every field. That is because when I press Enter, the descriptions will appear automatically.
 *And that is because I am using data elements known to SAP, so she knows what to make of them.
 
+*----------THE FOURTH STEP----------
+*In the 'Maintain Structure Relations' step in case of the 'Batch Input Recording' technique I need to map the data from the recording
+*to the structure. If there's only one structure and one recording, the mapping is done automatically.
+*I ought to access the step and make sure I am in the Change mode. In the screen I should see a bunch of standard structures. If I tried
+*to save my progress here, I should see a pop-up window telling me "You must assign a source structure to target structure BGR00." Right
+*now I don't know which of the structures available I should assign to it.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
