@@ -12378,6 +12378,20 @@ ENDLOOP.
 *its 'Description'. In my case these are 'Z7AMMATSTR' and '7AM MATERIAL STR' respectively.
 *The structure should now be created and I should save my progress and go back (F3) to the screen listing all the steps.
 
+*----------THE THIRD STEP----------
+*The next step is 'Maintain Source Fields'. I need to access it and should see the screen with the structure I created previously.
+*I need to make sure the mode is in the Change mode (xDDD). With the stucture selected, I should click the 'Table Maintenance'
+*button in the Application Toolbar. In the next screen I should provide all the necessary information about the fields I want to
+*see in my structure. Which are the fields supposed to hold the data currently stored in the legacy file. In my case the fields
+*are as follows ('Field Name', 'Type', 'Length', 'Field description'):
+*MATNR, C, 18.
+*MBRSH, C, 1.
+*MTART, C, 4.
+*MAKTX, C, 40.
+*MEINS, C, 3.
+*Yes, the 'Field description' is left blank for every field. That is because when I press Enter, the descriptions will appear automatically.
+*And that is because I am using data elements known to SAP, so she knows what to make of them.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
