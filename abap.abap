@@ -12371,6 +12371,13 @@ ENDLOOP.
 *In case of the 'Standard Batch/Direct Input' radiobutton being selected, SAP provides the program herself depending on the 'Object'
 *that I chose. I ought to go back now to the screem displaying all the steps.
 
+*----------THE SECOND STEP----------
+*In the second step - 'Maintain Source Structures', I will create a structure. Step selected, the Execute button (F8) pushed, a new
+*screen arrives where I need to make sure I am in the Change mode. Click the 'Create a Structure' button in the Application Toolbar
+*I must. Here I am prompted to provide the 'Source Structure' which essentially means the name for the structure I want created and
+*its 'Description'. In my case these are 'Z7AMMATSTR' and '7AM MATERIAL STR' respectively.
+*The structure should now be created and I should save my progress and go back (F3) to the screen listing all the steps.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
