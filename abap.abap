@@ -12402,6 +12402,9 @@ ENDLOOP.
 *in my structure. Thus out of five fields present in my structure, three of them are present here. Thus I select BMM00 and click the
 *'Create Relationship' button in the Application Toolbar. On the right hand side of the screen in the same line as BMM00 should appear the
 *name of my structure, automatically connected to BMM00 now.
+*I still have two more fields to cover, so I keep checking the standard structures in SE11. BMMH1 contains the MEINS and MAKTX fields which
+*are the two remianing fields of my structure. Hence I select BMMH1, click the 'Create Relationship' button in the Application Toolbar and
+*watch SAP assign my structure herself. 
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
