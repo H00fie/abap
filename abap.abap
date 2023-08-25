@@ -12399,7 +12399,9 @@ ENDLOOP.
 *to save my progress here, I should see a pop-up window telling me "You must assign a source structure to target structure BGR00." Right
 *now I don't know which of the structures available I should assign to it. If I checked BGR00 in SE11, I would see that its fields do not
 *match the five fields of my structure. If I checked BMM00, I would see it contains MATNR, MBRSH and MTART which are also fields present
-*in my structure.
+*in my structure. Thus out of five fields present in my structure, three of them are present here. Thus I select BMM00 and click the
+*'Create Relationship' button in the Application Toolbar. On the right hand side of the screen in the same line as BMM00 should appear the
+*name of my structure, automatically connected to BMM00 now.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
