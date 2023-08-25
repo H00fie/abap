@@ -12397,7 +12397,9 @@ ENDLOOP.
 *to the structure. If there's only one structure and one recording, the mapping is done automatically.
 *I ought to access the step and make sure I am in the Change mode. In the screen I should see a bunch of standard structures. If I tried
 *to save my progress here, I should see a pop-up window telling me "You must assign a source structure to target structure BGR00." Right
-*now I don't know which of the structures available I should assign to it.
+*now I don't know which of the structures available I should assign to it. If I checked BGR00 in SE11, I would see that its fields do not
+*match the five fields of my structure. If I checked BMM00, I would see it contains MATNR, MBRSH and MTART which are also fields present
+*in my structure.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
