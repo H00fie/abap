@@ -12404,7 +12404,11 @@ ENDLOOP.
 *name of my structure, automatically connected to BMM00 now.
 *I still have two more fields to cover, so I keep checking the standard structures in SE11. BMMH1 contains the MEINS and MAKTX fields which
 *are the two remianing fields of my structure. Hence I select BMMH1, click the 'Create Relationship' button in the Application Toolbar and
-*watch SAP assign my structure herself. 
+*watch SAP assign my structure herself.
+*Now I should save the progress... and I should see a pop-up window telling me that I must assign a structure to the target BGR00 structure.
+*There are no matching fields in BGR00 but I need to perform the assigning all the same as this seems to be some form of a mandatory
+*structure. I select BGR00, click the 'Create Relationship' button in the Application Toolbar. Now I should save and go back (F3) to the
+*screen displaying all the necessary steps.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
