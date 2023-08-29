@@ -12407,8 +12407,8 @@ ENDLOOP.
 *watch SAP assign my structure herself.
 *Now I should save the progress... and I should see a pop-up window telling me that I must assign a structure to the target BGR00 structure.
 *There are no matching fields in BGR00 but I need to perform the assigning all the same as this seems to be some form of a mandatory
-*structure. I select BGR00, click the 'Create Relationship' button in the Application Toolbar. Now I should save and go back (F3) to the
-*screen displaying all the necessary steps.
+*structure - it contains session data. I select BGR00, click the 'Create Relationship' button in the Application Toolbar. Now I should 
+*save and go back (F3) to the screen displaying all the necessary steps.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
