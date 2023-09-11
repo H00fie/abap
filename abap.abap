@@ -12410,6 +12410,19 @@ ENDLOOP.
 *structure - it contains session data. I select BGR00, click the 'Create Relationship' button in the Application Toolbar. Now I should 
 *save and go back (F3) to the screen displaying all the necessary steps.
 
+*----------THE FIFTH STEP----------
+*The next step is 'Maintain Field Mapping and Conversion Rules' and here  I am to map the fields of my source structure to the fields of
+*the standard structure. Step selected, the Execute button (F8) pressed, I make sure I am in the Change mode inside the step. I should not
+*see any fields listed beneath the BGR00 strucutre, but quite a few beneath the BMM00 one. Within their midst dwell three of the
+*chosen ones - MATNR, MBRSH and MTART. I ought to select the MATNR one first and press the 'Source Field' button in the Application
+*Toolbar. I will see a pop-up window showing me the structure of my custom structure (xDDD). I need to choose which field I want the
+*previously selected standard structure's MATNR to be joined with which is going to be, shockingly, MATNR in this case. The selection
+*here is carried out by double-clicking the field of my choosing. Likewise, MBRSH comes together with MBRSH and two MTARTs close ranks.
+*Now I should select the 'TCODE' field and click the 'Rule' button in the Application Toolbar. I ought to choose the 'Constant' option
+*and provide the name of MM01 which I am using (as this is material data).
+*If I take a look at the 'Rule' next to one of the fields, I will see it's 'Transfer (MOVE)' which means whatever data is in the file,
+*it will be migrated as it is. I should save my progress and close the 'Fields' catalogue of the BMM00 strucutre.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
