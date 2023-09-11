@@ -12421,7 +12421,10 @@ ENDLOOP.
 *Now I should select the 'TCODE' field and click the 'Rule' button in the Application Toolbar. I ought to choose the 'Constant' option
 *and provide the name of MM01 which I am using (as this is material data).
 *If I take a look at the 'Rule' next to one of the fields, I will see it's 'Transfer (MOVE)' which means whatever data is in the file,
-*it will be migrated as it is. I should save my progress and close the 'Fields' catalogue of the BMM00 strucutre.
+*it will be migrated as it is. I should save my progress and close the 'Fields' catalogue of the BMM00 strucutre. The BMMH1 one contains
+*the two additional fields that are part of the file with the legacy data - MEINS and MAKTX. I should select MEINS, click the 'Source
+*Field' button and select the row with the MEINS field. The same process goes for the MAKTX field, but it would be nice to select the
+*MAKTX in this case after clicking the 'Source Field' button. I should save the progress and go back (F3) now.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
