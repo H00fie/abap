@@ -12426,6 +12426,11 @@ ENDLOOP.
 *Field' button and select the row with the MEINS field. The same process goes for the MAKTX field, but it would be nice to select the
 *MAKTX in this case after clicking the 'Source Field' button. I should save the progress and go back (F3) now.
 
+*----------THE SIXTH STEP----------
+*The next step is 'Maintain Fixed Values, Translations, User-Defined Routines'. In case of this program, I do not have any rules of
+*Fixed Values, Translations or User-Defined Routines types. The lack of any rules of these catagories means I am to ignore this step
+*of the process in this case.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
