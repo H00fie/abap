@@ -12442,6 +12442,11 @@ ENDLOOP.
 *if there were any. That is if the file started with a list of headings for all the columns. That is not the case in my case though.
 *Now I should proceed, save the progress and go back (F3).
 
+*----------THE EIGHTH STEP----------
+*In the 'Assign Files' step I can assign a file to a recording. If I enter the step and make sure I am in the Change mode, I will
+*realize I have only one structure and only one file which means the assignment has been done automatically. I can save the progress
+*just to be on the safe side and go back (F3).
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
