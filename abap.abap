@@ -12431,6 +12431,17 @@ ENDLOOP.
 *Fixed Values, Translations or User-Defined Routines types. The lack of any rules of these catagories means I am to ignore this step
 *of the process in this case.
 
+*----------THE SEVENTH STEP----------
+*In the 'Specify Files' step I am to upload the file. I need to execute the step and make sure I am in the Change mode. Depending on
+*the location of the file, I need to select the appropriate line. In my case it's 'Legacy Data On the PC (Frontend)' as my file is
+*stored locally. Now I need to press the 'Add Entry' button (the white sheet, the second on from the left in the Application Toolbar)
+*and fill the required data in the pop-up window that jumps me at this moment. The 'File' input box is for the path to the file with
+*the legacy data. The 'Name' one is the one where I am to provide a name (really). It's not the name of the file, I can name it
+*whatever I want. In the 'Delimiter' section I can choose what's the separator used within the file. Here I choose the 'Comma' option
+*as my file's data uses a comma as the separator. In the 'File Structure' section I COULD select the 'Field Names at Start of File' 
+*if there were any. That is if the file started with a list of headings for all the columns. That is not the case in my case though.
+*Now I should proceed, save the progress and go back (F3).
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
