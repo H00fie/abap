@@ -12453,6 +12453,12 @@ ENDLOOP.
 *(F8) button. SAP should now display the screen informing me what file was read (e.g. D:\MATERIAL.txt) and what file was written
 *(e.g. Z7DPRJ_Z7DSPRJ_Z7DOBJ.lsmw.read).
 
+*----------THE TENTH STEP----------
+*The 'Display Read Data' displays the data written into the LSMW Read file. I should Execute (F8) it, proceed without filling any
+*input box (which amounts to a request to just read it all) and I should see all the data from the file neatly displayed in the screen.
+*I can click on any of the records to see additional info beyond what's shown. Now I should go back to the screen listing all the
+*steps of the process.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
