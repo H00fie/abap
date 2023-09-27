@@ -12447,6 +12447,12 @@ ENDLOOP.
 *realize I have only one structure and only one file which means the assignment has been done automatically. I can save the progress
 *just to be on the safe side and go back (F3).
 
+*----------THE NINTH STEP----------
+*The 'Read Data' step reads the data and stores it within the LSMW Read file. When I execute the step SAP asks me how many records
+*I want read. If I want the entire file read (which I most likely do) I should just leave the input boxes empty and click the Execute
+*(F8) button. SAP should now display the screen informing me what file was read (e.g. D:\MATERIAL.txt) and what file was written
+*(e.g. Z7DPRJ_Z7DSPRJ_Z7DOBJ.lsmw.read).
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
