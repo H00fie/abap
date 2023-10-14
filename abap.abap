@@ -12459,6 +12459,11 @@ ENDLOOP.
 *I can click on any of the records to see additional info beyond what's shown. Now I should go back to the screen listing all the
 *steps of the process.
 
+*----------THE ELEVENTH STEP----------
+*The 'Convert Data' step. If there are any rules in regards to the mapped fields, these rules will be executed and the converted data 
+*is stored within the LSMW Conv file. When I Execute (F8) the step, I can just hit the Execute (F8) button again because I do not need 
+*to provide the input box in the current screen with anything.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
