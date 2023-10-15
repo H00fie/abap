@@ -12470,6 +12470,15 @@ ENDLOOP.
 *I can click on any of the records to see additional info beyond what's shown. Now I should go back to the screen listing all the
 *steps of the process.
 
+*----------THE THIRTEENTH STEP----------
+*The last step of the process is the 'Start Direct Input Program' one. It will execute the 'RMDATIND' program (standard program provided 
+*by SAP to migrate the material master data. Refer to the first step's description!). When I Execute (F8) the step, I will see a pop-up
+*window asking me to choose between using a program (RMDATIND) or a transaction (BMV0) for the object. Here I choose the program and
+*proceed. I should now see a screen at the top of which there's a section called 'File access'. This specifies the location of the
+*previously converted data. The second input box described as 'Using physical file name' should already be filled with the name of the
+*file containing the converted data (in my case it's 'Z7DPRJ_Z7DSPRJ_Z7DOBJ.lsmw.conv'). SAP will attempt to import the data stored
+*within that file into herself. I should hit the Execute (F8) button now.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
