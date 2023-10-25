@@ -12471,13 +12471,20 @@ ENDLOOP.
 *steps of the process.
 
 *----------THE THIRTEENTH STEP----------
-*The last step of the process is the 'Start Direct Input Program' one. It will execute the 'RMDATIND' program (standard program provided 
+*The last step of the process is the 'Start Direct Input Program' one. It will execute the 'RMDATIND' program (standard program provided
 *by SAP to migrate the material master data. Refer to the first step's description!). When I Execute (F8) the step, I will see a pop-up
 *window asking me to choose between using a program (RMDATIND) or a transaction (BMV0) for the object. Here I choose the program and
 *proceed. I should now see a screen at the top of which there's a section called 'File access'. This specifies the location of the
 *previously converted data. The second input box described as 'Using physical file name' should already be filled with the name of the
 *file containing the converted data (in my case it's 'Z7DPRJ_Z7DSPRJ_Z7DOBJ.lsmw.conv'). SAP will attempt to import the data stored
 *within that file into herself. I should hit the Execute (F8) button now.
+*I should now see a pop-window with the text of "You are working ONLINE. (No restart possible.)". After commencing forth casually ignoring
+*the message, I will get another one saying "Valusation is at plant level". The same response should be implemented. In order to make
+*sure I am capable of applying the tactic for the third time in a row, yet another pop-up window emerges informing me that "Session
+*Z7DOBJ: the special character for a blank field is >/<". After proceeding onward SAP should be thinking for a moment and I should be
+*presented with a pop-up window informing me of the completion of the process and if there are any errors. In my case I get the
+*message of "Transaction 0000000007 completed Mat. no. No. of log. errors 0000000007". This means that 7 records were attempted to be
+*processed and all 7 failed.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
