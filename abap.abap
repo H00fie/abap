@@ -12484,7 +12484,8 @@ ENDLOOP.
 *Z7DOBJ: the special character for a blank field is >/<". After proceeding onward SAP should be thinking for a moment and I should be
 *presented with a pop-up window informing me of the completion of the process and if there are any errors. In my case I get the
 *message of "Transaction 0000000007 completed Mat. no. No. of log. errors 0000000007". This means that 7 records were attempted to be
-*processed and all 7 failed.
+*processed and all 7 failed. After proceeding I can see a screen with logs. Warnings can, obviously, be ignored. but the errors not so
+*much. I am informed that "The field MARA-TRAGR is defined as a required field; it does not contain an entry".
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
