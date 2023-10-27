@@ -12485,7 +12485,12 @@ ENDLOOP.
 *presented with a pop-up window informing me of the completion of the process and if there are any errors. In my case I get the
 *message of "Transaction 0000000007 completed Mat. no. No. of log. errors 0000000007". This means that 7 records were attempted to be
 *processed and all 7 failed. After proceeding I can see a screen with logs. Warnings can, obviously, be ignored. but the errors not so
-*much. I am informed that "The field MARA-TRAGR is defined as a required field; it does not contain an entry".
+*much. I am informed that "The field MARA-TRAGR is defined as a required field; it does not contain an entry". There is also a second
+*message telling me the same thing about the MARA-MATKL field. The same problem occurs for every of the 7 records processed.
+*The program SAP is running in the background is RMDATIND and it's claiming the fields mentioned above are mandatory. My file currently
+*does not have data for these fields. I need to somehow make sure that every record will have a value in the fields for the
+*transportation group and the material group. This can be done either in the file with the data itself or in the transaction (the LSMW
+*process). In order to proceed I need to check the MARA table and see what values are possible for the two fields I need to handle.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
