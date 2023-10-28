@@ -12496,7 +12496,10 @@ ENDLOOP.
 *Conversion Rules' step is my destination. I should Execute (F8) the step and make sure I am in the Change mode within the step. I need
 *to to check the structures listed here and find the fields I am interested in. The TRAGR field can be found within the BMMH1 standard
 *structure. I can create one transportation rule for all the records within the file. I could, if I wanted to, add the necessary
-*information to every record separately within the file. 
+*information to every record separately within the file.
+*I ought to select the field and click the 'Rule' button in the Application Toolbar. Here I make sure the 'Constant' option
+*is selected and proceed. Here I am to choose what value should be applied to all the transported records. In my case I am choosing the
+*'0004' value. I should save the progress now. 
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
