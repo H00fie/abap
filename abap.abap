@@ -12492,6 +12492,12 @@ ENDLOOP.
 *transportation group and the material group. This can be done either in the file with the data itself or in the transaction (the LSMW
 *process). In order to proceed I need to check the MARA table and see what values are possible for the two fields I need to handle.
 
+*In order to manage these fields I need to go back to the screen listing all the steps of the process. The 'Maintain Field Mapping and
+*Conversion Rules' step is my destination. I should Execute (F8) the step and make sure I am in the Change mode within the step. I need
+*to to check the structures listed here and find the fields I am interested in. The TRAGR field can be found within the BMMH1 standard
+*structure. I can create one transportation rule for all the records within the file. I could, if I wanted to, add the necessary
+*information to every record separately within the file. 
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
