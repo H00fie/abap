@@ -12518,6 +12518,10 @@ ENDLOOP.
 *starting line will be the one that the file starts with. Which is nice. After I am done marvelling at the converted data, I should go
 *back again (F3) and start the last step - 'Start Direct Input Program' again.
 
+*----------THE THIRTEENTH STEP (AGAIN)----------
+*After executing the step (F8), I should choose the 'Program RMDATIND' radiobutton and proceed. In the following screen I should make sure
+*the 'Using physical file name:' option is selected. In its input box should be the name of my .conv file.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
