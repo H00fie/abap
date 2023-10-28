@@ -12505,6 +12505,19 @@ ENDLOOP.
 *choose the 'Constant' option and I am using the '001' value here. I need to save the progress and go back to the screen listing all the
 *steps of the entire process.
 
+*Now I should walk through the remaining steps to make sure SAP receives the updated records. I enter the 'Specify Files' step and simply
+*save the progress. In the 'Assign Files' I also just save (if even possible to do that, might be greyed out). Next I enter the 'Read Data'
+*step and Execute (F8) it without changing anything in the selection screen. When a pop-up window appears, I should press the 'Allow' button.
+*This is to allow SAP to access the file. With the data read, I go back (F3) and enter the 'Display Read Data' step. When a pop-up window
+*springs up, I should just proceed as the lack of value in the 'From Line' input box (which is void be default) means to just start at
+*the beginning. Seeing the displayed data is the event that directly precedes pressing the go-back button (F3) in order to enter the
+*following step - the 'Convert Data' one. In the selection screen, I should not provide any values and just commence forth (F8). With these
+*input boxes vacant, what will happen is just all the data will be converted which is the desired outcome. I should now see the screen
+*informing me of the existance of two files - the .read one and the .conv one. Now I go back and access the 'Display Converted Data' step.
+*When a pop-up window appears I should, just like before, not provide any value in the 'From Line' input box as this makes sure the
+*starting line will be the one that the file starts with. Which is nice. After I am done marvelling at the converted data, I should go
+*back again (F3) and start the last step - 'Start Direct Input Program' again.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
