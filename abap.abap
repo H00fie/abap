@@ -12528,6 +12528,11 @@ ENDLOOP.
 *type provided in the file... and there's no such thing in SAP. Another record's processing failed because "The industry sector does not
 *exist". All in all, SAP is pretty straightforward telling me what's wrong.
 
+*----------BATCH INPUT RECORDING VS DIRECT INPUT METHOD----------
+*In case of Batch Input Recording the migration is done based on the previously created recording. In case of Direct Input Method this
+*occurs based on the validations defined in the standard SAP program. For the migration of the material master data it's RMDATIND.
+*According to that program, every record should contain the transportaion group and the material group.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
