@@ -12520,7 +12520,13 @@ ENDLOOP.
 
 *----------THE THIRTEENTH STEP (AGAIN)----------
 *After executing the step (F8), I should choose the 'Program RMDATIND' radiobutton and proceed. In the following screen I should make sure
-*the 'Using physical file name:' option is selected. In its input box should be the name of my .conv file.
+*the 'Using physical file name:' option is selected. In its input box should be the name of my .conv file. With that done I should press
+*onward (F8). A few pop-up windows appear and SAP processes my request. After a few moments I receive another pop-up saying "Transaction
+*0000000007 completed Mat. no. No. of log. errors 0000000003" which means that 7 records were being processed and 3 of them ended up with
+*an error. The problem with one of the records is the material type, as the description of the error says "The material type ABC does not 
+*exist". I can see it if I expand the drop down list next to the line with the error. The error itself occurred because that's the material 
+*type provided in the file... and there's no such thing in SAP. Another record's processing failed because "The industry sector does not
+*exist". All in all, SAP is pretty straightforward telling me what's wrong.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
