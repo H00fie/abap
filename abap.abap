@@ -12533,6 +12533,12 @@ ENDLOOP.
 *occurs based on the validations defined in the standard SAP program. For the migration of the material master data it's RMDATIND.
 *According to that program, every record should contain the transportaion group and the material group.
 
+*----------BATCH DATA COMMUNICATION VS LSMW----------
+*Both BDC and LSMW are used for data migration, but:
+*1. BDC uses the Recording Technique for data migration. Here I ought to record a transaction using sample data and based on that recording
+*   I need to modify the generated program.
+*   LSMW on the other hand supports the Recording Technique, Direct Input Method, IDOC and BAPI.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
