@@ -12548,6 +12548,12 @@ ENDLOOP.
 *   more than 5000 records.
 *7. BDC can address the transactions containing Table Controls while LSMW cannot. LSMW can only these that contain the basic input fields.
 
+*The standard SAP program that was used in the program ('RMDATIND') was provided by SAP due to the nature of the data that I wanted to migrate
+*(material master). If the data was of a different kind, another program would be suggested by SAP. If I entered LSMW, provided the 'Project',
+*'Subproject' and 'Object' input fields with names, executed the transation, entered the first step ('Maintain Object Attributes'), made
+*sure I am in the Change mode and provided a value other than '0020' (material master) in the 'Object' input field within the 'Object Type
+*and Import Method section', like '0050' (customer master) - another program's name would be displayed in the 'Program Name' line.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
