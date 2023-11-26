@@ -12557,7 +12557,14 @@ ENDLOOP.
 *----------TRANSPORTING CHANGES----------
 *Whether I used LSMW with Batch Input Recording or Direct Input Method, I am hitting the save button like my life depended on it after
 *completing every step... but SAP isn't asking me for the package nor the transport. Thus the changes are not being kept in a change request.
-*I need to do it in another way.
+*I need to do it in another way. There are two possible approaches:
+*1. Manually genertaing the change request.
+*   I need to open my project in LSMW and select the 'Extras' option from the menu. Here I should choose 'Generate Change Request' and I
+*   will be presented with a pop-up window. I need to click the 'Create Request' button which is the white sheet one. In the following
+*   pop-up window I am to provide the short description for my request (I suppose that I should also provide a value for the 'Target' input
+*   box, which would be MMX in my case. That refers to what system I want the request to be destined for which is a test/quality one).
+*   After that's done, I press the 'Save' button and am presented with yet another pop-up window showing me an automatically generated
+*   number. I should commence forth by clicking the green tick button.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
