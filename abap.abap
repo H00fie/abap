@@ -12554,6 +12554,11 @@ ENDLOOP.
 *sure I am in the Change mode and provided a value other than '0020' (material master) in the 'Object' input field within the 'Object Type
 *and Import Method section', like '0050' (customer master) - another program's name would be displayed in the 'Program Name' line.
 
+*----------TRANSPORTING CHANGES----------
+*Whether I used LSMW with Batch Input Recording or Direct Input Method, I am hitting the save button like my life depended on it after
+*completing every step... but SAP isn't asking me for the package nor the transport. Thus the changes are not being kept in a change request.
+*I need to do it in another way.
+
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
 *---------------------------------------------------------------------------------------------------------------------------------
