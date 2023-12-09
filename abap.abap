@@ -12564,7 +12564,8 @@ ENDLOOP.
 *   pop-up window I am to provide the short description for my request (I suppose that I should also provide a value for the 'Target' input
 *   box, which would be MMX in my case. That refers to what system I want the request to be destined for which is a test/quality one).
 *   After that's done, I press the 'Save' button and am presented with yet another pop-up window showing me an automatically generated
-*   number. I should commence forth by clicking the green tick button.
+*   number. I should commence forth by clicking the green tick button. The change request is now created and automatically absorbed my 
+*   project. It should now be visible in SE10 (also SE09?) just like any other transport.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
