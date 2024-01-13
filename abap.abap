@@ -12564,8 +12564,13 @@ ENDLOOP.
 *   pop-up window I am to provide the short description for my request (I suppose that I should also provide a value for the 'Target' input
 *   box, which would be MMX in my case. That refers to what system I want the request to be destined for which is a test/quality one).
 *   After that's done, I press the 'Save' button and am presented with yet another pop-up window showing me an automatically generated
-*   number. I should commence forth by clicking the green tick button. The change request is now created and automatically absorbed my 
+*   number. I should commence forth by clicking the green tick button. The change request is now created and automatically absorbed my
 *   project. It should now be visible in SE10 (also SE09?) just like any other transport.
+*2. Using Export and Import project options.
+*   I need to open my project in LSMW, select the 'Extras' option from the menu and choose the 'Export Project' option. I should see
+*   a pop-up window with the name of my project. Here I need to just continue. I should now see a screen showing my a tree of my
+*   project and its subprojects. I ought to click the name of my project (in the upper left hand corner, highlighted with orange) and
+*   select the 'Export Rules' option from the menu.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
