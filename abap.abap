@@ -12570,7 +12570,10 @@ ENDLOOP.
 *   I need to open my project in LSMW, select the 'Extras' option from the menu and choose the 'Export Project' option. I should see
 *   a pop-up window with the name of my project. Here I need to just continue. I should now see a screen showing my a tree of my
 *   project and its subprojects. I ought to click the name of my project (in the upper left hand corner, highlighted with orange) and
-*   select the 'Export Rules' option from the menu.
+*   select the 'Export Rules' option from the menu. Here I need to select the 'Export' option.
+*   I will be asked where to store the file. Once I chose a suitable location I need to click the 'Open' button and I will be
+*   presented with a pop-up window claiming the system is attempting to create a file. If that was indeed my intention, I am to select
+*   the 'Allow' option.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
