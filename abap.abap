@@ -12574,6 +12574,11 @@ ENDLOOP.
 *   I will be asked where to store the file. Once I chose a suitable location I need to click the 'Open' button and I will be
 *   presented with a pop-up window claiming the system is attempting to create a file. If that was indeed my intention, I am to select
 *   the 'Allow' option.
+*   Now the file needs to be copied to the target system. In the LSMW transaction I am to choose the 'Extras' option in the menu and
+*   then the 'Import Pojects' option afterwards. The previously saved file needs to be selected and, if I really want it copied to
+*   the target system, the 'Allow' option needs to be chosen in the pop-up window that SAP will display after I've located the file
+*   and 'Opened' it. I will get yet another pop-up window with the information what's going to happen next and that is I am going to
+*   be asked to select the objects to be imported from the hierarchy that's about to be displayed.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
