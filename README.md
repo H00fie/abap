@@ -9,4 +9,4 @@ another and perform the same or similar function are grouped together. Furthermo
 
 In the SAP system's environment, a version control system is not used on a daily basis and thus any part of the code, in order to be tested, ought to be manually copied from the file and into the ABAP editor within the SAP system.
 
-In order to read an .abap file, any text editor will suffice. Notepad++ is recommended.
+In order to read an .abap file, any text editor will suffice. Notepad++ is recommended..
