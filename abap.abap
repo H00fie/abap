@@ -12579,6 +12579,8 @@ ENDLOOP.
 *   the target system, the 'Allow' option needs to be chosen in the pop-up window that SAP will display after I've located the file
 *   and 'Opened' it. I will get yet another pop-up window with the information what's going to happen next and that is I am going to
 *   be asked to select the objects to be imported from the hierarchy that's about to be displayed.
+*   Here I need to click my project's name (the root of the tree, highlighted in orange), go to the 'Edit' option in the menu and
+*   select the 'Import' option. I should see a pop-up window telling me "Mapping and rules imported."
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
