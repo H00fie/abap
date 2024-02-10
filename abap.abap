@@ -268,7 +268,7 @@ REPORT  Learning_field LINE-SIZE 255. "Self-explanatory, but this can, apparentl
 *
 *AT SELECTION-SCREEN ON my_cust.
 *  IF my_cust > wa_cust.
-*    WRITE: / 'Number jest wiêkszy.'.
+*    WRITE: / 'Number jest wiÃªkszy.'.
 *    ULINE.
 *  ELSE.
 *    WRITE: / 'Numer jest mniejszy.'.
@@ -331,23 +331,23 @@ REPORT  Learning_field LINE-SIZE 255. "Self-explanatory, but this can, apparentl
 *DATA result LIKE spell.
 *
 *SELECTION-SCREEN BEGIN OF LINE.
-*SELECTION-SCREEN COMMENT 1(15) text-001. "Pula tekstów/informacji do u¿ytku w ekranach wyboru. Istnieje podobny mechanizm dla okienek z komunikatami, ale to coœ innego. NIE SZUKAÆ porównañ do Javy. To jest stricte ABAPikowa rzecz.
+*SELECTION-SCREEN COMMENT 1(15) text-001. "Pula tekstÃ³w/informacji do uÂ¿ytku w ekranach wyboru. Istnieje podobny mechanizm dla okienek z komunikatami, ale to coÂœ innego. NIE SZUKAÃ† porÃ³wnaÃ± do Javy. To jest stricte ABAPikowa rzecz.
 *
 *PARAMETER num_1 TYPE i.
 *
 *SELECTION-SCREEN END OF LINE.
 *
-*CALL FUNCTION 'SPELL_AMOUNT' "Funkcja, która pisze w s³owach liczby podane jako integery.
+*CALL FUNCTION 'SPELL_AMOUNT' "Funkcja, ktÃ³ra pisze w sÂ³owach liczby podane jako integery.
 *  EXPORTING
 *    amount   = num_1 "Parametr liczbowy...
 *  IMPORTING
-*    in_words = result. "Zmienna do przechowania wyniku dzia³ania funkcji.
+*    in_words = result. "Zmienna do przechowania wyniku dziaÂ³ania funkcji.
 *.
-*IF sy-subrc <> 0. "Jeœli sy-subrc jest inna ni¿ 0, to coœ posz³o nie tak...
-*  WRITE: 'Wartoœæ zwrócona to: ', sy-subrc. "Wiêc wydrukuj mi wartoœæ sy-subrc. Np. 4 mo¿e oznaczaæ b³¹d.
+*IF sy-subrc <> 0. "JeÂœli sy-subrc jest inna niÂ¿ 0, to coÂœ poszÂ³o nie tak...
+*  WRITE: 'WartoÂœÃ¦ zwrÃ³cona to: ', sy-subrc. "WiÃªc wydrukuj mi wartoÂœÃ¦ sy-subrc. Np. 4 moÂ¿e oznaczaÃ¦ bÂ³Â¹d.
 *ELSE.
-*  WRITE: 'Podana liczba w s³owach to: ', result-word. "Jeœli sy-subrc nie jest ró¿ne od 0 (a wiêc ma wartoœæ 0 - czyli wszystko posz³o jak nale¿y), wtedy wydrukuj mi resultat.
-*ENDIF.                                                "Dodatek -word wynika z samej funkcji. Zamiast result móg³bym nazwaæ zmienn¹ np. osio³ek i sk³adnia bêdzie wygl¹daæ: osio³ek-word.
+*  WRITE: 'Podana liczba w sÂ³owach to: ', result-word. "JeÂœli sy-subrc nie jest rÃ³Â¿ne od 0 (a wiÃªc ma wartoÂœÃ¦ 0 - czyli wszystko poszÂ³o jak naleÂ¿y), wtedy wydrukuj mi resultat.
+*ENDIF.                                                "Dodatek -word wynika z samej funkcji. Zamiast result mÃ³gÂ³bym nazwaÃ¦ zmiennÂ¹ np. osioÂ³ek i skÂ³adnia bÃªdzie wyglÂ¹daÃ¦: osioÂ³ek-word.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
@@ -1406,7 +1406,7 @@ REPORT  Learning_field LINE-SIZE 255. "Self-explanatory, but this can, apparentl
 *
 *IF wa_ini-vbelv BETWEEN '1000000000' AND '2999999999'." AND BKPF-BLART = 'WA'.
 *
-*  IF wa_ini-vbelv BETWEEN '1700000000' AND '1789999999'. "TO NIE DZIA£A
+*  IF wa_ini-vbelv BETWEEN '1700000000' AND '1789999999'. "TO NIE DZIAÂ£A
 *    SELECT SINGLE vbelv
 *    FROM vbfa
 *    INTO wa_v178
@@ -1526,7 +1526,7 @@ REPORT  Learning_field LINE-SIZE 255. "Self-explanatory, but this can, apparentl
 *
 *WRITE: / wa_knb-kunnr.
 
-*'K94012000' -> TO JEST W KNB1 NA BOD -> NR TELEFONU, MOGÊ TUTAJ TESTOWAÆ <3
+*'K94012000' -> TO JEST W KNB1 NA BOD -> NR TELEFONU, MOGÃŠ TUTAJ TESTOWAÃ† <3
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
@@ -8893,7 +8893,7 @@ PARAMETERS: p_ename3 TYPE zbmierzwitest7-emp_name MATCHCODE OBJECT zbm_test_srch
 *Now I am in the Screen Painter tool.
 *On the left hand side I have a toolbox. I can paint the 'Input/Output Field' with the third button from the top or the 'Text Field'
 *with the second one from the top. After choosing an option, I need to click and draw the desired shape of the box. When I draw the
-*'Text Fields' they will initially be filled with stars (the Fëanorian ones no doubt). In the Screen Painter, every Screen Element
+*'Text Fields' they will initially be filled with stars (the FÃ«anorian ones no doubt). In the Screen Painter, every Screen Element
 *should contain a name. I need to double click on a created box, e.g. a 'Text Field' and provide the name, e.g. 'T1' and the text,
 *e.g. 'Client' (if the field is supposed to contain MANDT).
 *If I want the fields in my screen to come from a Database Table, I do not need to design all of it manually. Instead, I can choose
@@ -12575,7 +12575,7 @@ ENDLOOP.
 *   presented with a pop-up window claiming the system is attempting to create a file. If that was indeed my intention, I am to select
 *   the 'Allow' option.
 *   Now the file needs to be copied to the target system. In the LSMW transaction I am to choose the 'Extras' option in the menu and
-*   then the 'Import Pojects' option afterwards. The previously saved file needs to be selected and, if I really want it copied to
+*   then the 'Import Projects' option afterwards. The previously saved file needs to be selected and, if I really want it copied to
 *   the target system, the 'Allow' option needs to be chosen in the pop-up window that SAP will display after I've located the file
 *   and 'Opened' it. I will get yet another pop-up window with the information what's going to happen next and that is I am going to
 *   be asked to select the objects to be imported from the hierarchy that's about to be displayed.
