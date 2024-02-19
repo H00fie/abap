@@ -12666,7 +12666,12 @@ ENDTRY.
 *PROUDLY ABAPER. CURRENY AND QUANTITY FIELDS.
 *---------------------------------------------------------------------------------------------------------------------------------
 
-
+*Whenever my database table or database structure contains currency or quantity fields, I need to specify their reference tables
+*and reference fields.
+*Say I create a database table and add a field 'EMPSAL' of my custom data element 'ZEMPSAL'. I create that new data element and
+*create the domain for it named 'ZEMP_SAL'. I need to select the data type for the domain and I choose the 'CURR' option ("Currency
+*field, stored as DEC"). The field of 'EMPSAL' is supposed to store the information about the currency. If I tried to activate my
+*newly created database table now, I would get an error asking me to "specify reference table AND reference field".
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
