@@ -12672,6 +12672,11 @@ ENDTRY.
 *create the domain for it named 'ZEMP_SAL'. I need to select the data type for the domain and I choose the 'CURR' option ("Currency
 *field, stored as DEC"). The field of 'EMPSAL' is supposed to store the information about the currency. If I tried to activate my
 *newly created database table now, I would get an error asking me to "specify reference table AND reference field".
+*The reference data type for the 'CURR' data type is 'CUKY' (currency key). The reference table or reference field can be external
+*or it can be a part of the same object of which the field I need the reference for is a part of.
+*Thus I create a new field, 'EMPSALKEY' and create a new data element for it - 'ZEMPSALKEY'. It's domainn enters the binary plane
+*of existance with the name of 'ZEMPSAL_KEY'. The domain's data type needs to be 'CUKY' ("currency key, referenced by CURR fields")
+*as that is the proper reference data type for the currency field.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
