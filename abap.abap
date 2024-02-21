@@ -12674,9 +12674,14 @@ ENDTRY.
 *newly created database table now, I would get an error asking me to "specify reference table AND reference field".
 *The reference data type for the 'CURR' data type is 'CUKY' (currency key). The reference table or reference field can be external
 *or it can be a part of the same object of which the field I need the reference for is a part of.
-*Thus I create a new field, 'EMPSALKEY' and create a new data element for it - 'ZEMPSALKEY'. It's domainn enters the binary plane
+*Thus I create a new field, 'EMPSALKEY' and create a new data element for it - 'ZEMPSALKEY'. Its domain enters the binary plane
 *of existance with the name of 'ZEMPSAL_KEY'. The domain's data type needs to be 'CUKY' ("currency key, referenced by CURR fields")
 *as that is the proper reference data type for the currency field.
+*I now need to manually specify the relation between the original currency field and its reference - currency key, field. In order
+*to achieve just that, I should investigate the 'Currency/Quantity Fields' tab. I should see the columns 'Reference table' and
+*'Ref. field' enabled here but only for the row containing the 'EMPSAL' field. Since I want to reference the field within the same
+*table, I need to provide the name of the table with the fields I've just created in the 'Reference table' column and the name of
+*the reference field ('EMPSALKEY' in this scenario) in the 'Ref. field' column.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
