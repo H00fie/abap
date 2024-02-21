@@ -12682,6 +12682,9 @@ ENDTRY.
 *'Ref. field' enabled here but only for the row containing the 'EMPSAL' field. Since I want to reference the field within the same
 *table, I need to provide the name of the table with the fields I've just created in the 'Reference table' column and the name of
 *the reference field ('EMPSALKEY' in this scenario) in the 'Ref. field' column.
+*Now - for the sake of the quantity part - I create a new field - 'EMPWEIGHT' of the data element 'ZEMPWEIGHT' which I create. The
+*domain of the newly conjured up field is 'ZEMP_WEIGHT'. The domain's data type is 'QUAN' ("Quantity field, points to a unit field
+*with format UNIT").
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
