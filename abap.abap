@@ -12684,7 +12684,11 @@ ENDTRY.
 *the reference field ('EMPSALKEY' in this scenario) in the 'Ref. field' column.
 *Now - for the sake of the quantity part - I create a new field - 'EMPWEIGHT' of the data element 'ZEMPWEIGHT' which I create. The
 *domain of the newly conjured up field is 'ZEMP_WEIGHT'. The domain's data type is 'QUAN' ("Quantity field, points to a unit field
-*with format UNIT").
+*with format UNIT"). The quantity field also requires a reference. Hence I create a new field - 'EMPWEIGHT' of a data element of
+*'ZEMPWEIGHTKEY' which is created with the domain named 'ZEMPWEIGHT_KEY' and of a data type of 'UNIT'.
+*A quantity data type's ('QUAN') reference type is 'UNIT'.
+*I also need to go again to the 'Currency/Quantity Fields' tab and provide the required data in the quantity's row - the 'Reference
+*table' is the same table I am operating on and the 'Ref. field' is 'EMPWEIGHTKEY'.
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
