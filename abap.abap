@@ -12691,7 +12691,7 @@ ENDTRY.
 *table' is the same table I am operating on and the 'Ref. field' is 'EMPWEIGHTKEY'.
 *Whenever I create database tables or structures that contain any field whose data type is currency or quantity, I need to specify
 *the reference table and field for them. For the currency one the reference is the currency key and for the quantity one it is the
-*unit one. These reference tables and fields can be internal (within the same table) or external.
+*unit one. These reference tables and fields can be internal (within the same table) or external..
 
 *---------------------------------------------------------------------------------------------------------------------------------
 *END OF PROGRAM.
